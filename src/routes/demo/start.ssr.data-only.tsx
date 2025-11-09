@@ -1,10 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getPunkSongs } from '@/data/demo.punk-songs'
+// import { env } from "cloudflare:workers";
 
 export const Route = createFileRoute('/demo/start/ssr/data-only')({
   ssr: 'data-only',
   component: RouteComponent,
-  loader: async () => await getPunkSongs(),
+  loader: async () => {
+    // console.log("F", env.MY_VARIABLE)
+    return await getPunkSongs()
+  },
 })
 
 function RouteComponent() {

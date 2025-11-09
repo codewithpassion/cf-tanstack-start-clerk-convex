@@ -1,10 +1,17 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { env } from 'cloudflare:workers';
 
 const getCurrentServerTime = createServerFn({
   method: 'GET',
-}).handler(async () => await new Date().toISOString())
+}).handler(async () => {
+  return {
+    originalTime: (await new Date().toISOString()),
+    envVariable: env.MY_VARIABLE,
+    foo: process.env.MY_VARIABLE,
+  }
+})
 
 export const Route = createFileRoute('/demo/start/server-funcs')({
   component: Home,
@@ -12,7 +19,7 @@ export const Route = createFileRoute('/demo/start/server-funcs')({
 })
 
 function Home() {
-  const originalTime = Route.useLoaderData()
+  const { originalTime, envVariable, foo } = Route.useLoaderData()
   const [time, setTime] = useState(originalTime)
 
   return (
@@ -24,13 +31,13 @@ function Home() {
       }}
     >
       <div className="w-full max-w-2xl p-8 rounded-xl backdrop-blur-md bg-black/50 shadow-xl border-8 border-black/10">
-        <h1 className="text-2xl mb-4">Start Server Functions - Server Time</h1>
+        <h1 className="text-2xl mb-4">Start Server Functions - Server Time - {foo}</h1>
         <div className="flex flex-col gap-2">
           <div className="text-xl">Starting Time: {originalTime}</div>
           <div className="text-xl">Current Time: {time}</div>
           <button
             className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
-            onClick={async () => setTime(await getCurrentServerTime())}
+            onClick={async () => setTime(await getCurrentServerTime().then(res => res.originalTime))}
           >
             Refresh
           </button>
