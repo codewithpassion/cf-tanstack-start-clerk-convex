@@ -1,7 +1,7 @@
 import serverEntry from "@tanstack/react-start/server-entry"
 import { Hono } from "hono";
 import { getAuth } from "@hono/clerk-auth";
-import { clerkMiddleware } from "./clerkMiddleWare";
+import { clerkMiddleware } from "@hono/clerk-auth";
 
 
 interface CloudflareVariables {
