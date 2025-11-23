@@ -19,7 +19,7 @@ export const Route = createFileRoute('/demo/start/server-funcs')({
 })
 
 function Home() {
-  const { originalTime, envVariable, foo } = Route.useLoaderData()
+  const { originalTime, foo } = Route.useLoaderData()
   const [time, setTime] = useState(originalTime)
 
   return (

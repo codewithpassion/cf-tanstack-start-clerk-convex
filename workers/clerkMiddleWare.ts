@@ -1,13 +1,10 @@
 import { createClerkClient } from '@clerk/backend'
 import type { ClerkClient, SessionAuthObject } from '@clerk/backend'
 import type { AuthenticateRequestOptions } from '@clerk/backend/internal'
-import { createClerkRequest, TokenType } from '@clerk/backend/internal'
+import { TokenType } from '@clerk/backend/internal'
 import type { Context, MiddlewareHandler } from 'hono'
 import { env } from 'hono/adapter'
-import { ClerkRequest } from '@clerk/backend/internal';
-import { createAuthenticateContext } from 'node_modules/@clerk/backend/dist/tokens/authenticateContext'
 
-import { cloneRawRequest } from 'hono/request'
 
 
 export type ClerkAuthVariables = {

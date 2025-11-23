@@ -6,6 +6,8 @@ import { ClerkProvider } from '@clerk/tanstack-react-start'
 import Header from '../components/Header'
 
 import appCss from '../styles.css?url'
+import { ConvexClientProvider } from '@/lib/convex'
+import { AuthProvider } from '@/contexts/auth-context'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -37,27 +39,31 @@ export const Route = createRootRoute({
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <head>
-          <HeadContent />
-        </head>
-        <body>
-          <Header />
-          {children}
-          <TanStackDevtools
-            config={{
-              position: 'bottom-right',
-            }}
-            plugins={[
-              {
-                name: 'Tanstack Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-            ]}
-          />
-          <Scripts />
-        </body>
-      </html>
+      <ConvexClientProvider convexUrl={import.meta.env.VITE_CONVEX_URL}>
+        <AuthProvider>
+          <html lang="en">
+            <head>
+              <HeadContent />
+            </head>
+            <body>
+              <Header />
+              {children}
+              <TanStackDevtools
+                config={{
+                  position: 'bottom-right',
+                }}
+                plugins={[
+                  {
+                    name: 'Tanstack Router',
+                    render: <TanStackRouterDevtoolsPanel />,
+                  },
+                ]}
+              />
+              <Scripts />
+            </body>
+          </html>
+        </AuthProvider>
+      </ConvexClientProvider>
     </ClerkProvider>
   )
 }
