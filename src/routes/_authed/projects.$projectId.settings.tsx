@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { api } from "@/convex/api";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -173,11 +173,10 @@ function SettingsPage() {
 									id="project-name"
 									value={formData.name}
 									onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${
-										formErrors.name
+									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${formErrors.name
 											? "border-red-300 focus:border-red-500 focus:ring-red-500"
 											: "border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
-									}`}
+										}`}
 									placeholder="Enter project name"
 									maxLength={100}
 									disabled={isSaving}
@@ -197,11 +196,10 @@ function SettingsPage() {
 									value={formData.description}
 									onChange={(e) => setFormData({ ...formData, description: e.target.value })}
 									rows={4}
-									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${
-										formErrors.description
+									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${formErrors.description
 											? "border-red-300 focus:border-red-500 focus:ring-red-500"
 											: "border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
-									}`}
+										}`}
 									placeholder="Enter project description (optional)"
 									maxLength={2000}
 									disabled={isSaving}

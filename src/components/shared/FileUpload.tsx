@@ -2,11 +2,13 @@ import { useState, useRef, type ChangeEvent, type DragEvent } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
+import { uploadFileFn } from "@/server/files";
 
 export interface FileUploadProps {
 	onUploadComplete: (fileId: Id<"files">) => void;
 	ownerType: "brandVoice" | "persona" | "knowledgeBaseItem" | "example";
 	ownerId: string;
+	workspaceId: string;
 	multiple?: boolean;
 	disabled?: boolean;
 }
@@ -34,6 +36,7 @@ export function FileUpload({
 	onUploadComplete,
 	ownerType,
 	ownerId,
+	workspaceId,
 	multiple = false,
 	disabled = false,
 }: FileUploadProps) {
@@ -82,21 +85,26 @@ export function FileUpload({
 			try {
 				setUploadingFiles((prev) => [...prev, file.name]);
 
-				// In a real implementation, we would:
-				// 1. Call server function to get presigned upload URL
-				// 2. Upload file to R2 using presigned URL
-				// 3. Call confirmUpload server function to create file record
-				// 4. File record creation would trigger text extraction
+				// Convert file to ArrayBuffer for upload
+				const fileContent = await file.arrayBuffer();
 
-				// For now, simulate the file creation with mock data
-				// This will be replaced with actual server function calls
+				// Upload file directly to R2 via server function
+				// This includes text extraction for supported file types
+				const uploadResult = await uploadFileFn({
+					data: {
+						filename: file.name,
+						mimeType: file.type,
+						sizeBytes: file.size,
+						ownerType,
+						ownerId,
+						workspaceId,
+						fileContent,
+					},
+				});
+
+				// Create file record in Convex with validated data and extracted text
 				const fileId = await createFile({
-					ownerType,
-					ownerId,
-					filename: file.name,
-					mimeType: file.type,
-					sizeBytes: file.size,
-					r2Key: `mock-key-${Date.now()}-${file.name}`,
+					...uploadResult.validatedData,
 				});
 
 				onUploadComplete(fileId);

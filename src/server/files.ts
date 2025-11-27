@@ -5,48 +5,34 @@
 import { createServerFn } from "@tanstack/react-start";
 import { auth } from "@clerk/tanstack-react-start/server";
 import {
-	generateUploadUrl as r2GenerateUploadUrl,
-	generateDownloadUrl as r2GenerateDownloadUrl,
+	uploadFile,
+	downloadFile,
 	fetchFileContent,
-	DEFAULT_UPLOAD_EXPIRY,
-	DEFAULT_DOWNLOAD_EXPIRY,
 } from "@/lib/r2-client";
 import {
 	validateFileForUpload,
 	sanitizeFilename,
 	generateR2Key,
 } from "@/lib/file-validation";
+import { getR2Bucket } from "@/lib/env";
 import {
 	extractAndTruncateText,
 	isTextExtractable,
 } from "@/lib/text-extraction";
 import type { FileOwnerType } from "@/types/entities";
 
-export type GetUploadUrlInput = {
+export type UploadFileInput = {
 	filename: string;
 	mimeType: string;
 	sizeBytes: number;
 	ownerType: FileOwnerType;
 	ownerId: string;
 	workspaceId: string;
+	fileContent: ArrayBuffer;
 };
 
-export type GetUploadUrlResult = {
-	uploadUrl: string;
+export type UploadFileResult = {
 	r2Key: string;
-	expiresAt: number;
-};
-
-export type ConfirmUploadInput = {
-	r2Key: string;
-	ownerType: FileOwnerType;
-	ownerId: string;
-	filename: string;
-	mimeType: string;
-	sizeBytes: number;
-};
-
-export type ConfirmUploadResult = {
 	validatedData: {
 		ownerType: FileOwnerType;
 		ownerId: string;
@@ -68,20 +54,25 @@ export type GetDownloadUrlInput = {
 };
 
 export type GetDownloadUrlResult = {
-	downloadUrl: string;
-	expiresAt: number;
+	content: ArrayBuffer;
+	contentType: string | undefined;
 };
 
 /**
- * Get a presigned URL for uploading a file to R2.
- * Validates file metadata and generates a unique R2 key.
+ * Upload a file directly to R2 storage.
+ * Validates file metadata, uploads to R2, extracts text (if supported),
+ * and returns validated data for Convex mutation.
  *
- * @param ctx.data - Upload URL request input
- * @returns Presigned upload URL, R2 key, and expiration timestamp
+ * Text extraction is attempted for supported MIME types (text/plain, PDF, Word docs).
+ * Extraction failures are logged but do not fail the upload.
+ * Extracted text is truncated to 50,000 characters if necessary.
+ *
+ * @param ctx.data - Upload file input with file content
+ * @returns R2 key and validated file data for Convex mutation, including extracted text
  */
-export const getUploadUrl = createServerFn({ method: "POST" })
-	.inputValidator((input: GetUploadUrlInput) => input)
-	.handler(async ({ data }): Promise<GetUploadUrlResult> => {
+export const uploadFileFn = createServerFn({ method: "POST" })
+	.inputValidator((input: UploadFileInput) => input)
+	.handler(async ({ data }): Promise<UploadFileResult> => {
 		// Verify authentication
 		const { userId } = await auth();
 		if (!userId) {
@@ -94,15 +85,16 @@ export const getUploadUrl = createServerFn({ method: "POST" })
 			!data.mimeType ||
 			!data.ownerType ||
 			!data.ownerId ||
-			!data.workspaceId
+			!data.workspaceId ||
+			!data.fileContent
 		) {
-			throw new Error("Missing required fields for upload URL generation");
+			throw new Error("Missing required fields for file upload");
 		}
 		if (typeof data.sizeBytes !== "number") {
 			throw new Error("File size must be a number");
 		}
 
-		const { filename, mimeType, sizeBytes, ownerType, workspaceId } = data;
+		const { filename, mimeType, sizeBytes, ownerType, ownerId, workspaceId, fileContent } = data;
 
 		// Validate file metadata
 		const validation = validateFileForUpload(filename, mimeType, sizeBytes);
@@ -110,74 +102,27 @@ export const getUploadUrl = createServerFn({ method: "POST" })
 			throw new Error(validation.error);
 		}
 
-		// Generate R2 key
-		const r2Key = generateR2Key(workspaceId, ownerType, filename);
-
-		// Generate presigned upload URL
-		const uploadUrl = await r2GenerateUploadUrl(
-			r2Key,
-			mimeType,
-			DEFAULT_UPLOAD_EXPIRY,
-		);
-
-		// Calculate expiration timestamp
-		const expiresAt = Date.now() + DEFAULT_UPLOAD_EXPIRY * 1000;
-
-		return {
-			uploadUrl,
-			r2Key,
-			expiresAt,
-		};
-	});
-
-/**
- * Confirm that a file upload has completed.
- * Validates file data, extracts text (if supported), and prepares data for Convex.
- *
- * Text extraction is attempted for supported MIME types (text/plain, PDF, Word docs).
- * Extraction failures are logged but do not fail the upload confirmation.
- * Extracted text is truncated to 50,000 characters if necessary.
- *
- * @param ctx.data - Upload confirmation input
- * @returns Validated file data for Convex mutation, including extracted text
- */
-export const confirmUpload = createServerFn({ method: "POST" })
-	.inputValidator((input: ConfirmUploadInput) => input)
-	.handler(async ({ data }): Promise<ConfirmUploadResult> => {
-		// Verify authentication
-		const { userId } = await auth();
-		if (!userId) {
-			throw new Error("Authentication required");
-		}
-
-		// Validate required fields
-		if (
-			!data.r2Key ||
-			!data.ownerType ||
-			!data.ownerId ||
-			!data.filename ||
-			!data.mimeType
-		) {
-			throw new Error("Missing required fields for upload confirmation");
-		}
-		if (typeof data.sizeBytes !== "number") {
-			throw new Error("File size must be a number");
-		}
-
-		const { r2Key, ownerType, ownerId, filename, mimeType, sizeBytes } = data;
-
 		// Sanitize filename for storage
 		const sanitizedFilename = sanitizeFilename(filename);
 
+		// Generate R2 key
+		const r2Key = generateR2Key(workspaceId, ownerType, sanitizedFilename);
+
+		// Get R2 bucket from Cloudflare Workers environment
+		const bucket = await getR2Bucket();
+
+		// Upload file to R2
+		await uploadFile(bucket, r2Key, fileContent, mimeType);
+
 		// Initialize extraction info
 		let extractedText: string | undefined;
-		let extractionInfo: ConfirmUploadResult["extractionInfo"];
+		let extractionInfo: UploadFileResult["extractionInfo"];
 
 		// Attempt text extraction for supported MIME types
 		if (isTextExtractable(mimeType)) {
 			try {
 				// Fetch file content from R2
-				const fileBuffer = await fetchFileContent(r2Key);
+				const fileBuffer = await fetchFileContent(bucket, r2Key);
 
 				if (fileBuffer) {
 					// Extract and truncate text
@@ -225,6 +170,7 @@ export const confirmUpload = createServerFn({ method: "POST" })
 		}
 
 		return {
+			r2Key,
 			validatedData: {
 				ownerType,
 				ownerId,
@@ -239,17 +185,17 @@ export const confirmUpload = createServerFn({ method: "POST" })
 	});
 
 /**
- * Get a presigned URL for downloading a file from R2.
- * Verifies file ownership through Convex before generating the URL.
+ * Download a file directly from R2 storage.
+ * Verifies file ownership through Convex before downloading.
  *
  * Note: Ownership verification is done at the Convex level when the file
  * record is fetched. The client must first fetch the file via Convex
  * (which verifies ownership) before calling this function.
  *
- * @param ctx.data - Download URL request input
- * @returns Presigned download URL and expiration timestamp
+ * @param ctx.data - Download file input with R2 key
+ * @returns File content as ArrayBuffer and content type
  */
-export const getDownloadUrl = createServerFn({ method: "GET" })
+export const downloadFileFn = createServerFn({ method: "GET" })
 	.inputValidator((input: GetDownloadUrlInput) => input)
 	.handler(async ({ data }): Promise<GetDownloadUrlResult> => {
 		// Verify authentication
@@ -265,17 +211,21 @@ export const getDownloadUrl = createServerFn({ method: "GET" })
 
 		const { r2Key } = data;
 
-		// Generate presigned download URL
-		const downloadUrl = await r2GenerateDownloadUrl(
-			r2Key,
-			DEFAULT_DOWNLOAD_EXPIRY,
-		);
+		// Get R2 bucket from Cloudflare Workers environment
+		const bucket = await getR2Bucket();
 
-		// Calculate expiration timestamp
-		const expiresAt = Date.now() + DEFAULT_DOWNLOAD_EXPIRY * 1000;
+		// Download file from R2
+		const object = await downloadFile(bucket, r2Key);
+
+		if (!object) {
+			throw new Error("File not found");
+		}
+
+		// Convert to ArrayBuffer for client
+		const content = await object.arrayBuffer();
 
 		return {
-			downloadUrl,
-			expiresAt,
+			content,
+			contentType: object.httpMetadata?.contentType,
 		};
 	});

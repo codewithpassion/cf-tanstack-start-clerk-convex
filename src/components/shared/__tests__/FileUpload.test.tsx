@@ -6,6 +6,15 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { FileUpload } from "../FileUpload";
 
+// Mock Cloudflare env helper
+vi.mock("@/lib/env", () => ({
+	getR2Bucket: vi.fn().mockResolvedValue({
+		put: vi.fn().mockResolvedValue(undefined),
+		get: vi.fn().mockResolvedValue(null),
+		delete: vi.fn().mockResolvedValue(undefined),
+	}),
+}));
+
 // Mock Convex hooks
 vi.mock("convex/react", () => ({
 	useMutation: vi.fn(() => vi.fn()),
@@ -26,13 +35,13 @@ describe("FileUpload", () => {
 	});
 
 	it("should render file upload zone with instructions", () => {
-		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" />);
+		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" workspaceId="workspace-123" />);
 
 		expect(screen.getByText(/drag.*drop/i) || screen.getByText(/click to upload/i)).toBeInTheDocument();
 	});
 
 	it("should accept file selection via input", () => {
-		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" />);
+		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" workspaceId="workspace-123" />);
 
 		const input = screen.getByLabelText(/upload files/i) as HTMLInputElement;
 		expect(input).toBeInTheDocument();
@@ -40,14 +49,14 @@ describe("FileUpload", () => {
 	});
 
 	it("should display supported file types", () => {
-		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" />);
+		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" workspaceId="workspace-123" />);
 
 		// Check for supported file type information
 		expect(screen.getByText(/pdf.*word.*text.*images/i)).toBeInTheDocument();
 	});
 
 	it("should display file size limit", () => {
-		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" />);
+		render(<FileUpload onUploadComplete={vi.fn()} ownerType="brandVoice" ownerId="brand-voice-123" workspaceId="workspace-123" />);
 
 		// Check for file size limit information (15MB)
 		expect(screen.getByText(/maximum file size.*15.*mb/i)).toBeInTheDocument();
@@ -59,6 +68,7 @@ describe("FileUpload", () => {
 				onUploadComplete={vi.fn()}
 				ownerType="brandVoice"
 				ownerId="brand-voice-123"
+				workspaceId="workspace-123"
 				multiple={true}
 			/>
 		);

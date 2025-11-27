@@ -6,6 +6,15 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { PersonaForm } from "../PersonaForm";
 
+// Mock Cloudflare env helper
+vi.mock("@/lib/env", () => ({
+	getR2Bucket: vi.fn().mockResolvedValue({
+		put: vi.fn().mockResolvedValue(undefined),
+		get: vi.fn().mockResolvedValue(null),
+		delete: vi.fn().mockResolvedValue(undefined),
+	}),
+}));
+
 // Mock Convex hooks
 vi.mock("convex/react", () => ({
 	useMutation: vi.fn(() => vi.fn()),

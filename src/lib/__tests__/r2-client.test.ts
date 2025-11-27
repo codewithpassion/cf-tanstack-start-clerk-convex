@@ -1,99 +1,144 @@
 /**
- * Tests for R2 client presigned URL generation.
- * Tests verify that presigned URLs are generated with correct parameters and expiration.
+ * Tests for R2 client using native Cloudflare R2 bindings.
+ * Tests verify that R2 operations work correctly with the native API.
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-
-// Mock the AWS SDK before importing the module
-vi.mock("@aws-sdk/client-s3", () => ({
-	S3Client: vi.fn().mockImplementation(() => ({})),
-	PutObjectCommand: vi.fn().mockImplementation((params) => params),
-	GetObjectCommand: vi.fn().mockImplementation((params) => params),
-	DeleteObjectCommand: vi.fn().mockImplementation((params) => params),
-}));
-
-vi.mock("@aws-sdk/s3-request-presigner", () => ({
-	getSignedUrl: vi.fn().mockResolvedValue("https://example.com/presigned-url"),
-}));
+import type { R2Bucket, R2ObjectBody } from "@cloudflare/workers-types";
 
 describe("R2 Client", () => {
-	beforeEach(() => {
+	let mockBucket: R2Bucket;
+
+	beforeEach(async () => {
+		// Reset modules to clear any cached imports
 		vi.resetModules();
-		// Set environment variables for tests
-		process.env.R2_ACCOUNT_ID = "test-account-id";
-		process.env.R2_ACCESS_KEY_ID = "test-access-key";
-		process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
-		process.env.R2_BUCKET_NAME = "test-bucket";
+
+		// Create mock R2Bucket with required methods
+		mockBucket = {
+			put: vi.fn().mockResolvedValue(undefined),
+			get: vi.fn().mockResolvedValue({
+				body: new ReadableStream(),
+				httpMetadata: {
+					contentType: "application/pdf",
+				},
+				arrayBuffer: vi.fn().mockResolvedValue(new ArrayBuffer(100)),
+			} as Partial<R2ObjectBody>),
+			delete: vi.fn().mockResolvedValue(undefined),
+		} as unknown as R2Bucket;
 	});
 
-	describe("generateUploadUrl", () => {
-		it("should generate a presigned PUT URL with correct parameters", async () => {
-			const { getSignedUrl } = await import("@aws-sdk/s3-request-presigner");
-			const { generateUploadUrl } = await import("../r2-client");
+	describe("uploadFile", () => {
+		it("should upload file to R2 with correct parameters", async () => {
+			const { uploadFile } = await import("../r2-client");
 
-			const result = await generateUploadUrl(
-				"test-workspace/brand-voices/test-file.pdf",
-				"application/pdf",
-				300,
-			);
+			const fileContent = new ArrayBuffer(100);
+			const key = "test-workspace/brand-voices/test-file.pdf";
+			const contentType = "application/pdf";
 
-			expect(result).toBe("https://example.com/presigned-url");
-			expect(getSignedUrl).toHaveBeenCalledWith(
-				expect.anything(),
-				expect.objectContaining({
-					Key: "test-workspace/brand-voices/test-file.pdf",
-					ContentType: "application/pdf",
-				}),
-				{ expiresIn: 300 },
+			await uploadFile(mockBucket, key, fileContent, contentType);
+
+			expect(mockBucket.put).toHaveBeenCalledWith(
+				key,
+				fileContent,
+				{
+					httpMetadata: { contentType },
+				},
 			);
 		});
 
-		it("should use default expiration when not provided", async () => {
-			const { getSignedUrl } = await import("@aws-sdk/s3-request-presigner");
-			const { generateUploadUrl, DEFAULT_UPLOAD_EXPIRY } = await import(
-				"../r2-client"
-			);
+		it("should handle ReadableStream as file content", async () => {
+			const { uploadFile } = await import("../r2-client");
 
-			await generateUploadUrl("test-key", "text/plain");
+			const stream = new ReadableStream();
+			const key = "test.txt";
+			const contentType = "text/plain";
 
-			expect(getSignedUrl).toHaveBeenCalledWith(
-				expect.anything(),
-				expect.anything(),
-				{ expiresIn: DEFAULT_UPLOAD_EXPIRY },
+			await uploadFile(mockBucket, key, stream, contentType);
+
+			expect(mockBucket.put).toHaveBeenCalledWith(
+				key,
+				stream,
+				{
+					httpMetadata: { contentType },
+				},
 			);
 		});
 	});
 
-	describe("generateDownloadUrl", () => {
-		it("should generate a presigned GET URL with correct parameters", async () => {
-			const { getSignedUrl } = await import("@aws-sdk/s3-request-presigner");
-			const { generateDownloadUrl } = await import("../r2-client");
+	describe("downloadFile", () => {
+		it("should download file from R2", async () => {
+			const { downloadFile } = await import("../r2-client");
 
-			const result = await generateDownloadUrl("test-key.pdf", 3600);
+			const key = "test-key.pdf";
+			const result = await downloadFile(mockBucket, key);
 
-			expect(result).toBe("https://example.com/presigned-url");
-			expect(getSignedUrl).toHaveBeenCalledWith(
-				expect.anything(),
-				expect.objectContaining({
-					Key: "test-key.pdf",
-				}),
-				{ expiresIn: 3600 },
-			);
+			expect(mockBucket.get).toHaveBeenCalledWith(key);
+			expect(result).toBeDefined();
 		});
 
-		it("should use default expiration for downloads", async () => {
-			const { getSignedUrl } = await import("@aws-sdk/s3-request-presigner");
-			const { generateDownloadUrl, DEFAULT_DOWNLOAD_EXPIRY } = await import(
-				"../r2-client"
+		it("should return null when file not found", async () => {
+			const { downloadFile } = await import("../r2-client");
+
+			mockBucket.get = vi.fn().mockResolvedValue(null);
+
+			const result = await downloadFile(mockBucket, "nonexistent.pdf");
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe("fetchFileContent", () => {
+		it("should fetch file content as Buffer", async () => {
+			const { fetchFileContent } = await import("../r2-client");
+
+			const testData = new Uint8Array([1, 2, 3, 4, 5]);
+			const mockObject = {
+				arrayBuffer: vi.fn().mockResolvedValue(testData.buffer),
+			} as Partial<R2ObjectBody>;
+
+			mockBucket.get = vi.fn().mockResolvedValue(mockObject as R2ObjectBody);
+
+			const result = await fetchFileContent(mockBucket, "test-key");
+
+			expect(result).toBeInstanceOf(Buffer);
+			expect(result?.length).toBe(5);
+		});
+
+		it("should return null when file not found", async () => {
+			const { fetchFileContent } = await import("../r2-client");
+
+			mockBucket.get = vi.fn().mockResolvedValue(null);
+
+			const result = await fetchFileContent(mockBucket, "nonexistent.pdf");
+
+			expect(result).toBeNull();
+		});
+
+		it("should return null and log error on failure", async () => {
+			const { fetchFileContent } = await import("../r2-client");
+
+			const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+			mockBucket.get = vi.fn().mockRejectedValue(new Error("R2 error"));
+
+			const result = await fetchFileContent(mockBucket, "test-key");
+
+			expect(result).toBeNull();
+			expect(consoleSpy).toHaveBeenCalledWith(
+				"Failed to fetch file from R2:",
+				expect.any(Error),
 			);
 
-			await generateDownloadUrl("test-key.pdf");
+			consoleSpy.mockRestore();
+		});
+	});
 
-			expect(getSignedUrl).toHaveBeenCalledWith(
-				expect.anything(),
-				expect.anything(),
-				{ expiresIn: DEFAULT_DOWNLOAD_EXPIRY },
-			);
+	describe("deleteObject", () => {
+		it("should delete object from R2", async () => {
+			const { deleteObject } = await import("../r2-client");
+
+			const key = "test-key.pdf";
+			await deleteObject(mockBucket, key);
+
+			expect(mockBucket.delete).toHaveBeenCalledWith(key);
 		});
 	});
 });
