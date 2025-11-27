@@ -1,87 +1,81 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
-import { auth } from '@clerk/tanstack-react-start/server'
-import { useAuth } from '@clerk/tanstack-react-start'
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { useState, useEffect } from "react";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { LoadingState } from "@/components/shared/LoadingState";
+import { ProjectGrid } from "@/components/dashboard/ProjectGrid";
+import { CreateProjectModal } from "@/components/dashboard/CreateProjectModal";
 
-// Server function to check API health with auth
-const checkApiHealth = createServerFn({ method: 'GET' }).handler(async () => {
-  const { userId } = await auth()
-
-  // You could make an authenticated API call here
-  return {
-    status: 'ok',
-    userId,
-    timestamp: new Date().toISOString(),
-  }
-})
-
-export const Route = createFileRoute('/_authed/dashboard')({
-  component: DashboardPage,
-  loader: async () => {
-    const health = await checkApiHealth()
-    return health
-  },
-})
+export const Route = createFileRoute("/_authed/dashboard")({
+	component: DashboardPage,
+});
 
 function DashboardPage() {
-  const { userId, isLoaded } = useAuth()
-  const loaderData = Route.useLoaderData()
+	const navigate = useNavigate();
+	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  if (!isLoaded) {
-    return (
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Loading...</h1>
-      </div>
-    )
-  }
+	// Fetch workspace and check onboarding status
+	const workspace = useQuery(api.workspaces.getMyWorkspace);
+	const needsOnboarding = useQuery(api.workspaces.needsOnboarding);
 
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+	// Fetch projects list
+	const projects = useQuery(api.projects.listProjects);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Authentication Status</h2>
-          <div className="space-y-2">
-            <p>
-              <span className="font-medium">Authenticated:</span>{' '}
-              <span className="text-green-600">Yes</span>
-            </p>
-            <p>
-              <span className="font-medium">User ID:</span>{' '}
-              <code className="bg-gray-100 px-2 py-1 rounded text-sm">
-                {userId}
-              </code>
-            </p>
-          </div>
-        </div>
+	// Redirect to onboarding if needed
+	useEffect(() => {
+		if (needsOnboarding === true) {
+			navigate({ to: "/onboarding" });
+		}
+	}, [needsOnboarding, navigate]);
 
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Server Health</h2>
-          <div className="space-y-2">
-            <p>
-              <span className="font-medium">Status:</span>{' '}
-              <span className="text-green-600">{loaderData.status}</span>
-            </p>
-            <p>
-              <span className="font-medium">Last Check:</span>{' '}
-              {new Date(loaderData.timestamp).toLocaleString()}
-            </p>
-          </div>
-        </div>
-      </div>
+	// Show loading state while data is being fetched
+	if (workspace === undefined || needsOnboarding === undefined || projects === undefined) {
+		return (
+			<div className="max-w-7xl mx-auto">
+				<LoadingState message="Loading dashboard..." />
+			</div>
+		);
+	}
 
-      <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Protected Content</h2>
-        <p className="text-gray-700 mb-4">
-          This is a protected dashboard page. Only authenticated users can view
-          this content.
-        </p>
-        <p className="text-gray-600">
-          The authentication check happens on the server before this page loads,
-          ensuring secure access control.
-        </p>
-      </div>
-    </div>
-  )
+	// If redirecting to onboarding, show loading
+	if (needsOnboarding === true) {
+		return (
+			<div className="max-w-7xl mx-auto">
+				<LoadingState message="Redirecting to onboarding..." />
+			</div>
+		);
+	}
+
+	return (
+		<div className="max-w-7xl mx-auto">
+			<PageHeader
+				title="Projects"
+				description="Organize your content creation with projects for different brands or purposes."
+				action={
+					<button
+						type="button"
+						onClick={() => setIsCreateModalOpen(true)}
+						className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+					>
+						<svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<title>Add</title>
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+						</svg>
+						New Project
+					</button>
+				}
+			/>
+
+			<ProjectGrid
+				projects={projects}
+				onCreateProject={() => setIsCreateModalOpen(true)}
+			/>
+
+			<CreateProjectModal
+				isOpen={isCreateModalOpen}
+				onClose={() => setIsCreateModalOpen(false)}
+			/>
+		</div>
+	);
 }

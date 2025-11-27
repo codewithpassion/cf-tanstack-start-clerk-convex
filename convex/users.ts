@@ -1,6 +1,36 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
+
+/**
+ * Helper to ensure workspace exists for a user.
+ * Creates a new workspace if one doesn't exist.
+ */
+async function ensureWorkspaceExists(
+	ctx: MutationCtx,
+	userId: Id<"users">,
+): Promise<Id<"workspaces">> {
+	// Check if workspace already exists
+	const existingWorkspace = await ctx.db
+		.query("workspaces")
+		.withIndex("by_userId", (q) => q.eq("userId", userId))
+		.unique();
+
+	if (existingWorkspace) {
+		return existingWorkspace._id;
+	}
+
+	// Create new workspace with onboarding not completed
+	const workspaceId = await ctx.db.insert("workspaces", {
+		userId,
+		onboardingCompleted: false,
+		createdAt: Date.now(),
+		updatedAt: Date.now(),
+	});
+
+	return workspaceId;
+}
 
 // Get current user (read-only, no creation)
 export const getMe = query({
@@ -48,7 +78,11 @@ export const syncUser = mutation({
 				roles: roles || ["user"],
 				updatedAt: Date.now(),
 			});
-			return existingUser._id;
+
+			// Ensure workspace exists for existing user
+			const workspaceId = await ensureWorkspaceExists(ctx, existingUser._id);
+
+			return { userId: existingUser._id, workspaceId };
 		}
 
 		// Create new user
@@ -62,7 +96,10 @@ export const syncUser = mutation({
 			updatedAt: Date.now(),
 		});
 
-		return userId;
+		// Create workspace for new user
+		const workspaceId = await ensureWorkspaceExists(ctx, userId);
+
+		return { userId, workspaceId };
 	},
 });
 
@@ -94,7 +131,11 @@ export const syncUserInternal = internalMutation({
 				roles: roles || existingUser.roles || ["user"],
 				updatedAt: Date.now(),
 			});
-			return existingUser._id;
+
+			// Ensure workspace exists for existing user
+			const workspaceId = await ensureWorkspaceExists(ctx, existingUser._id);
+
+			return { userId: existingUser._id, workspaceId };
 		}
 
 		// Create new user
@@ -108,7 +149,10 @@ export const syncUserInternal = internalMutation({
 			updatedAt: Date.now(),
 		});
 
-		return userId;
+		// Create workspace for new user
+		const workspaceId = await ensureWorkspaceExists(ctx, userId);
+
+		return { userId, workspaceId };
 	},
 });
 
@@ -125,6 +169,16 @@ export const deleteUser = internalMutation({
 
 		if (!user) {
 			throw new ConvexError("User not found");
+		}
+
+		// Delete the user's workspace if it exists
+		const workspace = await ctx.db
+			.query("workspaces")
+			.withIndex("by_userId", (q) => q.eq("userId", user._id))
+			.unique();
+
+		if (workspace) {
+			await ctx.db.delete(workspace._id);
 		}
 
 		// Delete the user

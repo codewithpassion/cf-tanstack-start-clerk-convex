@@ -9,8 +9,17 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as brandVoices from "../brandVoices.js";
+import type * as categories from "../categories.js";
+import type * as examples from "../examples.js";
+import type * as files from "../files.js";
 import type * as http from "../http.js";
+import type * as knowledgeBase from "../knowledgeBase.js";
+import type * as lib_auth from "../lib/auth.js";
+import type * as personas from "../personas.js";
+import type * as projects from "../projects.js";
 import type * as users from "../users.js";
+import type * as workspaces from "../workspaces.js";
 
 import type {
   ApiFromModules,
@@ -20,8 +29,17 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  brandVoices: typeof brandVoices;
+  categories: typeof categories;
+  examples: typeof examples;
+  files: typeof files;
   http: typeof http;
+  knowledgeBase: typeof knowledgeBase;
+  "lib/auth": typeof lib_auth;
+  personas: typeof personas;
+  projects: typeof projects;
   users: typeof users;
+  workspaces: typeof workspaces;
 }>;
 
 /**

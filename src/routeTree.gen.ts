@@ -14,14 +14,23 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
+import { Route as AuthedOnboardingRouteImport } from './routes/_authed/onboarding'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
+import { Route as AuthedProjectsProjectIdRouteImport } from './routes/_authed/projects.$projectId'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
+import { Route as AuthedProjectsProjectIdIndexRouteImport } from './routes/_authed/projects.$projectId.index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
+import { Route as AuthedProjectsProjectIdSettingsRouteImport } from './routes/_authed/projects.$projectId.settings'
+import { Route as AuthedProjectsProjectIdPersonasRouteImport } from './routes/_authed/projects.$projectId.personas'
+import { Route as AuthedProjectsProjectIdKnowledgeBaseRouteImport } from './routes/_authed/projects.$projectId.knowledge-base'
+import { Route as AuthedProjectsProjectIdExamplesRouteImport } from './routes/_authed/projects.$projectId.examples'
+import { Route as AuthedProjectsProjectIdCategoriesRouteImport } from './routes/_authed/projects.$projectId.categories'
+import { Route as AuthedProjectsProjectIdBrandVoicesRouteImport } from './routes/_authed/projects.$projectId.brand-voices'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -47,6 +56,11 @@ const AuthedProfileRoute = AuthedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedOnboardingRoute = AuthedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -67,11 +81,22 @@ const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
   path: '/demo/api/names',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedProjectsProjectIdRoute = AuthedProjectsProjectIdRouteImport.update({
+  id: '/projects/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
   id: '/demo/start/ssr/',
   path: '/demo/start/ssr/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedProjectsProjectIdIndexRoute =
+  AuthedProjectsProjectIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
 const DemoStartSsrSpaModeRoute = DemoStartSsrSpaModeRouteImport.update({
   id: '/demo/start/ssr/spa-mode',
   path: '/demo/start/ssr/spa-mode',
@@ -87,19 +112,64 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
   path: '/demo/start/ssr/data-only',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedProjectsProjectIdSettingsRoute =
+  AuthedProjectsProjectIdSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
+const AuthedProjectsProjectIdPersonasRoute =
+  AuthedProjectsProjectIdPersonasRouteImport.update({
+    id: '/personas',
+    path: '/personas',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
+const AuthedProjectsProjectIdKnowledgeBaseRoute =
+  AuthedProjectsProjectIdKnowledgeBaseRouteImport.update({
+    id: '/knowledge-base',
+    path: '/knowledge-base',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
+const AuthedProjectsProjectIdExamplesRoute =
+  AuthedProjectsProjectIdExamplesRouteImport.update({
+    id: '/examples',
+    path: '/examples',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
+const AuthedProjectsProjectIdCategoriesRoute =
+  AuthedProjectsProjectIdCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
+const AuthedProjectsProjectIdBrandVoicesRoute =
+  AuthedProjectsProjectIdBrandVoicesRouteImport.update({
+    id: '/brand-voices',
+    path: '/brand-voices',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/dashboard': typeof AuthedDashboardRoute
+  '/onboarding': typeof AuthedOnboardingRoute
   '/profile': typeof AuthedProfileRoute
+  '/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/projects/$projectId/brand-voices': typeof AuthedProjectsProjectIdBrandVoicesRoute
+  '/projects/$projectId/categories': typeof AuthedProjectsProjectIdCategoriesRoute
+  '/projects/$projectId/examples': typeof AuthedProjectsProjectIdExamplesRoute
+  '/projects/$projectId/knowledge-base': typeof AuthedProjectsProjectIdKnowledgeBaseRoute
+  '/projects/$projectId/personas': typeof AuthedProjectsProjectIdPersonasRoute
+  '/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
+  '/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
 }
 export interface FileRoutesByTo {
@@ -107,13 +177,21 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/dashboard': typeof AuthedDashboardRoute
+  '/onboarding': typeof AuthedOnboardingRoute
   '/profile': typeof AuthedProfileRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/projects/$projectId/brand-voices': typeof AuthedProjectsProjectIdBrandVoicesRoute
+  '/projects/$projectId/categories': typeof AuthedProjectsProjectIdCategoriesRoute
+  '/projects/$projectId/examples': typeof AuthedProjectsProjectIdExamplesRoute
+  '/projects/$projectId/knowledge-base': typeof AuthedProjectsProjectIdKnowledgeBaseRoute
+  '/projects/$projectId/personas': typeof AuthedProjectsProjectIdPersonasRoute
+  '/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
+  '/projects/$projectId': typeof AuthedProjectsProjectIdIndexRoute
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
 }
 export interface FileRoutesById {
@@ -123,13 +201,22 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
+  '/_authed/onboarding': typeof AuthedOnboardingRoute
   '/_authed/profile': typeof AuthedProfileRoute
+  '/_authed/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/_authed/projects/$projectId/brand-voices': typeof AuthedProjectsProjectIdBrandVoicesRoute
+  '/_authed/projects/$projectId/categories': typeof AuthedProjectsProjectIdCategoriesRoute
+  '/_authed/projects/$projectId/examples': typeof AuthedProjectsProjectIdExamplesRoute
+  '/_authed/projects/$projectId/knowledge-base': typeof AuthedProjectsProjectIdKnowledgeBaseRoute
+  '/_authed/projects/$projectId/personas': typeof AuthedProjectsProjectIdPersonasRoute
+  '/_authed/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
+  '/_authed/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
   '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
 }
 export interface FileRouteTypes {
@@ -139,13 +226,22 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/dashboard'
+    | '/onboarding'
     | '/profile'
+    | '/projects/$projectId'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/projects/$projectId/brand-voices'
+    | '/projects/$projectId/categories'
+    | '/projects/$projectId/examples'
+    | '/projects/$projectId/knowledge-base'
+    | '/projects/$projectId/personas'
+    | '/projects/$projectId/settings'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
+    | '/projects/$projectId/'
     | '/demo/start/ssr'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -153,13 +249,21 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/dashboard'
+    | '/onboarding'
     | '/profile'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/projects/$projectId/brand-voices'
+    | '/projects/$projectId/categories'
+    | '/projects/$projectId/examples'
+    | '/projects/$projectId/knowledge-base'
+    | '/projects/$projectId/personas'
+    | '/projects/$projectId/settings'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
+    | '/projects/$projectId'
     | '/demo/start/ssr'
   id:
     | '__root__'
@@ -168,13 +272,22 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/_authed/dashboard'
+    | '/_authed/onboarding'
     | '/_authed/profile'
+    | '/_authed/projects/$projectId'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/_authed/projects/$projectId/brand-voices'
+    | '/_authed/projects/$projectId/categories'
+    | '/_authed/projects/$projectId/examples'
+    | '/_authed/projects/$projectId/knowledge-base'
+    | '/_authed/projects/$projectId/personas'
+    | '/_authed/projects/$projectId/settings'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
+    | '/_authed/projects/$projectId/'
     | '/demo/start/ssr/'
   fileRoutesById: FileRoutesById
 }
@@ -229,6 +342,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProfileRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/onboarding': {
+      id: '/_authed/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthedOnboardingRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/dashboard': {
       id: '/_authed/dashboard'
       path: '/dashboard'
@@ -257,12 +377,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoApiNamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/projects/$projectId': {
+      id: '/_authed/projects/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/projects/$projectId'
+      preLoaderRoute: typeof AuthedProjectsProjectIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/demo/start/ssr/': {
       id: '/demo/start/ssr/'
       path: '/demo/start/ssr'
       fullPath: '/demo/start/ssr'
       preLoaderRoute: typeof DemoStartSsrIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authed/projects/$projectId/': {
+      id: '/_authed/projects/$projectId/'
+      path: '/'
+      fullPath: '/projects/$projectId/'
+      preLoaderRoute: typeof AuthedProjectsProjectIdIndexRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
     }
     '/demo/start/ssr/spa-mode': {
       id: '/demo/start/ssr/spa-mode'
@@ -285,17 +419,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/projects/$projectId/settings': {
+      id: '/_authed/projects/$projectId/settings'
+      path: '/settings'
+      fullPath: '/projects/$projectId/settings'
+      preLoaderRoute: typeof AuthedProjectsProjectIdSettingsRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
+    '/_authed/projects/$projectId/personas': {
+      id: '/_authed/projects/$projectId/personas'
+      path: '/personas'
+      fullPath: '/projects/$projectId/personas'
+      preLoaderRoute: typeof AuthedProjectsProjectIdPersonasRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
+    '/_authed/projects/$projectId/knowledge-base': {
+      id: '/_authed/projects/$projectId/knowledge-base'
+      path: '/knowledge-base'
+      fullPath: '/projects/$projectId/knowledge-base'
+      preLoaderRoute: typeof AuthedProjectsProjectIdKnowledgeBaseRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
+    '/_authed/projects/$projectId/examples': {
+      id: '/_authed/projects/$projectId/examples'
+      path: '/examples'
+      fullPath: '/projects/$projectId/examples'
+      preLoaderRoute: typeof AuthedProjectsProjectIdExamplesRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
+    '/_authed/projects/$projectId/categories': {
+      id: '/_authed/projects/$projectId/categories'
+      path: '/categories'
+      fullPath: '/projects/$projectId/categories'
+      preLoaderRoute: typeof AuthedProjectsProjectIdCategoriesRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
+    '/_authed/projects/$projectId/brand-voices': {
+      id: '/_authed/projects/$projectId/brand-voices'
+      path: '/brand-voices'
+      fullPath: '/projects/$projectId/brand-voices'
+      preLoaderRoute: typeof AuthedProjectsProjectIdBrandVoicesRouteImport
+      parentRoute: typeof AuthedProjectsProjectIdRoute
+    }
   }
 }
 
+interface AuthedProjectsProjectIdRouteChildren {
+  AuthedProjectsProjectIdBrandVoicesRoute: typeof AuthedProjectsProjectIdBrandVoicesRoute
+  AuthedProjectsProjectIdCategoriesRoute: typeof AuthedProjectsProjectIdCategoriesRoute
+  AuthedProjectsProjectIdExamplesRoute: typeof AuthedProjectsProjectIdExamplesRoute
+  AuthedProjectsProjectIdKnowledgeBaseRoute: typeof AuthedProjectsProjectIdKnowledgeBaseRoute
+  AuthedProjectsProjectIdPersonasRoute: typeof AuthedProjectsProjectIdPersonasRoute
+  AuthedProjectsProjectIdSettingsRoute: typeof AuthedProjectsProjectIdSettingsRoute
+  AuthedProjectsProjectIdIndexRoute: typeof AuthedProjectsProjectIdIndexRoute
+}
+
+const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren =
+  {
+    AuthedProjectsProjectIdBrandVoicesRoute:
+      AuthedProjectsProjectIdBrandVoicesRoute,
+    AuthedProjectsProjectIdCategoriesRoute:
+      AuthedProjectsProjectIdCategoriesRoute,
+    AuthedProjectsProjectIdExamplesRoute: AuthedProjectsProjectIdExamplesRoute,
+    AuthedProjectsProjectIdKnowledgeBaseRoute:
+      AuthedProjectsProjectIdKnowledgeBaseRoute,
+    AuthedProjectsProjectIdPersonasRoute: AuthedProjectsProjectIdPersonasRoute,
+    AuthedProjectsProjectIdSettingsRoute: AuthedProjectsProjectIdSettingsRoute,
+    AuthedProjectsProjectIdIndexRoute: AuthedProjectsProjectIdIndexRoute,
+  }
+
+const AuthedProjectsProjectIdRouteWithChildren =
+  AuthedProjectsProjectIdRoute._addFileChildren(
+    AuthedProjectsProjectIdRouteChildren,
+  )
+
 interface AuthedRouteChildren {
   AuthedDashboardRoute: typeof AuthedDashboardRoute
+  AuthedOnboardingRoute: typeof AuthedOnboardingRoute
   AuthedProfileRoute: typeof AuthedProfileRoute
+  AuthedProjectsProjectIdRoute: typeof AuthedProjectsProjectIdRouteWithChildren
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedDashboardRoute: AuthedDashboardRoute,
+  AuthedOnboardingRoute: AuthedOnboardingRoute,
   AuthedProfileRoute: AuthedProfileRoute,
+  AuthedProjectsProjectIdRoute: AuthedProjectsProjectIdRouteWithChildren,
 }
 
 const AuthedRouteWithChildren =

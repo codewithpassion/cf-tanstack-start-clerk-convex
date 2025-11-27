@@ -26,15 +26,29 @@
 	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
 	 */
 	/**
+	 * R2 Object Storage Binding
+	 * Docs: https://developers.cloudflare.com/r2/api/workers/workers-api-usage/
+	 */
+	"r2_buckets": [
+		{
+			"binding": "R2_BUCKET",
+			"bucket_name": "postmate-files"
+		}
+	],
+	/**
 	 * Environment Variables
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
 	"vars": {
 		"MY_VARIABLE": "production_value",
 		"VITE_API_KEY": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+		"R2_BUCKET_NAME": "postmate-files"
 	}
 	/**
 	 * Note: Use secrets to store sensitive data.
+	 * R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY should be set as secrets:
+	 *   wrangler secret put R2_ACCESS_KEY_ID
+	 *   wrangler secret put R2_SECRET_ACCESS_KEY
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
 	 */
 	/**

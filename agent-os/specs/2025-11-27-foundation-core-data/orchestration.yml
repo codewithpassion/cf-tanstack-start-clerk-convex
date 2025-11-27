@@ -1,0 +1,73 @@
+task_groups:
+  - name: convex-schema-foundation
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: cloudflare-r2-setup
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: file-upload-server-functions
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: document-text-extraction
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: workspace-management
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: project-crud-operations
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: category-crud-operations
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: brand-voice-crud-operations
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: persona-crud-operations
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: knowledge-base-crud-operations
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: examples-library-crud-operations
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: dashboard-project-layout-components
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: category-management-ui
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: brand-voice-persona-management-ui
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: knowledge-base-examples-ui
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: onboarding-wizard
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: project-settings-page
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: test-review-gap-analysis
+    claude_code_subagent: implementation-verifier
+    standards:
+      - all
