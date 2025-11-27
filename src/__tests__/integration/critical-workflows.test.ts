@@ -388,9 +388,6 @@ describe("Critical Integration Workflows", () => {
 				createdAt: now,
 			};
 
-			// Workspace 2 trying to access file1's R2 key
-			const unauthorizedR2Key = "workspace-1/brand-voices/voice-doc.pdf";
-
 			// R2 key should be validated to belong to user's workspace
 			function extractWorkspaceIdFromR2Key(r2Key: string): string {
 				return r2Key.split("/")[0];
@@ -430,16 +427,6 @@ describe("Critical Integration Workflows", () => {
 					name: "Category 1",
 					isDefault: true,
 					sortOrder: 1,
-					createdAt: now,
-					updatedAt: now,
-				},
-			];
-
-			const brandVoices: BrandVoice[] = [
-				{
-					_id: "bv-1",
-					projectId: project._id,
-					name: "Brand Voice 1",
 					createdAt: now,
 					updatedAt: now,
 				},
@@ -639,21 +626,6 @@ describe("Critical Integration Workflows", () => {
 				updatedAt: now,
 			};
 
-			// Only required step: create project
-			const project: Project = {
-				_id: "project-skip",
-				workspaceId: workspace._id,
-				name: "Minimal Project",
-				createdAt: now + 100,
-				updatedAt: now + 100,
-			};
-
-			// Skip brand voice
-			const brandVoiceSkipped = true;
-
-			// Skip persona
-			const personaSkipped = true;
-
 			// Complete onboarding with minimal data
 			const completedWorkspace: Workspace = {
 				...workspace,
@@ -661,8 +633,7 @@ describe("Critical Integration Workflows", () => {
 				updatedAt: now + 200,
 			};
 
-			expect(brandVoiceSkipped).toBe(true);
-			expect(personaSkipped).toBe(true);
+			// Verify onboarding can be completed with minimal data
 			expect(completedWorkspace.onboardingCompleted).toBe(true);
 		});
 	});

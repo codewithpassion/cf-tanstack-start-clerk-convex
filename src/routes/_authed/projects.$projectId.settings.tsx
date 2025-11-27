@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/api";
+import type { Id } from "@/convex/dataModel";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -13,7 +14,9 @@ export const Route = createFileRoute("/_authed/projects/$projectId/settings")({
 function SettingsPage() {
 	const { projectId } = Route.useParams();
 	const navigate = useNavigate();
-	const project = useQuery(api.projects.getProject, { projectId });
+	const project = useQuery(api.projects.getProject, {
+		projectId: projectId as Id<"projects">,
+	});
 	const updateProject = useMutation(api.projects.updateProject);
 	const deleteProject = useMutation(api.projects.deleteProject);
 
@@ -107,7 +110,7 @@ function SettingsPage() {
 		setIsSaving(true);
 		try {
 			await updateProject({
-				projectId,
+				projectId: projectId as Id<"projects">,
 				name: formData.name.trim(),
 				description: formData.description.trim() || undefined,
 			});
@@ -125,7 +128,7 @@ function SettingsPage() {
 	const handleDelete = async () => {
 		setIsDeleting(true);
 		try {
-			await deleteProject({ projectId });
+			await deleteProject({ projectId: projectId as Id<"projects"> });
 			// Navigate to dashboard after successful deletion
 			navigate({ to: "/dashboard" });
 		} catch (error) {

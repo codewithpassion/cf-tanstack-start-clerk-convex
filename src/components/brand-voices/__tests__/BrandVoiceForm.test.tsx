@@ -70,6 +70,7 @@ describe("BrandVoiceForm", () => {
 	it("should pre-populate form when editing existing brand voice", () => {
 		const existingBrandVoice = {
 			_id: "brand-voice-123" as any,
+			_creationTime: Date.now(),
 			projectId: "project-123" as any,
 			name: "Existing Voice",
 			description: "Existing description",

@@ -2,7 +2,6 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Project } from "@/types/entities";
 import { ProjectCard } from "./ProjectCard";
-import { LoadingState } from "../shared/LoadingState";
 import { EmptyState } from "../shared/EmptyState";
 
 export interface ProjectGridProps {

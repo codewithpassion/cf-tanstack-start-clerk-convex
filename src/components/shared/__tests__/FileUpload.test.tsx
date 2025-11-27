@@ -83,6 +83,7 @@ describe("FileUpload", () => {
 				onUploadComplete={vi.fn()}
 				ownerType="brandVoice"
 				ownerId="brand-voice-123"
+				workspaceId="workspace-123"
 				multiple={false}
 			/>
 		);
@@ -97,6 +98,7 @@ describe("FileUpload", () => {
 				onUploadComplete={vi.fn()}
 				ownerType="brandVoice"
 				ownerId="brand-voice-123"
+				workspaceId="workspace-123"
 				disabled={true}
 			/>
 		);

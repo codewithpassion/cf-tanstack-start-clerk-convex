@@ -17,7 +17,9 @@ function BrandVoicesPage() {
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 	const [editingBrandVoice, setEditingBrandVoice] = useState<Doc<"brandVoices"> | null>(null);
 
-	const brandVoices = useQuery(api.brandVoices.listBrandVoices, { projectId });
+	const brandVoices = useQuery(api.brandVoices.listBrandVoices, {
+		projectId: projectId as Id<"projects">,
+	});
 	const deleteBrandVoice = useMutation(api.brandVoices.deleteBrandVoice);
 
 	const handleCreate = () => {

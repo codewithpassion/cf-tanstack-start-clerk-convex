@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProjectLayout } from "@/components/project/ProjectLayout";
+import type { Id } from "@/convex/dataModel";
 
 /**
  * Project workspace layout route.
@@ -11,5 +12,5 @@ export const Route = createFileRoute("/_authed/projects/$projectId")({
 
 function ProjectLayoutRoute() {
 	const { projectId } = Route.useParams();
-	return <ProjectLayout projectId={projectId} />;
+	return <ProjectLayout projectId={projectId as Id<"projects">} />;
 }

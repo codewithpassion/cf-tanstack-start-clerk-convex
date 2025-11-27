@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Tests for R2 client using native Cloudflare R2 bindings.
  * Tests verify that R2 operations work correctly with the native API.
@@ -112,6 +113,7 @@ describe("R2 Client", () => {
 
 			expect(result).toBeNull();
 		});
+
 
 		it("should return null and log error on failure", async () => {
 			const { fetchFileContent } = await import("../r2-client");

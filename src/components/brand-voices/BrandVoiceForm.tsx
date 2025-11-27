@@ -31,6 +31,11 @@ export function BrandVoiceForm({ projectId, brandVoice, onSuccess, onCancel }: B
 		brandVoice ? { brandVoiceId: brandVoice._id } : "skip"
 	);
 
+	const projectDoc = useQuery(api.projects.getProject, {
+		projectId: projectId as Id<"projects">,
+	});
+	const workspaceId = projectDoc?.workspaceId;
+
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError(null);
@@ -135,7 +140,9 @@ export function BrandVoiceForm({ projectId, brandVoice, onSuccess, onCancel }: B
 						onUploadComplete={handleFileUploadComplete}
 						ownerType="brandVoice"
 						ownerId={brandVoice._id}
+						workspaceId={workspaceId as string}
 						multiple={true}
+						disabled={!workspaceId}
 					/>
 
 					{files && files.length > 0 && (

@@ -10,6 +10,7 @@ describe("FileList", () => {
 	const mockFiles = [
 		{
 			_id: "file-1" as any,
+			_creationTime: Date.now(),
 			filename: "brand-guide.pdf",
 			mimeType: "application/pdf",
 			sizeBytes: 524288, // 512KB
@@ -20,6 +21,7 @@ describe("FileList", () => {
 		},
 		{
 			_id: "file-2" as any,
+			_creationTime: Date.now(),
 			filename: "tone-examples.docx",
 			mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 			sizeBytes: 102400, // 100KB

@@ -31,6 +31,11 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 		persona ? { personaId: persona._id } : "skip"
 	);
 
+	const projectDoc = useQuery(api.projects.getProject, {
+		projectId: projectId as Id<"projects">,
+	});
+	const workspaceId = projectDoc?.workspaceId;
+
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError(null);
@@ -135,7 +140,9 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 						onUploadComplete={handleFileUploadComplete}
 						ownerType="persona"
 						ownerId={persona._id}
+						workspaceId={workspaceId as string}
 						multiple={true}
+						disabled={!workspaceId}
 					/>
 
 					{files && files.length > 0 && (

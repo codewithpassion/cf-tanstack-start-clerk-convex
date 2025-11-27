@@ -57,6 +57,7 @@ describe("PersonaForm", () => {
 	it("should pre-populate form when editing existing persona", () => {
 		const existingPersona = {
 			_id: "persona-123" as any,
+			_creationTime: Date.now(),
 			projectId: "project-123" as any,
 			name: "Existing Persona",
 			description: "Existing persona description",

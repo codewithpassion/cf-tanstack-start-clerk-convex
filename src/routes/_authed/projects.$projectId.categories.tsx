@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/api";
+import type { Id } from "@/convex/dataModel";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -16,7 +17,9 @@ export const Route = createFileRoute("/_authed/projects/$projectId/categories")(
 
 function CategoriesPage() {
 	const { projectId } = Route.useParams();
-	const categories = useQuery(api.categories.listCategories, { projectId });
+	const categories = useQuery(api.categories.listCategories, {
+		projectId: projectId as Id<"projects">,
+	});
 
 	const createCategory = useMutation(api.categories.createCategory);
 	const updateCategory = useMutation(api.categories.updateCategory);
@@ -32,7 +35,7 @@ function CategoriesPage() {
 		try {
 			setIsSubmitting(true);
 			await createCategory({
-				projectId,
+				projectId: projectId as Id<"projects">,
 				name: data.name,
 				description: data.description || undefined,
 				formatGuidelines: data.formatGuidelines || undefined,
@@ -84,7 +87,7 @@ function CategoriesPage() {
 	const handleReorder = async (categoryIds: string[]) => {
 		try {
 			await reorderCategories({
-				projectId,
+				projectId: projectId as Id<"projects">,
 				categoryIds: categoryIds as any,
 			});
 		} catch (error) {

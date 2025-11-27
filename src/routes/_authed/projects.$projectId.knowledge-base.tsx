@@ -16,7 +16,9 @@ export const Route = createFileRoute("/_authed/projects/$projectId/knowledge-bas
 
 function KnowledgeBasePage() {
 	const { projectId } = Route.useParams();
-	const categories = useQuery(api.categories.listCategories, { projectId });
+	const categories = useQuery(api.categories.listCategories, {
+		projectId: projectId as Id<"projects">,
+	});
 
 	const [selectedCategoryId, setSelectedCategoryId] = useState<Id<"categories"> | null>(null);
 	const [isFormOpen, setIsFormOpen] = useState(false);

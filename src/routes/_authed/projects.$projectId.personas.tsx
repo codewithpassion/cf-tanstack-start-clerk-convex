@@ -17,7 +17,9 @@ function PersonasPage() {
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 	const [editingPersona, setEditingPersona] = useState<Doc<"personas"> | null>(null);
 
-	const personas = useQuery(api.personas.listPersonas, { projectId });
+	const personas = useQuery(api.personas.listPersonas, {
+		projectId: projectId as Id<"projects">,
+	});
 	const deletePersona = useMutation(api.personas.deletePersona);
 
 	const handleCreate = () => {

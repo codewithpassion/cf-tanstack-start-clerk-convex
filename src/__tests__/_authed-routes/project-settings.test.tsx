@@ -3,7 +3,6 @@
  * Tests verify settings form behavior, project update, and delete flow with confirmation.
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 describe("Project Settings", () => {
@@ -51,11 +50,6 @@ describe("Project Settings", () => {
 
 		it("should submit update with changed values", async () => {
 			const mockUpdate = vi.fn().mockResolvedValue({ success: true });
-
-			const originalData = {
-				name: "Original Name",
-				description: "Original description",
-			};
 
 			const updatedData = {
 				name: "Updated Name",
