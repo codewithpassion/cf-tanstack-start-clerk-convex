@@ -1,13 +1,15 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { ProjectDashboard } from "@/components/project/ProjectDashboard";
+import type { Id } from "@/convex/dataModel";
 
 /**
- * Project index route - redirects to categories page.
+ * Project index route - shows project dashboard.
  */
 export const Route = createFileRoute("/_authed/projects/$projectId/")({
-	beforeLoad: ({ params }) => {
-		throw redirect({
-			to: "/projects/$projectId/categories",
-			params: { projectId: params.projectId },
-		});
-	},
+	component: ProjectIndexPage,
 });
+
+function ProjectIndexPage() {
+	const { projectId } = Route.useParams();
+	return <ProjectDashboard projectId={projectId as Id<"projects">} />;
+}

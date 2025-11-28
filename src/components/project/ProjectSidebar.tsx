@@ -14,11 +14,21 @@ interface NavItem {
 /**
  * Project workspace sidebar navigation.
  * Shows links to all project sections with active state highlighting.
+ * Organized into: Dashboard, Content, Configuration (always expanded), and Settings.
  */
 export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 	const matchRoute = useMatchRoute();
 
-	const navItems: NavItem[] = [
+	const isActive = (path: string) => {
+		return matchRoute({ to: path, params: { projectId } });
+	};
+
+	// Check if any content route is active
+	const isContentActive = () => {
+		return matchRoute({ to: "/projects/$projectId/content", params: { projectId } });
+	};
+
+	const configurationItems: NavItem[] = [
 		{
 			name: "Categories",
 			to: "/projects/$projectId/categories",
@@ -30,11 +40,11 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 			),
 		},
 		{
-			name: "Brand Voices",
+			name: "Brand Voice",
 			to: "/projects/$projectId/brand-voices",
 			icon: (
 				<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<title>Brand Voices</title>
+					<title>Brand Voice</title>
 					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
 				</svg>
 			),
@@ -71,33 +81,75 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 		},
 	];
 
-	const isActive = (path: string) => {
-		return matchRoute({ to: path, params: { projectId } });
-	};
-
 	return (
 		<aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
 			<nav className="p-4 space-y-1" aria-label="Project navigation">
-				{navItems.map((item) => {
-					const active = isActive(item.to);
-					return (
-						<Link
-							key={item.name}
-							to={item.to}
-							params={{ projectId }}
-							className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-								active
-									? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-2"
-									: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-							}`}
-							aria-current={active ? "page" : undefined}
-						>
-							{item.icon}
-							{item.name}
-						</Link>
-					);
-				})}
+				{/* Dashboard */}
+				<Link
+					to="/projects/$projectId"
+					params={{ projectId }}
+					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+						isActive("/projects/$projectId/")
+							? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-2"
+							: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+					}`}
+					aria-current={isActive("/projects/$projectId/") ? "page" : undefined}
+				>
+					<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<title>Dashboard</title>
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+					</svg>
+					Dashboard
+				</Link>
 
+				{/* Content */}
+				<Link
+					to="/projects/$projectId/content"
+					params={{ projectId }}
+					search={{ page: 1, pageSize: 25 }}
+					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+						isContentActive()
+							? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-2"
+							: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+					}`}
+					aria-current={isContentActive() ? "page" : undefined}
+				>
+					<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<title>Content</title>
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+					</svg>
+					Content
+				</Link>
+
+				{/* Configuration Section */}
+				<div className="pt-4 mt-4">
+					<h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+						Configuration
+					</h3>
+					<div className="mt-2 space-y-1">
+						{configurationItems.map((item) => {
+							const active = isActive(item.to);
+							return (
+								<Link
+									key={item.name}
+									to={item.to}
+									params={{ projectId }}
+									className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors pl-6 ${
+										active
+											? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-5"
+											: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+									}`}
+									aria-current={active ? "page" : undefined}
+								>
+									{item.icon}
+									{item.name}
+								</Link>
+							);
+						})}
+					</div>
+				</div>
+
+				{/* Settings */}
 				<div className="pt-4 mt-4 border-t border-gray-200">
 					<Link
 						to="/projects/$projectId/settings"

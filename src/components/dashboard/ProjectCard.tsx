@@ -41,7 +41,7 @@ export function ProjectCard({ project, stats }: ProjectCardProps) {
 
 	return (
 		<Link
-			to="/projects/$projectId/categories"
+			to="/projects/$projectId"
 			params={{ projectId: project._id }}
 			className={`block bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-200 border ${
 				isActive ? "border-cyan-500" : "border-gray-200 hover:border-cyan-500"

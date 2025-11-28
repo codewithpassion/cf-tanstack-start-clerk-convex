@@ -105,7 +105,7 @@ export function ContentFilters({
 						id="category-filter"
 						value={filters.categoryId || ""}
 						onChange={(e) => handleCategoryChange(e.target.value)}
-						className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
+						className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Categories</option>
 						{categories.map((category) => (
@@ -128,7 +128,7 @@ export function ContentFilters({
 						id="persona-filter"
 						value={filters.personaId || ""}
 						onChange={(e) => handlePersonaChange(e.target.value)}
-						className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
+						className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Personas</option>
 						{personas.map((persona) => (
@@ -151,7 +151,7 @@ export function ContentFilters({
 						id="brand-voice-filter"
 						value={filters.brandVoiceId || ""}
 						onChange={(e) => handleBrandVoiceChange(e.target.value)}
-						className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
+						className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Brand Voices</option>
 						{brandVoices.map((brandVoice) => (
@@ -174,7 +174,7 @@ export function ContentFilters({
 						id="status-filter"
 						value={filters.status || ""}
 						onChange={(e) => handleStatusChange(e.target.value)}
-						className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
+						className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Statuses</option>
 						<option value="draft">Draft</option>
@@ -209,7 +209,7 @@ export function ContentFilters({
 						id="date-from-filter"
 						value={filters.dateFrom ? formatDateForInput(filters.dateFrom) : ""}
 						onChange={(e) => handleDateFromChange(e.target.value)}
-						className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
+						className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					/>
 				</div>
 				<div>
@@ -224,7 +224,7 @@ export function ContentFilters({
 						id="date-to-filter"
 						value={filters.dateTo ? formatDateForInput(filters.dateTo) : ""}
 						onChange={(e) => handleDateToChange(e.target.value)}
-						className="block w-full rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
+						className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					/>
 				</div>
 			</div>
