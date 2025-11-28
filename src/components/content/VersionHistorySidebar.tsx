@@ -27,7 +27,15 @@ export function VersionHistorySidebar({
 		Id<"contentVersions"> | null
 	>(null);
 	const [activeTab, setActiveTab] = useState<"list" | "diff">("list");
+	const [isAnimating, setIsAnimating] = useState(false);
 	const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+	// Animation state management
+	useEffect(() => {
+		if (isOpen) {
+			setIsAnimating(true);
+		}
+	}, [isOpen]);
 
 	// Query latest version to get its ID and number for diff comparison
 	const versionsData = useQuery(api.contentVersions.listVersions, {
@@ -50,16 +58,6 @@ export function VersionHistorySidebar({
 		return () => document.removeEventListener("keydown", handleEsc);
 	}, [isOpen, onClose]);
 
-	// Body scroll lock
-	useEffect(() => {
-		if (isOpen) {
-			document.body.style.overflow = "hidden";
-		}
-		return () => {
-			document.body.style.overflow = "";
-		};
-	}, [isOpen]);
-
 	// Focus management
 	useEffect(() => {
 		if (isOpen && closeButtonRef.current) {
@@ -79,6 +77,7 @@ export function VersionHistorySidebar({
 		if (!isOpen) {
 			setSelectedVersionId(null);
 			setActiveTab("list");
+			setIsAnimating(false);
 		}
 	}, [isOpen]);
 
@@ -93,16 +92,26 @@ export function VersionHistorySidebar({
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
-			{/* Backdrop */}
+		<>
+			{/* Backdrop with blur */}
 			<div
-				className="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-85 transition-opacity"
+				className={`fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm transition-opacity duration-300 z-40 ${
+					isAnimating ? "opacity-100" : "opacity-0"
+				}`}
 				onClick={onClose}
 				aria-hidden="true"
 			/>
 
-			{/* Sidebar Panel */}
-			<div className="fixed inset-y-0 right-0 max-w-7xl w-screen lg:w-[80vw] flex flex-col bg-white dark:bg-slate-900 shadow-xl">
+			{/* Sidebar Panel - Desktop: slide from right, 2/3 width. Mobile: slide from bottom, full width */}
+			<div
+				className={`fixed bottom-0 left-0 right-0 max-h-[80vh] lg:max-h-full lg:inset-y-0 lg:left-auto lg:right-0 lg:w-2/3 flex flex-col bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300 ease-out rounded-t-2xl lg:rounded-none z-50 border-l border-gray-200 dark:border-slate-700 ${
+					isAnimating
+						? "translate-y-0 lg:translate-x-0"
+						: "translate-y-full lg:translate-y-0 lg:translate-x-full"
+				}`}
+				role="dialog"
+				aria-modal="false"
+			>
 				{/* Header */}
 				<header className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-900">
 					<h2
@@ -135,9 +144,9 @@ export function VersionHistorySidebar({
 					</button>
 				</header>
 
-				{/* Desktop: Two-panel grid */}
-				<div className="hidden lg:grid lg:grid-cols-2 flex-1 overflow-hidden">
-					<div className="overflow-y-auto border-r border-gray-200 dark:border-slate-700">
+				{/* Desktop: Two-panel grid - Diff (2/3) and Version List (1/3) */}
+				<div className="hidden lg:grid lg:grid-cols-3 flex-1 overflow-hidden">
+					<div className="lg:col-span-2 overflow-y-auto border-r border-gray-200 dark:border-slate-700">
 						<VersionDiffPanel
 							selectedVersionId={selectedVersionId}
 							currentVersionId={currentVersionId}
@@ -204,6 +213,6 @@ export function VersionHistorySidebar({
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
