@@ -2,8 +2,7 @@
  * ContentEditorLayout component provides a responsive layout for the content editor
  * with an optional AI chat panel.
  *
- * Desktop: Editor takes 60-70% width, AI panel 30-40% width
- * Mobile: Full-width editor, AI panel slides from bottom or hidden
+ * Layout: Editor takes full width, AI panel positioned below
  */
 import type { ReactNode } from "react";
 
@@ -20,20 +19,20 @@ export interface ContentEditorLayoutProps {
 }
 
 /**
- * Responsive layout for content editor with optional AI panel.
+ * Vertical layout for content editor with AI panel below.
  */
 export function ContentEditorLayout({ editor, aiPanel }: ContentEditorLayoutProps) {
 	return (
-		<div className="flex flex-col lg:flex-row gap-6 h-full" data-testid="editor-layout">
-			{/* Main editor area - 60-70% width on desktop, full width on mobile */}
-			<div className="flex-1 lg:w-[65%] min-w-0">
-				<div className="h-full">{editor}</div>
+		<div className="flex flex-col gap-6 w-full" data-testid="editor-layout">
+			{/* Main editor area - full width */}
+			<div className="w-full">
+				{editor}
 			</div>
 
-			{/* AI panel - 30-40% width on desktop, bottom sheet on mobile */}
+			{/* AI panel - below editor, full width */}
 			{aiPanel && (
-				<div className="lg:w-[35%] lg:min-w-[350px] lg:max-w-[500px]">
-					<div className="lg:sticky lg:top-4 h-full">{aiPanel}</div>
+				<div className="w-full">
+					{aiPanel}
 				</div>
 			)}
 		</div>
