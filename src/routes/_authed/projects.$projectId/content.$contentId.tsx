@@ -8,6 +8,7 @@ import { ContentEditorLayout } from "@/components/content/ContentEditorLayout";
 import { FinalizeDialog } from "@/components/content/FinalizeDialog";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { LoadingState } from "@/components/shared/LoadingState";
+import { VersionHistorySidebar } from "@/components/content/VersionHistorySidebar";
 
 /**
  * Route for editing a content piece with AI chat assistance.
@@ -27,6 +28,7 @@ function ContentEditorPage() {
 	const [showFinalizeDialog, setShowFinalizeDialog] = useState(false);
 	const [showUnfinalizeDialog, setShowUnfinalizeDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	const [showVersionSidebar, setShowVersionSidebar] = useState(false);
 
 	// Load content piece with relations
 	const contentPiece = useQuery(api.contentPieces.getContentPieceWithRelations, {
@@ -180,20 +182,10 @@ function ContentEditorPage() {
 
 					{/* Toolbar Actions */}
 					<div className="flex items-center gap-3">
-						{/* Version History Link */}
-						<Link
-							to="/projects/$projectId/content/$contentId/versions"
-							params={{ projectId, contentId }}
-							search={{
-								page: 1,
-								pageSize: 25,
-								categoryId: undefined,
-								personaId: undefined,
-								brandVoiceId: undefined,
-								status: "draft" as const,
-								dateFrom: undefined,
-								dateTo: undefined,
-							}}
+						{/* Version History Button */}
+						<button
+							type="button"
+							onClick={() => setShowVersionSidebar(true)}
 							className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
 						>
 							<svg
@@ -211,7 +203,7 @@ function ContentEditorPage() {
 								/>
 							</svg>
 							Versions
-						</Link>
+						</button>
 
 						{/* Image Gallery Link */}
 						<Link
@@ -378,6 +370,14 @@ function ContentEditorPage() {
 				onConfirm={handleDelete}
 				onCancel={() => setShowDeleteDialog(false)}
 				isLoading={isDeleting}
+			/>
+
+			{/* Version History Sidebar */}
+			<VersionHistorySidebar
+				isOpen={showVersionSidebar}
+				onClose={() => setShowVersionSidebar(false)}
+				contentPieceId={contentId as Id<"contentPieces">}
+				currentVersion={1}
 			/>
 		</div>
 	);

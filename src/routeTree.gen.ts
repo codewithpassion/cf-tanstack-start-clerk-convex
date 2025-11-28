@@ -34,7 +34,6 @@ import { Route as AuthedProjectsProjectIdBrandVoicesRouteImport } from './routes
 import { Route as AuthedProjectsProjectIdContentIndexRouteImport } from './routes/_authed/projects.$projectId/content.index'
 import { Route as AuthedProjectsProjectIdContentNewRouteImport } from './routes/_authed/projects.$projectId/content.new'
 import { Route as AuthedProjectsProjectIdContentContentIdRouteImport } from './routes/_authed/projects.$projectId/content.$contentId'
-import { Route as AuthedProjectsProjectIdContentContentIdVersionsRouteImport } from './routes/_authed/projects.$projectId/content.$contentId.versions'
 import { Route as AuthedProjectsProjectIdContentContentIdImagesRouteImport } from './routes/_authed/projects.$projectId/content.$contentId.images'
 
 const SignUpRoute = SignUpRouteImport.update({
@@ -171,12 +170,6 @@ const AuthedProjectsProjectIdContentContentIdRoute =
     path: '/content/$contentId',
     getParentRoute: () => AuthedProjectsProjectIdRoute,
   } as any)
-const AuthedProjectsProjectIdContentContentIdVersionsRoute =
-  AuthedProjectsProjectIdContentContentIdVersionsRouteImport.update({
-    id: '/versions',
-    path: '/versions',
-    getParentRoute: () => AuthedProjectsProjectIdContentContentIdRoute,
-  } as any)
 const AuthedProjectsProjectIdContentContentIdImagesRoute =
   AuthedProjectsProjectIdContentContentIdImagesRouteImport.update({
     id: '/images',
@@ -210,7 +203,6 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
   '/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
-  '/projects/$projectId/content/$contentId/versions': typeof AuthedProjectsProjectIdContentContentIdVersionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -237,7 +229,6 @@ export interface FileRoutesByTo {
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
   '/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
-  '/projects/$projectId/content/$contentId/versions': typeof AuthedProjectsProjectIdContentContentIdVersionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -267,7 +258,6 @@ export interface FileRoutesById {
   '/_authed/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/_authed/projects/$projectId/content/': typeof AuthedProjectsProjectIdContentIndexRoute
   '/_authed/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
-  '/_authed/projects/$projectId/content/$contentId/versions': typeof AuthedProjectsProjectIdContentContentIdVersionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -297,7 +287,6 @@ export interface FileRouteTypes {
     | '/projects/$projectId/content/new'
     | '/projects/$projectId/content'
     | '/projects/$projectId/content/$contentId/images'
-    | '/projects/$projectId/content/$contentId/versions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -324,7 +313,6 @@ export interface FileRouteTypes {
     | '/projects/$projectId/content/new'
     | '/projects/$projectId/content'
     | '/projects/$projectId/content/$contentId/images'
-    | '/projects/$projectId/content/$contentId/versions'
   id:
     | '__root__'
     | '/'
@@ -353,7 +341,6 @@ export interface FileRouteTypes {
     | '/_authed/projects/$projectId/content/new'
     | '/_authed/projects/$projectId/content/'
     | '/_authed/projects/$projectId/content/$contentId/images'
-    | '/_authed/projects/$projectId/content/$contentId/versions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -547,13 +534,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProjectsProjectIdContentContentIdRouteImport
       parentRoute: typeof AuthedProjectsProjectIdRoute
     }
-    '/_authed/projects/$projectId/content/$contentId/versions': {
-      id: '/_authed/projects/$projectId/content/$contentId/versions'
-      path: '/versions'
-      fullPath: '/projects/$projectId/content/$contentId/versions'
-      preLoaderRoute: typeof AuthedProjectsProjectIdContentContentIdVersionsRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdContentContentIdRoute
-    }
     '/_authed/projects/$projectId/content/$contentId/images': {
       id: '/_authed/projects/$projectId/content/$contentId/images'
       path: '/images'
@@ -566,15 +546,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthedProjectsProjectIdContentContentIdRouteChildren {
   AuthedProjectsProjectIdContentContentIdImagesRoute: typeof AuthedProjectsProjectIdContentContentIdImagesRoute
-  AuthedProjectsProjectIdContentContentIdVersionsRoute: typeof AuthedProjectsProjectIdContentContentIdVersionsRoute
 }
 
 const AuthedProjectsProjectIdContentContentIdRouteChildren: AuthedProjectsProjectIdContentContentIdRouteChildren =
   {
     AuthedProjectsProjectIdContentContentIdImagesRoute:
       AuthedProjectsProjectIdContentContentIdImagesRoute,
-    AuthedProjectsProjectIdContentContentIdVersionsRoute:
-      AuthedProjectsProjectIdContentContentIdVersionsRoute,
   }
 
 const AuthedProjectsProjectIdContentContentIdRouteWithChildren =
