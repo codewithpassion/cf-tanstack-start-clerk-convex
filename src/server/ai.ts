@@ -163,12 +163,24 @@ const IMAGE_GENERATION_RATE_LIMIT = {
 /**
  * Get Convex client with authentication
  */
-function getConvexClient(): ConvexHttpClient {
+async function getAuthenticatedConvexClient(): Promise<ConvexHttpClient> {
 	const convexUrl = process.env.VITE_CONVEX_URL;
 	if (!convexUrl) {
 		throw new Error("VITE_CONVEX_URL environment variable is not set");
 	}
-	return new ConvexHttpClient(convexUrl);
+	const { userId, getToken } = await auth();
+	const token = await getToken({ template: "convex" });
+	if (!userId) {
+		throw new Error("Authentication required to create Convex client");
+	}
+	if (!token) {
+		throw new Error("Authentication token is required to create Convex client");
+	} else {
+		const client = new ConvexHttpClient(convexUrl);
+		console.log("Setting Convex auth for user:", userId, token);
+		client.setAuth(token);
+		return client;
+	}
 }
 
 /**
@@ -305,13 +317,7 @@ async function fetchRelevantExamples(
 export const assembleGenerationContext = createServerFn({ method: "POST" })
 	.inputValidator((input: AssembleContextInput) => input)
 	.handler(async ({ data }): Promise<GenerationContext> => {
-		// Verify authentication
-		const { userId } = await auth();
-		if (!userId) {
-			throw new Error("Authentication required");
-		}
-
-		const convex = getConvexClient();
+		const convex = await getAuthenticatedConvexClient();
 		const { categoryId, personaId, brandVoiceId } = data;
 
 		// Fetch all context in parallel
@@ -436,13 +442,8 @@ export const generateDraft = createServerFn({ method: "POST" })
 	.inputValidator((input: GenerateDraftInput) => input)
 	.handler(async ({ data }) => {
 		try {
-			// Verify authentication
-			const { userId } = await auth();
-			if (!userId) {
-				throw new Error("Authentication required");
-			}
 
-			const convex = getConvexClient();
+			const convex = await getAuthenticatedConvexClient();
 
 			// Get content piece to retrieve projectId
 			const contentPiece = await convex.query(
@@ -642,13 +643,7 @@ export const generateChatResponse = createServerFn({ method: "POST" })
 	.inputValidator((input: GenerateChatResponseInput) => input)
 	.handler(async ({ data }) => {
 		try {
-			// Verify authentication
-			const { userId } = await auth();
-			if (!userId) {
-				throw new Error("Authentication required");
-			}
-
-			const convex = getConvexClient();
+			const convex = await getAuthenticatedConvexClient();
 			const { contentPieceId, message, currentContent } = data;
 
 			// Get content piece to retrieve project and verify access
@@ -927,7 +922,7 @@ export const generateImage = createServerFn({ method: "POST" })
 			console.log("Image uploaded to R2:", r2Key);
 
 			// Create file record in Convex
-			const convex = getConvexClient();
+			const convex = await getAuthenticatedConvexClient();
 			const fileId = await convex.mutation(api.files.createFile, {
 				filename,
 				mimeType: "image/png",
