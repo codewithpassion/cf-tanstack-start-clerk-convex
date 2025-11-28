@@ -79,7 +79,7 @@ export function BrandVoiceStep({ onNext, onSkip }: BrandVoiceStepProps) {
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						maxLength={VALIDATION.brandVoice.nameMaxLength}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 						placeholder="e.g., Professional & Approachable, Technical Expert"
 						autoFocus
 					/>
@@ -98,7 +98,7 @@ export function BrandVoiceStep({ onNext, onSkip }: BrandVoiceStepProps) {
 						onChange={(e) => setDescription(e.target.value)}
 						maxLength={VALIDATION.brandVoice.descriptionMaxLength}
 						rows={4}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 						placeholder="Describe your brand's tone, style, and personality..."
 					/>
 					<p className="mt-1 text-xs text-gray-500">

@@ -6,6 +6,8 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { ProjectGrid } from "@/components/dashboard/ProjectGrid";
 import { CreateProjectModal } from "@/components/dashboard/CreateProjectModal";
+import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
+import { QuickActions } from "@/components/dashboard/QuickActions";
 
 export const Route = createFileRoute("/_authed/dashboard")({
 	component: DashboardPage,
@@ -21,6 +23,17 @@ function DashboardPage() {
 
 	// Fetch projects list
 	const projects = useQuery(api.projects.listProjects);
+
+	// Fetch recent activity for the workspace
+	const activities = useQuery(
+		api.activityLog.getRecentActivity,
+		workspace
+			? {
+					workspaceId: workspace._id,
+					limit: 10,
+			  }
+			: "skip",
+	);
 
 	// Redirect to onboarding if needed
 	useEffect(() => {
@@ -47,25 +60,49 @@ function DashboardPage() {
 		);
 	}
 
+	// Handler for Create Content button - navigates to first project's content creation
+	const handleCreateContent = () => {
+		if (projects.length > 0) {
+			// Navigate to the first project's content creation wizard
+			navigate({
+				to: "/projects/$projectId/content/new",
+				params: { projectId: projects[0]._id },
+				search: {
+					page: 1,
+					pageSize: 25,
+					categoryId: undefined,
+					personaId: undefined,
+					brandVoiceId: undefined,
+					status: "draft" as const,
+					dateFrom: undefined,
+					dateTo: undefined,
+				},
+			});
+		} else {
+			// If no projects, prompt to create one first
+			setIsCreateModalOpen(true);
+		}
+	};
+
 	return (
 		<div className="max-w-7xl mx-auto">
 			<PageHeader
 				title="Projects"
 				description="Organize your content creation with projects for different brands or purposes."
 				action={
-					<button
-						type="button"
-						onClick={() => setIsCreateModalOpen(true)}
-						className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
-					>
-						<svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<title>Add</title>
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-						</svg>
-						New Project
-					</button>
+					<QuickActions
+						onNavigateToNewContent={handleCreateContent}
+						onCreateProject={() => setIsCreateModalOpen(true)}
+					/>
 				}
 			/>
+
+			{/* Activity Feed - show above projects */}
+			{activities && activities.length > 0 && (
+				<div className="mb-8">
+					<ActivityFeed activities={activities} />
+				</div>
+			)}
 
 			<ProjectGrid
 				projects={projects}

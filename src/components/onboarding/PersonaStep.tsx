@@ -79,7 +79,7 @@ export function PersonaStep({ onNext, onSkip }: PersonaStepProps) {
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						maxLength={VALIDATION.persona.nameMaxLength}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 						placeholder="e.g., Tech-Savvy Marketing Manager, Early-Career Developer"
 						autoFocus
 					/>
@@ -98,7 +98,7 @@ export function PersonaStep({ onNext, onSkip }: PersonaStepProps) {
 						onChange={(e) => setDescription(e.target.value)}
 						maxLength={VALIDATION.persona.descriptionMaxLength}
 						rows={4}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 						placeholder="Describe their role, goals, challenges, and interests..."
 					/>
 					<p className="mt-1 text-xs text-gray-500">

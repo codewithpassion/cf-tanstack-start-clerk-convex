@@ -76,7 +76,7 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						maxLength={VALIDATION.project.nameMaxLength}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 						placeholder="e.g., Tech Blog, Marketing Campaign"
 						required
 						autoFocus
@@ -96,7 +96,7 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 						onChange={(e) => setDescription(e.target.value)}
 						maxLength={VALIDATION.project.descriptionMaxLength}
 						rows={4}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 						placeholder="Describe the purpose and goals of this project"
 					/>
 					<p className="mt-1 text-xs text-gray-500">
