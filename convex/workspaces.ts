@@ -2,8 +2,12 @@
  * Convex queries and mutations for workspace management.
  * Handles workspace retrieval and onboarding state management.
  */
+import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { authorizeWorkspaceAccess, getCurrentUserWithOptionalWorkspace } from "./lib/auth";
+import {
+	authorizeWorkspaceAccess,
+	getCurrentUserWithOptionalWorkspace,
+} from "./lib/auth";
 
 /**
  * Get the current user's workspace.
@@ -53,6 +57,30 @@ export const completeOnboarding = mutation({
 
 		await ctx.db.patch(workspace._id, {
 			onboardingCompleted: true,
+			updatedAt: Date.now(),
+		});
+
+		return { success: true };
+	},
+});
+
+/**
+ * Update the current user's workspace theme preference.
+ * Sets the theme preference (light, dark, or system) and updates the timestamp.
+ */
+export const updateThemePreference = mutation({
+	args: {
+		themePreference: v.union(
+			v.literal("light"),
+			v.literal("dark"),
+			v.literal("system"),
+		),
+	},
+	handler: async (ctx, { themePreference }) => {
+		const { workspace } = await authorizeWorkspaceAccess(ctx);
+
+		await ctx.db.patch(workspace._id, {
+			themePreference,
 			updatedAt: Date.now(),
 		});
 

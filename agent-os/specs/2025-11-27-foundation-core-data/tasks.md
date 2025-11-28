@@ -626,24 +626,24 @@ This spec establishes the foundational data layer for PostMate including Convex 
 **Dependencies:** Task Group 12
 **Effort:** Small
 
-- [ ] 17.0 Build project settings interface
-  - [ ] 17.1 Write 2-3 focused tests for project settings
+- [x] 17.0 Build project settings interface
+  - [x] 17.1 Write 2-3 focused tests for project settings
     - Test settings form populates with project data
     - Test project update saves changes
     - Test project delete with confirmation
-  - [ ] 17.2 Implement settings page `src/routes/_authed/projects/$projectId/settings.tsx`
+  - [x] 17.2 Implement settings page `src/routes/_authed/projects/$projectId/settings.tsx`
     - Edit project name and description
     - Delete project with confirmation dialog
     - Show created/updated timestamps
-  - [ ] 17.3 Create settings form component
+  - [x] 17.3 Create settings form component
     - Pre-populate with current project data
     - Client-side validation
     - Submit to `updateProject` mutation
-  - [ ] 17.4 Implement delete project flow
+  - [x] 17.4 Implement delete project flow
     - Confirmation dialog with project name
     - Call `deleteProject` mutation
     - Redirect to dashboard after delete
-  - [ ] 17.5 Ensure project settings tests pass
+  - [x] 17.5 Ensure project settings tests pass
     - Run only the 2-3 tests written in 17.1
 
 **Acceptance Criteria:**

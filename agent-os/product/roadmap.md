@@ -1,20 +1,20 @@
 # Product Roadmap
 
-1. [ ] Convex Schema Foundation -- Define database schema for workspaces, projects, categories, brand voices, personas, knowledge base items, examples, content pieces, and versions. Establish relationships and indexes. `S`
+1. [x] Convex Schema Foundation -- Define database schema for workspaces, projects, categories, brand voices, personas, knowledge base items, examples, content pieces, and versions. Establish relationships and indexes. `S` ✅ **COMPLETE**
 
-2. [ ] Workspace and Project Management -- Implement workspace creation on user sign-up, project CRUD operations, and project dashboard with overview cards and recent activity feed. `M`
+2. [x] Workspace and Project Management -- Implement workspace creation on user sign-up, project CRUD operations, and project dashboard with overview cards and recent activity feed. `M` ✅ **COMPLETE**
 
-3. [ ] Category Management -- Build category system with six default content types (Blog Post, LinkedIn Article, LinkedIn Post, Instagram Post, X Thread, Case Study) plus custom category creation with format guidelines. `S`
+3. [x] Category Management -- Build category system with six default content types (Blog Post, LinkedIn Article, LinkedIn Post, Instagram Post, X Thread, Case Study) plus custom category creation with format guidelines. `S` ✅ **COMPLETE**
 
-4. [ ] Brand Voice Management -- Create brand voice CRUD with support for document uploads (Word, PDF, text) and direct text input. Store parsed content for AI context injection. `M`
+4. [x] Brand Voice Management -- Create brand voice CRUD with support for document uploads (Word, PDF, text) and direct text input. Store parsed content for AI context injection. `M` ✅ **COMPLETE**
 
-5. [ ] Persona Management -- Implement persona CRUD with document upload and free-text input. Enable per-project persona definitions with structured storage for AI consumption. `S`
+5. [x] Persona Management -- Implement persona CRUD with document upload and free-text input. Enable per-project persona definitions with structured storage for AI consumption. `S` ✅ **COMPLETE**
 
-6. [ ] Knowledge Base -- Build knowledge base item management per category with file upload support (text, Word, PDF, images up to 15MB), text parsing, and storage for AI context. `M`
+6. [x] Knowledge Base -- Build knowledge base item management per category with file upload support (text, Word, PDF, images up to 15MB), text parsing, and storage for AI context. `M` ✅ **COMPLETE**
 
-7. [ ] Examples Library -- Implement examples management per category allowing users to add successful content samples that will be used for style imitation during generation. `S`
+7. [x] Examples Library -- Implement examples management per category allowing users to add successful content samples that will be used for style imitation during generation. `S` ✅ **COMPLETE**
 
-8. [ ] File Upload Infrastructure -- Create reusable file upload system with 15MB limit validation, support for Word/PDF/text/image formats, and Cloudflare R2 or equivalent storage integration. `M`
+8. [x] File Upload Infrastructure -- Create reusable file upload system with 15MB limit validation, support for Word/PDF/text/image formats, and Cloudflare R2 or equivalent storage integration. `M` ✅ **COMPLETE**
 
 9. [ ] Content Creation Wizard UI -- Build step-by-step wizard flow: content type selection, persona selection, brand voice selection, title/topic input, optional draft content, source material upload, and review screen. `L`
 
@@ -22,7 +22,7 @@
 
 11. [ ] AI Draft Generation -- Implement content generation endpoint that assembles context (knowledge base, examples, brand voice, persona) and generates initial draft via LLM with streaming output. `L`
 
-12. [ ] Rich Text Editor -- Integrate rich text editor (Tiptap or similar) for content editing with formatting toolbar, autosave after 3 seconds of inactivity, and responsive layout. `M`
+12. [ ] Block-Based Markdown Editor -- Integrate Novel (Notion-style editor) for content editing with slash commands, markdown shortcuts, drag-and-drop blocks, autosave after 3 seconds of inactivity, and responsive layout. `M`
 
 13. [ ] AI Chat Panel -- Build collapsible, resizable chat panel alongside editor for AI-assisted revisions. Enable contextual suggestions based on current content state. `M`
 

@@ -8,6 +8,27 @@ This is a TanStack Start application configured to deploy on Cloudflare Workers.
 
 **Key Stack**: TanStack Start + React 19 + Hono + Cloudflare Workers + Clerk (auth) + Convex (backend)
 
+## Essential Commands
+
+### Development
+```bash
+bun dev              # Start dev server at http://localhost:5173
+bun check            # Run all checks (types, linting, formatting)
+bun biome:check      # Run Biome linter and formatter only
+```
+
+### Formatting Rules
+- **Indentation**: Tabs (not spaces)
+- **Quotes**: Double quotes for strings
+- **TypeScript**: Strict mode - NEVER use `any` type
+- **Imports**: Auto-organized by Biome
+- **Linting**: Always run `bun check` after changes
+
+### Type Errors
+- Run `bun check` to see all type errors
+- Check that `bun cf-typegen` was run after env changes
+- Ensure no `any` types are used
+
 ## Key Architecture
 
 ### Deployment Architecture
@@ -162,6 +183,14 @@ app.get("/api/endpoint", (c) => {
 - `convex/schema.ts` - Convex database schema (users table)
 - `convex/users.ts` - User queries and mutations (syncUser, getMe)
 - `vite.config.ts` - Vite plugins: Cloudflare, TanStack Start, React, Tailwind
+
+## Importing convex api and types:
+
+Use these import paths:
+```ts
+import { api } from "@/convex/api";
+import type { Id } from "@/convex/dataModel";
+```
 
 ## Convex Backend
 

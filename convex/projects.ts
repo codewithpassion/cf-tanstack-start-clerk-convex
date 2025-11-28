@@ -156,7 +156,8 @@ export const getProject = query({
 
 /**
  * Get statistics for a project.
- * Returns counts of categories, brand voices, and personas.
+ * Returns counts of categories, brand voices, personas, and content pieces.
+ * Also includes the most recent activity timestamp for the project.
  */
 export const getProjectStats = query({
 	args: {
@@ -192,10 +193,30 @@ export const getProjectStats = query({
 			.collect();
 		const personasCount = personas.filter((p) => !p.deletedAt).length;
 
+		// Count non-deleted content pieces
+		const contentPieces = await ctx.db
+			.query("contentPieces")
+			.withIndex("by_projectId", (q) => q.eq("projectId", projectId))
+			.collect();
+		const activeContent = contentPieces.filter((cp) => !cp.deletedAt);
+		const contentCount = activeContent.length;
+
+		// Get most recent activity timestamp for the project
+		const recentActivities = await ctx.db
+			.query("activityLog")
+			.withIndex("by_projectId", (q) => q.eq("projectId", projectId))
+			.collect();
+
+		// Sort activities by createdAt descending and get the most recent
+		const sortedActivities = recentActivities.sort((a, b) => b.createdAt - a.createdAt);
+		const recentActivityAt = sortedActivities.length > 0 ? sortedActivities[0].createdAt : undefined;
+
 		return {
 			categoriesCount,
 			brandVoicesCount,
 			personasCount,
+			contentCount,
+			recentActivityAt,
 		};
 	},
 });

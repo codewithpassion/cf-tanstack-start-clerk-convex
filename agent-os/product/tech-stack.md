@@ -8,7 +8,7 @@
 | **TanStack Start** | Full-stack React framework with SSR support |
 | **TanStack Router** | File-based routing with type-safe navigation |
 | **Tailwind CSS** | Utility-first CSS framework for styling |
-| **Tiptap** (recommended) | Rich text editor for content editing |
+| **Novel** | Notion-style block-based markdown editor with slash commands and AI support |
 
 ## Server & API
 

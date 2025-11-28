@@ -42,29 +42,36 @@ export function ConfirmDialog({
 	const activeVariant = confirmVariant || variant || "danger";
 
 	const variantStyles = {
-		danger: "bg-red-600 hover:bg-red-700 focus:ring-red-500",
-		warning: "bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500",
-		info: "bg-cyan-600 hover:bg-cyan-700 focus:ring-cyan-500",
+		danger:
+			"bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 focus:ring-red-500",
+		warning:
+			"bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-800 focus:ring-yellow-500",
+		info: "bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 focus:ring-cyan-500",
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+		<div
+			className="fixed inset-0 z-50 overflow-y-auto"
+			aria-labelledby="modal-title"
+			role="dialog"
+			aria-modal="true"
+		>
 			<div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
 				{/* Background overlay */}
 				<div
-					className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+					className="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-85 transition-opacity"
 					aria-hidden="true"
 					onClick={handleCancel}
 				/>
 
 				{/* Modal panel */}
-				<div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-					<div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+				<div className="relative transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+					<div className="bg-white dark:bg-gray-800 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
 						<div className="sm:flex sm:items-start">
 							{activeVariant === "danger" && (
-								<div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+								<div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900 sm:mx-0 sm:h-10 sm:w-10">
 									<svg
-										className="h-6 w-6 text-red-600"
+										className="h-6 w-6 text-red-600 dark:text-red-400"
 										fill="none"
 										viewBox="0 0 24 24"
 										strokeWidth="1.5"
@@ -81,12 +88,17 @@ export function ConfirmDialog({
 								</div>
 							)}
 							<div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-								<h3 className="text-base font-semibold leading-6 text-gray-900" id="modal-title">
+								<h3
+									className="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100"
+									id="modal-title"
+								>
 									{title}
 								</h3>
 								<div className="mt-2">
 									{typeof message === "string" ? (
-										<p className="text-sm text-gray-500">{message}</p>
+										<p className="text-sm text-gray-500 dark:text-gray-400">
+											{message}
+										</p>
 									) : (
 										message
 									)}
@@ -94,7 +106,7 @@ export function ConfirmDialog({
 							</div>
 						</div>
 					</div>
-					<div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
+					<div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
 						<button
 							type="button"
 							onClick={onConfirm}
@@ -107,7 +119,7 @@ export function ConfirmDialog({
 							type="button"
 							onClick={handleCancel}
 							disabled={isLoading}
-							className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+							className="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-600 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-500 hover:bg-gray-50 dark:hover:bg-gray-500 sm:mt-0 sm:w-auto transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							{cancelLabel}
 						</button>

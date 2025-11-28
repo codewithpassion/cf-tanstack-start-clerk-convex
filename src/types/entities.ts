@@ -17,6 +17,12 @@ export type Persona = Doc<"personas">;
 export type KnowledgeBaseItem = Doc<"knowledgeBaseItems">;
 export type Example = Doc<"examples">;
 export type File = Doc<"files">;
+export type ContentPiece = Doc<"contentPieces">;
+export type ContentVersion = Doc<"contentVersions">;
+export type ContentChatMessage = Doc<"contentChatMessages">;
+export type ContentImage = Doc<"contentImages">;
+export type ImagePromptTemplate = Doc<"imagePromptTemplates">;
+export type ActivityLogEntry = Doc<"activityLog">;
 
 // ID types for each entity
 export type UserId = Id<"users">;
@@ -28,6 +34,12 @@ export type PersonaId = Id<"personas">;
 export type KnowledgeBaseItemId = Id<"knowledgeBaseItems">;
 export type ExampleId = Id<"examples">;
 export type FileId = Id<"files">;
+export type ContentPieceId = Id<"contentPieces">;
+export type ContentVersionId = Id<"contentVersions">;
+export type ContentChatMessageId = Id<"contentChatMessages">;
+export type ContentImageId = Id<"contentImages">;
+export type ImagePromptTemplateId = Id<"imagePromptTemplates">;
+export type ActivityLogEntryId = Id<"activityLog">;
 
 // Input types for creating entities (without auto-generated fields)
 export type CreateWorkspaceInput = {
@@ -117,21 +129,48 @@ export type UpdateExampleInput = {
 	notes?: string;
 };
 
+export type CreateContentPieceInput = {
+	projectId: ProjectId;
+	categoryId: CategoryId;
+	personaId?: PersonaId;
+	brandVoiceId?: BrandVoiceId;
+	title: string;
+	content: string;
+};
+
+export type UpdateContentPieceInput = {
+	contentPieceId: ContentPieceId;
+	title?: string;
+	content?: string;
+};
+
 // File ownership type - one of these must be set
 export type FileOwnerType =
 	| "brandVoice"
 	| "persona"
 	| "knowledgeBaseItem"
-	| "example";
+	| "example"
+	| "contentPiece"
+	| "contentImage";
 
 export type CreateFileInput = {
 	ownerType: FileOwnerType;
-	ownerId: BrandVoiceId | PersonaId | KnowledgeBaseItemId | ExampleId;
+	ownerId: BrandVoiceId | PersonaId | KnowledgeBaseItemId | ExampleId | ContentPieceId | ContentImageId;
 	filename: string;
 	mimeType: string;
 	sizeBytes: number;
 	r2Key: string;
 	extractedText?: string;
+};
+
+// Content filters for archive view
+export type ContentFilters = {
+	categoryId?: CategoryId;
+	personaId?: PersonaId;
+	brandVoiceId?: BrandVoiceId;
+	status?: "draft" | "finalized";
+	dateFrom?: number;
+	dateTo?: number;
 };
 
 // Allowed MIME types for file uploads
@@ -183,5 +222,9 @@ export const VALIDATION = {
 		filenameMaxLength: 255,
 		maxSizeBytes: MAX_FILE_SIZE_BYTES,
 		extractedTextMaxLength: 50000,
+	},
+	contentPiece: {
+		titleMaxLength: 200,
+		contentMaxLength: 500000,
 	},
 } as const;

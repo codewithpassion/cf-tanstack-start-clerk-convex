@@ -1,0 +1,97 @@
+task_groups:
+  - name: Schema Extensions - Content Tables
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Schema Extensions - Supporting Tables
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Content Pieces Backend
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Derived Content Backend
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Version Control Backend
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Chat Messages Backend
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Content Images Backend
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Image Prompt Templates Backend
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Activity Log Backend
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: AI SDK Integration
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: AI Draft Generation Server Functions
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: AI Chat Server Functions
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Image Generation Server Functions
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Content Creation Wizard UI
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Novel Editor Integration
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: AI Chat Panel
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Content Editor Route
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Version History UI
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Image Management UI
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Content Archive View
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Search Functionality
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Dashboard Enhancements
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Dark Mode Support
+    claude_code_subagent: implementer
+    standards:
+      - all
+  - name: Test Review & Gap Analysis
+    claude_code_subagent: implementer
+    standards:
+      - all

@@ -8,16 +8,23 @@
  * @module
  */
 
+import type * as activityLog from "../activityLog.js";
 import type * as auth from "../auth.js";
 import type * as brandVoices from "../brandVoices.js";
 import type * as categories from "../categories.js";
+import type * as contentChatMessages from "../contentChatMessages.js";
+import type * as contentImages from "../contentImages.js";
+import type * as contentPieces from "../contentPieces.js";
+import type * as contentVersions from "../contentVersions.js";
 import type * as examples from "../examples.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
+import type * as imagePromptTemplates from "../imagePromptTemplates.js";
 import type * as knowledgeBase from "../knowledgeBase.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as personas from "../personas.js";
 import type * as projects from "../projects.js";
+import type * as search from "../search.js";
 import type * as users from "../users.js";
 import type * as workspaces from "../workspaces.js";
 
@@ -28,16 +35,23 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  activityLog: typeof activityLog;
   auth: typeof auth;
   brandVoices: typeof brandVoices;
   categories: typeof categories;
+  contentChatMessages: typeof contentChatMessages;
+  contentImages: typeof contentImages;
+  contentPieces: typeof contentPieces;
+  contentVersions: typeof contentVersions;
   examples: typeof examples;
   files: typeof files;
   http: typeof http;
+  imagePromptTemplates: typeof imagePromptTemplates;
   knowledgeBase: typeof knowledgeBase;
   "lib/auth": typeof lib_auth;
   personas: typeof personas;
   projects: typeof projects;
+  search: typeof search;
   users: typeof users;
   workspaces: typeof workspaces;
 }>;

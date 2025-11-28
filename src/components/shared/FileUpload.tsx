@@ -7,7 +7,7 @@ import { uploadFileFn } from "@/server/files";
 
 export interface FileUploadProps {
 	onUploadComplete: (fileId: Id<"files">) => void;
-	ownerType: "brandVoice" | "persona" | "knowledgeBaseItem" | "example";
+	ownerType: "brandVoice" | "persona" | "knowledgeBaseItem" | "example" | "contentPiece";
 	ownerId: string;
 	workspaceId: string;
 	multiple?: boolean;
