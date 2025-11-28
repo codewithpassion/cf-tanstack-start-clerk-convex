@@ -1,17 +1,39 @@
 /**
  * ContentEditor component wrapping Novel block-based editor.
  * Provides a Notion-style editing experience with slash commands, markdown shortcuts,
- * and autosave functionality.
+ * bubble menu for formatting, and autosave functionality.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
 	EditorRoot,
 	EditorContent,
-	type JSONContent,
+	EditorCommand,
+	EditorCommandItem,
+	EditorCommandEmpty,
+	EditorCommandList,
+	EditorBubble,
+	ImageResizer,
+	handleCommandNavigation,
+	createSuggestionItems,
+	Command,
 	StarterKit,
 	TiptapImage,
 	TiptapLink,
+	type JSONContent,
+	type SuggestionItem,
 } from "novel";
+import {
+	Bold,
+	Italic,
+	Strikethrough,
+	Code,
+	Heading1,
+	Heading2,
+	Heading3,
+	List,
+	ListOrdered,
+	MessageSquareQuote,
+} from "lucide-react";
 import type { Editor } from "@tiptap/core";
 import type { Transaction } from "@tiptap/pm/state";
 import { useMutation } from "convex/react";
@@ -62,19 +84,79 @@ function parseContent(content: string): JSONContent {
 }
 
 /**
- * Default extensions for Novel editor.
+ * Slash command suggestions for the editor.
  */
-const defaultExtensions = [
-	StarterKit.configure({
-		heading: {
-			levels: [1, 2, 3, 4, 5, 6],
+const suggestionItems = createSuggestionItems([
+	{
+		title: "Heading 1",
+		description: "Big section heading",
+		searchTerms: ["title", "big", "large", "h1"],
+		icon: <Heading1 size={18} />,
+		command: ({ editor, range }: { editor: Editor; range: any }) => {
+			editor
+				.chain()
+				.focus()
+				.deleteRange(range)
+				.setNode("heading", { level: 1 })
+				.run();
 		},
-	}),
-	TiptapImage,
-	TiptapLink.configure({
-		openOnClick: false,
-	}),
-];
+	},
+	{
+		title: "Heading 2",
+		description: "Medium section heading",
+		searchTerms: ["subtitle", "medium", "h2"],
+		icon: <Heading2 size={18} />,
+		command: ({ editor, range }: { editor: Editor; range: any }) => {
+			editor
+				.chain()
+				.focus()
+				.deleteRange(range)
+				.setNode("heading", { level: 2 })
+				.run();
+		},
+	},
+	{
+		title: "Heading 3",
+		description: "Small section heading",
+		searchTerms: ["subtitle", "small", "h3"],
+		icon: <Heading3 size={18} />,
+		command: ({ editor, range }: { editor: Editor; range: any }) => {
+			editor
+				.chain()
+				.focus()
+				.deleteRange(range)
+				.setNode("heading", { level: 3 })
+				.run();
+		},
+	},
+	{
+		title: "Bullet List",
+		description: "Create a simple bullet list",
+		searchTerms: ["unordered", "point", "ul"],
+		icon: <List size={18} />,
+		command: ({ editor, range }: { editor: Editor; range: any }) => {
+			editor.chain().focus().deleteRange(range).toggleBulletList().run();
+		},
+	},
+	{
+		title: "Numbered List",
+		description: "Create a numbered list",
+		searchTerms: ["ordered", "ol"],
+		icon: <ListOrdered size={18} />,
+		command: ({ editor, range }: { editor: Editor; range: any }) => {
+			editor.chain().focus().deleteRange(range).toggleOrderedList().run();
+		},
+	},
+	{
+		title: "Quote",
+		description: "Capture a quote",
+		searchTerms: ["blockquote"],
+		icon: <MessageSquareQuote size={18} />,
+		command: ({ editor, range }: { editor: Editor; range: any }) => {
+			editor.chain().focus().deleteRange(range).toggleBlockquote().run();
+		},
+	},
+]);
 
 /**
  * ContentEditor component with autosave and Novel editor integration.
@@ -165,22 +247,143 @@ export function ContentEditor({
 			</div>
 
 			{/* Novel Editor */}
-			<div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+			<div className="border border-gray-200 rounded-lg overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700">
 				<EditorRoot>
 					<EditorContent
 						key={contentPieceId}
-						extensions={defaultExtensions}
+						extensions={[
+							StarterKit.configure({
+								heading: {
+									levels: [1, 2, 3, 4, 5, 6],
+								},
+							}),
+							TiptapImage,
+							TiptapLink.configure({
+								openOnClick: false,
+							}),
+							Command.configure({ suggestion: suggestionItems }),
+						]}
 						initialContent={parsedInitialContent}
 						onUpdate={handleUpdate}
 						editable={!disabled}
 						className="min-h-[500px] p-6"
 						editorProps={{
 							attributes: {
-								class: "prose prose-lg focus:outline-none max-w-none",
+								class: "prose prose-lg dark:prose-invert focus:outline-none max-w-none",
+							},
+							handleDOMEvents: {
+								keydown: (_view, event) => handleCommandNavigation(event),
 							},
 						}}
-					/>
+					>
+						{/* Bubble menu for text selection */}
+						<EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all dark:border-gray-700 dark:bg-gray-800">
+							<EditorCommandEmpty className="px-2 text-gray-500 dark:text-gray-400">
+								No results
+							</EditorCommandEmpty>
+							<EditorCommandList>
+								{suggestionItems.map((item: SuggestionItem) => (
+									<EditorCommandItem
+										value={item.title}
+										onCommand={(val) => item.command?.(val)}
+										className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 aria-selected:bg-gray-100 dark:aria-selected:bg-gray-700"
+										key={item.title}
+									>
+										<div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+											{item.icon}
+										</div>
+										<div>
+											<p className="font-medium">{item.title}</p>
+											<p className="text-xs text-gray-500 dark:text-gray-400">
+												{item.description}
+											</p>
+										</div>
+									</EditorCommandItem>
+								))}
+							</EditorCommandList>
+						</EditorCommand>
+
+						{/* Bubble menu for formatting selected text */}
+						<EditorBubble
+							tippyOptions={{
+								placement: "top",
+							}}
+							className="flex w-fit max-w-[90vw] overflow-hidden rounded-md border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+						>
+							<button
+								type="button"
+								onClick={(e) => {
+									e.preventDefault();
+									const editor = (e.currentTarget as any).__reactProps$?.editor;
+									if (editor) {
+										editor.chain().focus().toggleBold().run();
+									}
+								}}
+								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								title="Bold (Ctrl+B)"
+							>
+								<Bold className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								onClick={(e) => {
+									e.preventDefault();
+									const editor = (e.currentTarget as any).__reactProps$?.editor;
+									if (editor) {
+										editor.chain().focus().toggleItalic().run();
+									}
+								}}
+								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								title="Italic (Ctrl+I)"
+							>
+								<Italic className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								onClick={(e) => {
+									e.preventDefault();
+									const editor = (e.currentTarget as any).__reactProps$?.editor;
+									if (editor) {
+										editor.chain().focus().toggleStrike().run();
+									}
+								}}
+								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								title="Strikethrough"
+							>
+								<Strikethrough className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								onClick={(e) => {
+									e.preventDefault();
+									const editor = (e.currentTarget as any).__reactProps$?.editor;
+									if (editor) {
+										editor.chain().focus().toggleCode().run();
+									}
+								}}
+								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								title="Code"
+							>
+								<Code className="h-4 w-4" />
+							</button>
+						</EditorBubble>
+
+						<ImageResizer />
+					</EditorContent>
 				</EditorRoot>
+			</div>
+
+			{/* Keyboard shortcuts help text */}
+			<div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+				<p className="mb-1">
+					<strong>Markdown shortcuts:</strong> Type # for headings, - for bullet lists, 1. for numbered lists, {">"} for quotes
+				</p>
+				<p className="mb-1">
+					<strong>Formatting:</strong> **bold**, *italic*, `code`, ~~strikethrough~~
+				</p>
+				<p>
+					<strong>Slash commands:</strong> Type / to see all commands
+				</p>
 			</div>
 		</div>
 	);
