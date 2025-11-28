@@ -229,7 +229,7 @@ export function ContentEditor({
 	}, []);
 
 	return (
-		<div className="w-full max-w-4xl mx-auto">
+		<div className="w-full">
 			{/* Save indicator */}
 			<div className="mb-2 text-sm text-gray-500 text-right">
 				{isSaving && (
