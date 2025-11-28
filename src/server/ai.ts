@@ -503,8 +503,7 @@ export const generateDraft = createServerFn({ method: "POST" })
 			// Track token usage when finished (async, does not block response)
 			(async () => {
 				try {
-					const finalResult = await result;
-					const usage = await finalResult.usage;
+					const usage = await result.usage;
 					if (usage) {
 						const tokenUsage: TokenUsage = {
 							promptTokens: usage.inputTokens || 0,
@@ -708,8 +707,7 @@ export const generateChatResponse = createServerFn({ method: "POST" })
 			// Save assistant message after generation completes (async)
 			(async () => {
 				try {
-					const finalResult = await result;
-					const fullText = await finalResult.text;
+					const fullText = await result.text;
 
 					// Save assistant's response to chat history
 					await convex.mutation(api.contentChatMessages.addChatMessage, {
@@ -719,7 +717,7 @@ export const generateChatResponse = createServerFn({ method: "POST" })
 					});
 
 					// Track token usage
-					const usage = await finalResult.usage;
+					const usage = await result.usage;
 					if (usage) {
 						console.log("Chat token usage:", {
 							promptTokens: usage.inputTokens || 0,

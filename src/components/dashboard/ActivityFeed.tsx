@@ -163,15 +163,21 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 							{/* Activity content */}
 							<div className="flex-1 min-w-0">
 								{isContentAction ? (
-									// Content piece link - will navigate to editor when route is available (Task Group 17)
-									<div className="cursor-pointer">
-										<p className="text-sm font-medium text-gray-900 hover:text-cyan-600 transition-colors line-clamp-1">
+									<Link
+										to="/projects/$projectId/content/$contentId"
+										params={{
+											projectId: activity.projectId,
+											contentId: activity.contentPieceId!,
+										}}
+										className="group"
+									>
+										<p className="text-sm font-medium text-gray-900 group-hover:text-cyan-600 transition-colors line-clamp-1">
 											{activity.contentPiece!.title}
 										</p>
 										<p className="text-xs text-gray-600 mt-0.5">
 											{getActionText(activity.action)} in {activity.project?.name || "Unknown Project"}
 										</p>
-									</div>
+									</Link>
 								) : isProjectAction ? (
 									<Link
 										to="/projects/$projectId/categories"

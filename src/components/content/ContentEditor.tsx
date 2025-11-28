@@ -3,8 +3,15 @@
  * Provides a Notion-style editing experience with slash commands, markdown shortcuts,
  * and autosave functionality.
  */
-import { useCallback, useEffect, useRef, useState } from "react";
-import { EditorRoot, EditorContent, type JSONContent } from "novel";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+	EditorRoot,
+	EditorContent,
+	type JSONContent,
+	StarterKit,
+	TiptapImage,
+	TiptapLink,
+} from "novel";
 import type { Editor } from "@tiptap/core";
 import type { Transaction } from "@tiptap/pm/state";
 import { useMutation } from "convex/react";
@@ -39,15 +46,35 @@ export interface ContentEditorProps {
 }
 
 /**
- * Parse JSON content safely.
+ * Parse JSON content safely and ensure it has proper doc schema.
  */
-function parseContent(content: string): JSONContent | null {
+function parseContent(content: string): JSONContent {
 	try {
-		return JSON.parse(content);
+		const parsed = JSON.parse(content);
+		// Ensure content has proper doc structure for TipTap schema
+		if (parsed && typeof parsed === "object") {
+			return parsed.type === "doc" ? parsed : { type: "doc", content: [parsed] };
+		}
 	} catch {
-		return null;
+		// Return empty doc if parsing fails
 	}
+	return { type: "doc", content: [] };
 }
+
+/**
+ * Default extensions for Novel editor.
+ */
+const defaultExtensions = [
+	StarterKit.configure({
+		heading: {
+			levels: [1, 2, 3, 4, 5, 6],
+		},
+	}),
+	TiptapImage,
+	TiptapLink.configure({
+		openOnClick: false,
+	}),
+];
 
 /**
  * ContentEditor component with autosave and Novel editor integration.
@@ -64,7 +91,11 @@ export function ContentEditor({
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const updateContentPiece = useMutation(api.contentPieces.updateContentPiece);
 
-	const parsedInitialContent = parseContent(initialContent);
+	// Memoize parsed content to prevent unnecessary re-renders
+	const parsedInitialContent = useMemo(
+		() => parseContent(initialContent),
+		[initialContent]
+	);
 
 	/**
 	 * Handle content updates from Novel editor.
@@ -137,7 +168,9 @@ export function ContentEditor({
 			<div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
 				<EditorRoot>
 					<EditorContent
-						initialContent={parsedInitialContent ?? undefined}
+						key={contentPieceId}
+						extensions={defaultExtensions}
+						initialContent={parsedInitialContent}
 						onUpdate={handleUpdate}
 						editable={!disabled}
 						className="min-h-[500px] p-6"
