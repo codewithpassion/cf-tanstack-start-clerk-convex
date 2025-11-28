@@ -19,6 +19,7 @@ import {
 	StarterKit,
 	TiptapImage,
 	TiptapLink,
+	GlobalDragHandle,
 	type JSONContent,
 	type SuggestionItem,
 } from "novel";
@@ -260,6 +261,9 @@ export function ContentEditor({
 							TiptapImage,
 							TiptapLink.configure({
 								openOnClick: false,
+							}),
+							GlobalDragHandle.configure({
+								dragHandleWidth: 20,
 							}),
 							Command.configure({ suggestion: suggestionItems }),
 						]}
