@@ -19,6 +19,8 @@ const config = defineConfig({
   },
   optimizeDeps: {
     include: ['cookie'],
+    // Exclude @jsquash packages from optimization to allow WASM loading in Cloudflare Workers
+    exclude: ['@jsquash/jpeg', '@jsquash/png', '@jsquash/resize'],
   },
   plugins: [
     cloudflare({ viteEnvironment: { name: 'ssr' } }),

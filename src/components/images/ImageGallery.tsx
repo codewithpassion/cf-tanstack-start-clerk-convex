@@ -188,7 +188,10 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 						>
 							{image.file ? (
 								<img
-									src={`/api/files/${image.fileId}/preview`}
+									src={`/api/files/${image.fileId}/preview${
+										// @ts-ignore - thumbnailR2Key added to schema but types not regenerated
+										image.file.thumbnailR2Key ? "?variant=thumbnail" : ""
+									}`}
 									alt={image.caption || image.file.filename}
 									className="w-full h-full object-cover"
 								/>

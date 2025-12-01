@@ -20,6 +20,7 @@ import {
 	extractAndTruncateText,
 	isTextExtractable,
 } from "@/lib/text-extraction";
+import { createThumbnail } from "@/lib/image-processing";
 import type { FileOwnerType } from "@/types/entities";
 
 export type UploadFileInput = {
@@ -41,6 +42,7 @@ export type UploadFileResult = {
 		mimeType: string;
 		sizeBytes: number;
 		r2Key: string;
+		thumbnailR2Key?: string;
 		extractedText?: string;
 	};
 	extractionInfo?: {
@@ -58,6 +60,12 @@ export type GetDownloadUrlResult = {
 	content: ArrayBuffer;
 	contentType: string | undefined;
 };
+
+function getThumbnailKey(originalKey: string): string {
+	const lastDotIndex = originalKey.lastIndexOf(".");
+	if (lastDotIndex === -1) return `${originalKey}_thumb.jpg`;
+	return `${originalKey.substring(0, lastDotIndex)}_thumb.jpg`;
+}
 
 /**
  * Upload a file directly to R2 storage.
@@ -118,6 +126,21 @@ export const uploadFileFn = createServerFn({ method: "POST" })
 		// Initialize extraction info
 		let extractedText: string | undefined;
 		let extractionInfo: UploadFileResult["extractionInfo"];
+		let thumbnailR2Key: string | undefined;
+
+		// Attempt thumbnail generation for images (parallel to text extraction logic)
+		if (mimeType.startsWith("image/")) {
+			try {
+				const thumbnailBuffer = await createThumbnail(fileContent, mimeType);
+				if (thumbnailBuffer) {
+					thumbnailR2Key = getThumbnailKey(r2Key);
+					await uploadFile(bucket, thumbnailR2Key, thumbnailBuffer, "image/jpeg");
+				}
+			} catch (error) {
+				// Log thumbnail errors but do not fail the upload
+				console.error(`Thumbnail generation failed for file ${r2Key}:`, error);
+			}
+		}
 
 		// Attempt text extraction for supported MIME types
 		if (isTextExtractable(mimeType)) {
@@ -179,6 +202,7 @@ export const uploadFileFn = createServerFn({ method: "POST" })
 				mimeType,
 				sizeBytes,
 				r2Key,
+				thumbnailR2Key,
 				extractedText,
 			},
 			extractionInfo,

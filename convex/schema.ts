@@ -126,6 +126,7 @@ export default defineSchema({
 		mimeType: v.string(),
 		sizeBytes: v.number(),
 		r2Key: v.string(), // Cloudflare R2 object key
+		thumbnailR2Key: v.optional(v.string()), // Cloudflare R2 object key for thumbnail
 		extractedText: v.optional(v.string()), // Parsed text content
 		createdAt: v.number(),
 	})

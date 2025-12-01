@@ -71,18 +71,28 @@ app.get("/api/files/:fileId/preview", async (c) => {
 			return c.json({ error: "Storage not configured" }, 500);
 		}
 
+		// Determine which file to serve (original or thumbnail)
+		const variant = c.req.query("variant");
+		let r2Key = file.r2Key;
+		let mimeType = file.mimeType;
+
+		if (variant === "thumbnail" && file.thumbnailR2Key) {
+			r2Key = file.thumbnailR2Key;
+			mimeType = "image/jpeg"; // Thumbnails are always JPEG
+		}
+
 		// Download file from R2
-		const object = await downloadFile(bucket, file.r2Key);
+		const object = await downloadFile(bucket, r2Key);
 		if (!object) {
-			console.error("File not found in R2:", file.r2Key);
+			console.error("File not found in R2:", r2Key);
 			return c.json({ error: "File not found in storage" }, 404);
 		}
 
 		// Return file with appropriate headers
 		return new Response(object.body, {
 			headers: {
-				"Content-Type": file.mimeType,
-				"Content-Length": file.sizeBytes.toString(),
+				"Content-Type": mimeType,
+				"Content-Length": object.size.toString(),
 				"Cache-Control": "public, max-age=31536000",
 			},
 		});

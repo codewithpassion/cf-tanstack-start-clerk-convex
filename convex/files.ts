@@ -96,6 +96,7 @@ export const createFile = mutation({
 		mimeType: v.string(),
 		sizeBytes: v.number(),
 		r2Key: v.string(),
+		thumbnailR2Key: v.optional(v.string()),
 		extractedText: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
@@ -127,6 +128,7 @@ export const createFile = mutation({
 			mimeType: string;
 			sizeBytes: number;
 			r2Key: string;
+			thumbnailR2Key?: string;
 			extractedText?: string;
 			createdAt: number;
 		} = {
@@ -136,6 +138,10 @@ export const createFile = mutation({
 			r2Key: args.r2Key,
 			createdAt: Date.now(),
 		};
+
+		if (args.thumbnailR2Key) {
+			fileData.thumbnailR2Key = args.thumbnailR2Key;
+		}
 
 		if (args.extractedText) {
 			fileData.extractedText = args.extractedText;

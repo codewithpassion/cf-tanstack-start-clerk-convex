@@ -3,10 +3,11 @@
  *
  * Features:
  * - Quick action buttons for common AI tasks
- * - Recent generations history
+ * - Image gallery for attached images
  * - Content management actions (versions, images, finalize, delete)
  * - Always visible on the right side of the editor
  */
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
@@ -17,6 +18,7 @@ import {
 	Lock,
 	Unlock,
 	Trash2,
+	Download,
 } from "lucide-react";
 
 export interface ToolsPanelProps {
@@ -29,11 +31,6 @@ export interface ToolsPanelProps {
 	 * Current editor content for AI context
 	 */
 	currentContent: string;
-
-	/**
-	 * Optional callback when user wants to apply AI suggestion to editor
-	 */
-	onApplyToContent?: (content: string) => void;
 
 	/**
 	 * Callback to trigger refine action
@@ -72,7 +69,6 @@ export interface ToolsPanelProps {
  */
 export function ToolsPanel({
 	contentPieceId,
-	onApplyToContent,
 	onRefine,
 	onShowVersions,
 	onShowImages,
@@ -80,28 +76,34 @@ export function ToolsPanel({
 	onDelete,
 	isFinalized = false,
 }: ToolsPanelProps) {
-	// Fetch chat history (recent generations) from Convex
-	const chatMessages = useQuery(api.contentChatMessages.listChatMessages, {
+	// Fetch attached images from Convex
+	const contentImages = useQuery(api.contentImages.listContentImages, {
 		contentPieceId,
 	});
 
-	// Filter to show only assistant messages (AI generations)
-	const recentGenerations = (chatMessages || [])
-		.filter((msg) => msg.role === "assistant")
-		.slice(-5) // Show last 5 generations
-		.reverse(); // Most recent first
+	// Preview modal state
+	const [previewImage, setPreviewImage] = useState<{
+		fileId: Id<"files">;
+		filename: string;
+		caption?: string;
+	} | null>(null);
 
-	// Handle applying a generation to the editor
-	const handleApplyGeneration = (content: string) => {
-		if (onApplyToContent) {
-			onApplyToContent(content);
+	// Handle image download
+	const handleDownload = async (fileId: Id<"files">, filename: string) => {
+		try {
+			const response = await fetch(`/api/files/${fileId}/preview`);
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			window.URL.revokeObjectURL(url);
+			document.body.removeChild(a);
+		} catch (error) {
+			console.error("Failed to download image:", error);
 		}
-	};
-
-	// Copy to clipboard
-	const handleCopy = (text: string) => {
-		navigator.clipboard.writeText(text);
-		// TODO: Show toast notification
 	};
 
 	return (
@@ -186,70 +188,159 @@ export function ToolsPanel({
 				</button>
 			</div>
 
-			{/* Recent Generations */}
+			{/* Images Gallery */}
 			<div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">
 				<h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">
-					Recent Generations
+					Images
 				</h4>
 
-				{recentGenerations.length === 0 ? (
+				{contentImages === undefined ? (
+					<div className="flex items-center justify-center py-8">
+						<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-600" />
+					</div>
+				) : contentImages.length === 0 ? (
 					<div className="text-center text-gray-500 text-sm py-8">
-						<p>No generations yet.</p>
+						<svg
+							className="mx-auto h-10 w-10 text-gray-400 mb-2"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							aria-hidden="true"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+							/>
+						</svg>
+						<p>No images attached</p>
 						<p className="mt-1 text-xs">
-							Use the tools above to generate content.
+							Use the button above to create images
 						</p>
 					</div>
 				) : (
-					<div className="space-y-2">
-						{recentGenerations.map((generation) => {
-							// Truncate content for preview (first 100 chars)
-							const preview =
-								generation.content.length > 100
-									? `${generation.content.slice(0, 100)}...`
-									: generation.content;
-
-							return (
-								<div
-									key={generation._id}
-									className="bg-gray-50 border border-gray-200 rounded-lg p-3 hover:bg-gray-100 transition-colors cursor-pointer group"
-									onClick={() => handleApplyGeneration(generation.content)}
-								>
-									<div className="flex items-start justify-between gap-2 mb-2">
-										<div className="flex-1 text-xs text-gray-600 line-clamp-3">
-											{preview}
-										</div>
-									</div>
-									<div className="flex items-center gap-2 text-xs">
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												handleCopy(generation.content);
-											}}
-											className="text-gray-500 hover:text-gray-700 transition-colors"
-											title="Copy to clipboard"
-										>
-											Copy
-										</button>
-										<span className="text-gray-300">•</span>
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												handleApplyGeneration(generation.content);
-											}}
-											className="text-cyan-600 hover:text-cyan-700 transition-colors font-medium"
-											title="Apply to content"
-										>
-											Apply
-										</button>
-									</div>
+					<div className="grid grid-cols-2 gap-2">
+						{contentImages.map((image) => (
+							<div
+								key={image._id}
+								onClick={() => {
+									if (image.file) {
+										setPreviewImage({
+											fileId: image.fileId,
+											filename: image.file.filename,
+											caption: image.caption,
+										});
+									}
+								}}
+								className="relative group border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:bg-gray-50 hover:shadow-md transition-all"
+							>
+								<div className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+									{image.file ? (
+										<img
+											src={`/api/files/${image.fileId}/preview?variant=thumbnail`}
+											alt={image.caption || image.file.filename}
+											className="w-full h-full object-cover"
+										/>
+									) : (
+										<div className="text-gray-400 text-xs">No preview</div>
+									)}
 								</div>
-							);
-						})}
+
+								{/* Download Button - Visible on mobile, hover on desktop */}
+								{image.file && (
+									<button
+										type="button"
+										onClick={(e) => {
+											e.stopPropagation();
+											handleDownload(image.fileId, image.file!.filename);
+										}}
+										className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full shadow-lg hover:bg-white transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+										aria-label="Download image"
+										title="Download image"
+									>
+										<Download className="w-3.5 h-3.5 text-gray-700" />
+									</button>
+								)}
+
+								{image.caption && (
+									<div className="px-2 py-1.5">
+										<p className="text-xs text-gray-600 line-clamp-1">
+											{image.caption}
+										</p>
+									</div>
+								)}
+							</div>
+						))}
 					</div>
 				)}
 			</div>
+
+			{/* Preview Modal */}
+			{previewImage && (
+				<div
+					className="fixed inset-0 z-50 overflow-y-auto"
+					role="dialog"
+					aria-modal="true"
+					aria-labelledby="image-preview-title"
+				>
+					<div className="flex min-h-screen items-center justify-center p-4">
+						<div
+							className="fixed inset-0 bg-black bg-opacity-75 transition-opacity"
+							onClick={() => setPreviewImage(null)}
+						/>
+						<div className="relative bg-white rounded-lg max-w-4xl w-full">
+							<div className="p-4 border-b">
+								<div className="flex items-center justify-between">
+									<h3
+										id="image-preview-title"
+										className="text-lg font-medium text-gray-900"
+									>
+										Image Preview
+									</h3>
+									<button
+										type="button"
+										onClick={() => setPreviewImage(null)}
+										className="text-gray-400 hover:text-gray-500"
+										aria-label="Close preview"
+									>
+										<svg
+											className="w-6 h-6"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M6 18L18 6M6 6l12 12"
+											/>
+										</svg>
+									</button>
+								</div>
+							</div>
+							<div className="p-4">
+								<div className="bg-gray-100 rounded flex items-center justify-center max-h-96 overflow-auto">
+									<img
+										src={`/api/files/${previewImage.fileId}/preview?variant=thumbnail`}
+										alt={previewImage.caption || previewImage.filename}
+										className="max-w-full max-h-96 object-contain"
+									/>
+								</div>
+								{previewImage.caption && (
+									<p className="mt-4 text-sm text-gray-700">
+										{previewImage.caption}
+									</p>
+								)}
+								<p className="mt-2 text-xs text-gray-500">
+									{previewImage.filename}
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }

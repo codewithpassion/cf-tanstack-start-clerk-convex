@@ -78,6 +78,7 @@ export const listContentImages = query({
 								mimeType: file.mimeType,
 								sizeBytes: file.sizeBytes,
 								r2Key: file.r2Key,
+								thumbnailR2Key: file.thumbnailR2Key,
 								createdAt: file.createdAt,
 							}
 						: null,

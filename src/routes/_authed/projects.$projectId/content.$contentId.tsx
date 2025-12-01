@@ -478,10 +478,6 @@ function ContentEditorPage() {
 							contentPieceId={contentId as Id<"contentPieces">}
 							currentContent={contentPiece.content}
 							isFinalized={isFinalized}
-							onApplyToContent={(newContent) => {
-								// TODO: Implement content application logic
-								console.log("Apply content:", newContent);
-							}}
 							onRefine={() => setShowRefineDialog(true)}
 							onShowVersions={() => setShowVersionSidebar(true)}
 							onShowImages={() =>
