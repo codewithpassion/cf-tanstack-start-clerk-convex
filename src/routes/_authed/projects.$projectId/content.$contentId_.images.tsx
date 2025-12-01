@@ -19,7 +19,7 @@ import { generateImage } from "@/server/ai";
 type TabType = "gallery" | "upload" | "generate";
 
 export const Route = createFileRoute(
-	"/_authed/projects/$projectId/content/$contentId/images"
+	"/_authed/projects/$projectId/content/$contentId_/images"
 )({
 	component: ContentImagesPage,
 });
@@ -35,16 +35,16 @@ function ContentImagesPage() {
 	// Query content piece to verify access and get workspace
 	const contentPiece = useQuery(api.contentPieces.getContentPiece, {
 		contentPieceId,
-	});
+	})
 
 	const project = useQuery(
 		api.projects.getProject,
 		contentPiece ? { projectId: contentPiece.projectId } : "skip"
-	);
+	)
 
 	const workspace = useQuery(
 		api.workspaces.getMyWorkspace,
-	);
+	)
 
 	const attachImage = useMutation(api.contentImages.attachImage);
 
@@ -67,7 +67,7 @@ function ContentImagesPage() {
 			fileId: null,
 			previewUrl: null,
 			isGenerating: true,
-		});
+		})
 
 		try {
 			const result = await generateImage({
@@ -76,14 +76,14 @@ function ContentImagesPage() {
 					workspaceId: workspace._id,
 					projectId: projectIdTyped,
 				},
-			});
+			})
 
 			setGenerationState({
 				prompt,
 				fileId: result.fileId,
 				previewUrl: result.previewUrl,
 				isGenerating: false,
-			});
+			})
 		} catch (error) {
 			console.error("Image generation failed:", error);
 			setGenerationState({
@@ -91,9 +91,9 @@ function ContentImagesPage() {
 				fileId: null,
 				previewUrl: null,
 				isGenerating: false,
-			});
+			})
 		}
-	};
+	}
 
 	// Handle retry with modified prompt
 	const handleRetry = async (modifiedPrompt: string) => {
@@ -104,7 +104,7 @@ function ContentImagesPage() {
 			fileId: null,
 			previewUrl: null,
 			isGenerating: true,
-		});
+		})
 
 		try {
 			const result = await generateImage({
@@ -113,14 +113,14 @@ function ContentImagesPage() {
 					workspaceId: workspace._id,
 					projectId: projectIdTyped,
 				},
-			});
+			})
 
 			setGenerationState({
 				prompt: modifiedPrompt,
 				fileId: result.fileId,
 				previewUrl: result.previewUrl,
 				isGenerating: false,
-			});
+			})
 		} catch (error) {
 			console.error("Image generation failed:", error);
 			setGenerationState({
@@ -128,9 +128,9 @@ function ContentImagesPage() {
 				fileId: null,
 				previewUrl: null,
 				isGenerating: false,
-			});
+			})
 		}
-	};
+	}
 
 	// Handle attaching generated image
 	const handleAttachGenerated = async (fileId: Id<"files">) => {
@@ -139,7 +139,7 @@ function ContentImagesPage() {
 				contentPieceId,
 				fileId,
 				generatedPrompt: generationState?.prompt,
-			});
+			})
 
 			// Clear generation state and switch to gallery
 			setGenerationState(null);
@@ -147,17 +147,17 @@ function ContentImagesPage() {
 		} catch (error) {
 			console.error("Failed to attach image:", error);
 		}
-	};
+	}
 
 	// Handle discarding generated image
 	const handleDiscardGenerated = () => {
 		setGenerationState(null);
-	};
+	}
 
 	// Handle upload completion
 	const handleUploadComplete = () => {
 		setActiveTab("gallery");
-	};
+	}
 
 	// Loading state
 	if (contentPiece === undefined || project === undefined || workspace === undefined) {
@@ -165,7 +165,7 @@ function ContentImagesPage() {
 			<div className="flex items-center justify-center min-h-96">
 				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600" />
 			</div>
-		);
+		)
 	}
 
 	// Error state
@@ -174,7 +174,7 @@ function ContentImagesPage() {
 			<div className="text-center py-12">
 				<p className="text-red-600">Content piece not found or access denied.</p>
 			</div>
-		);
+		)
 	}
 
 	return (
@@ -310,5 +310,5 @@ function ContentImagesPage() {
 				onClose={() => setShowPromptWizard(false)}
 			/>
 		</div>
-	);
+	)
 }

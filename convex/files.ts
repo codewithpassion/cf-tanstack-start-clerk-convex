@@ -227,6 +227,19 @@ export const updateExtractedText = mutation({
 });
 
 /**
+ * Get a single file by ID.
+ */
+export const getFile = query({
+	args: {
+		fileId: v.id("files"),
+	},
+	handler: async (ctx, { fileId }) => {
+		const file = await ctx.db.get(fileId);
+		return file;
+	},
+});
+
+/**
  * Get files for a specific owner.
  */
 export const getFilesForOwner = query({

@@ -110,7 +110,7 @@ export function ImageGenerationPreview({
 								id="image-prompt"
 								value={editedPrompt}
 								onChange={(e) => setEditedPrompt(e.target.value)}
-								className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+								className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 								rows={4}
 								maxLength={4000}
 								placeholder="Modify the prompt to refine the image..."

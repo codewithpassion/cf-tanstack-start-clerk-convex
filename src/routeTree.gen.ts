@@ -34,7 +34,7 @@ import { Route as AuthedProjectsProjectIdBrandVoicesRouteImport } from './routes
 import { Route as AuthedProjectsProjectIdContentIndexRouteImport } from './routes/_authed/projects.$projectId/content.index'
 import { Route as AuthedProjectsProjectIdContentNewRouteImport } from './routes/_authed/projects.$projectId/content.new'
 import { Route as AuthedProjectsProjectIdContentContentIdRouteImport } from './routes/_authed/projects.$projectId/content.$contentId'
-import { Route as AuthedProjectsProjectIdContentContentIdImagesRouteImport } from './routes/_authed/projects.$projectId/content.$contentId.images'
+import { Route as AuthedProjectsProjectIdContentContentIdImagesRouteImport } from './routes/_authed/projects.$projectId/content.$contentId_.images'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -172,9 +172,9 @@ const AuthedProjectsProjectIdContentContentIdRoute =
   } as any)
 const AuthedProjectsProjectIdContentContentIdImagesRoute =
   AuthedProjectsProjectIdContentContentIdImagesRouteImport.update({
-    id: '/images',
-    path: '/images',
-    getParentRoute: () => AuthedProjectsProjectIdContentContentIdRoute,
+    id: '/content/$contentId_/images',
+    path: '/content/$contentId/images',
+    getParentRoute: () => AuthedProjectsProjectIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -199,7 +199,7 @@ export interface FileRoutesByFullPath {
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
   '/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
-  '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRouteWithChildren
+  '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
   '/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
@@ -225,7 +225,7 @@ export interface FileRoutesByTo {
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
   '/projects/$projectId': typeof AuthedProjectsProjectIdIndexRoute
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
-  '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRouteWithChildren
+  '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
   '/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
@@ -254,10 +254,10 @@ export interface FileRoutesById {
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
   '/_authed/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
   '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
-  '/_authed/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRouteWithChildren
+  '/_authed/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/_authed/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/_authed/projects/$projectId/content/': typeof AuthedProjectsProjectIdContentIndexRoute
-  '/_authed/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
+  '/_authed/projects/$projectId/content/$contentId_/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -340,7 +340,7 @@ export interface FileRouteTypes {
     | '/_authed/projects/$projectId/content/$contentId'
     | '/_authed/projects/$projectId/content/new'
     | '/_authed/projects/$projectId/content/'
-    | '/_authed/projects/$projectId/content/$contentId/images'
+    | '/_authed/projects/$projectId/content/$contentId_/images'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -534,30 +534,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProjectsProjectIdContentContentIdRouteImport
       parentRoute: typeof AuthedProjectsProjectIdRoute
     }
-    '/_authed/projects/$projectId/content/$contentId/images': {
-      id: '/_authed/projects/$projectId/content/$contentId/images'
-      path: '/images'
+    '/_authed/projects/$projectId/content/$contentId_/images': {
+      id: '/_authed/projects/$projectId/content/$contentId_/images'
+      path: '/content/$contentId/images'
       fullPath: '/projects/$projectId/content/$contentId/images'
       preLoaderRoute: typeof AuthedProjectsProjectIdContentContentIdImagesRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdContentContentIdRoute
+      parentRoute: typeof AuthedProjectsProjectIdRoute
     }
   }
 }
-
-interface AuthedProjectsProjectIdContentContentIdRouteChildren {
-  AuthedProjectsProjectIdContentContentIdImagesRoute: typeof AuthedProjectsProjectIdContentContentIdImagesRoute
-}
-
-const AuthedProjectsProjectIdContentContentIdRouteChildren: AuthedProjectsProjectIdContentContentIdRouteChildren =
-  {
-    AuthedProjectsProjectIdContentContentIdImagesRoute:
-      AuthedProjectsProjectIdContentContentIdImagesRoute,
-  }
-
-const AuthedProjectsProjectIdContentContentIdRouteWithChildren =
-  AuthedProjectsProjectIdContentContentIdRoute._addFileChildren(
-    AuthedProjectsProjectIdContentContentIdRouteChildren,
-  )
 
 interface AuthedProjectsProjectIdRouteChildren {
   AuthedProjectsProjectIdBrandVoicesRoute: typeof AuthedProjectsProjectIdBrandVoicesRoute
@@ -567,9 +552,10 @@ interface AuthedProjectsProjectIdRouteChildren {
   AuthedProjectsProjectIdPersonasRoute: typeof AuthedProjectsProjectIdPersonasRoute
   AuthedProjectsProjectIdSettingsRoute: typeof AuthedProjectsProjectIdSettingsRoute
   AuthedProjectsProjectIdIndexRoute: typeof AuthedProjectsProjectIdIndexRoute
-  AuthedProjectsProjectIdContentContentIdRoute: typeof AuthedProjectsProjectIdContentContentIdRouteWithChildren
+  AuthedProjectsProjectIdContentContentIdRoute: typeof AuthedProjectsProjectIdContentContentIdRoute
   AuthedProjectsProjectIdContentNewRoute: typeof AuthedProjectsProjectIdContentNewRoute
   AuthedProjectsProjectIdContentIndexRoute: typeof AuthedProjectsProjectIdContentIndexRoute
+  AuthedProjectsProjectIdContentContentIdImagesRoute: typeof AuthedProjectsProjectIdContentContentIdImagesRoute
 }
 
 const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren =
@@ -585,11 +571,13 @@ const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren
     AuthedProjectsProjectIdSettingsRoute: AuthedProjectsProjectIdSettingsRoute,
     AuthedProjectsProjectIdIndexRoute: AuthedProjectsProjectIdIndexRoute,
     AuthedProjectsProjectIdContentContentIdRoute:
-      AuthedProjectsProjectIdContentContentIdRouteWithChildren,
+      AuthedProjectsProjectIdContentContentIdRoute,
     AuthedProjectsProjectIdContentNewRoute:
       AuthedProjectsProjectIdContentNewRoute,
     AuthedProjectsProjectIdContentIndexRoute:
       AuthedProjectsProjectIdContentIndexRoute,
+    AuthedProjectsProjectIdContentContentIdImagesRoute:
+      AuthedProjectsProjectIdContentContentIdImagesRoute,
   }
 
 const AuthedProjectsProjectIdRouteWithChildren =

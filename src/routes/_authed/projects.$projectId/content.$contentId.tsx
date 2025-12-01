@@ -488,16 +488,6 @@ function ContentEditorPage() {
 								navigate({
 									to: "/projects/$projectId/content/$contentId/images",
 									params: { projectId, contentId },
-									search: {
-										page: 1,
-										pageSize: 25,
-										categoryId: undefined,
-										personaId: undefined,
-										brandVoiceId: undefined,
-										status: "draft" as const,
-										dateFrom: undefined,
-										dateTo: undefined,
-									},
 								})
 							}
 							onFinalize={() => {

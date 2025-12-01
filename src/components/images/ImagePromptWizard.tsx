@@ -62,26 +62,56 @@ export function ImagePromptWizard({
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
+	// Reset wizard state
+	const resetWizard = () => {
+		setState({
+			currentStep: 1,
+			imageType: null,
+			subject: "",
+			style: "",
+			mood: "",
+			composition: "",
+			colors: "",
+			generatedPrompt: "",
+			saveAsTemplate: false,
+			templateName: "",
+		});
+		setError(null);
+		setIsGenerating(false);
+	};
+
+	// Handle dialog close with reset
+	const handleClose = () => {
+		resetWizard();
+		onClose();
+	};
+
 	// Navigation handlers
 	const goToNextStep = () => {
-		if (state.currentStep < 6) {
-			setState({ ...state, currentStep: (state.currentStep + 1) as Step });
-		}
+		setState((prev) => {
+			if (prev.currentStep < 6) {
+				return { ...prev, currentStep: (prev.currentStep + 1) as Step };
+			}
+			return prev;
+		});
 	};
 
 	const goToPreviousStep = () => {
-		if (state.currentStep > 1) {
-			setState({ ...state, currentStep: (state.currentStep - 1) as Step });
-		}
+		setState((prev) => {
+			if (prev.currentStep > 1) {
+				return { ...prev, currentStep: (prev.currentStep - 1) as Step };
+			}
+			return prev;
+		});
 	};
 
 	const skipToGeneration = () => {
-		setState({ ...state, currentStep: 6 });
+		setState((prev) => ({ ...prev, currentStep: 6 }));
 	};
 
 	// Step handlers
 	const handleImageTypeSelect = (imageType: ImageType) => {
-		setState({ ...state, imageType });
+		setState((prev) => ({ ...prev, imageType }));
 		goToNextStep();
 	};
 
@@ -93,8 +123,12 @@ export function ImagePromptWizard({
 
 	// Generate prompt from wizard inputs
 	const handleGeneratePrompt = async () => {
-		if (!state.imageType || !state.subject.trim()) {
-			setError("Image type and subject are required");
+		const missingFields: string[] = [];
+		if (!state.imageType) missingFields.push("image type");
+		if (!state.subject.trim()) missingFields.push("subject");
+
+		if (missingFields.length > 0) {
+			setError(`Missing required fields: ${missingFields.join(", ")}. Please go back and fill them in.`);
 			return;
 		}
 
@@ -104,7 +138,7 @@ export function ImagePromptWizard({
 		try {
 			const result = await generateImagePrompt({
 				data: {
-					imageType: state.imageType,
+					imageType: state.imageType!,
 					subject: state.subject,
 					style: state.style || undefined,
 					mood: state.mood || undefined,
@@ -113,10 +147,10 @@ export function ImagePromptWizard({
 				},
 			});
 
-			setState({
-				...state,
+			setState((prev) => ({
+				...prev,
 				generatedPrompt: result.prompt,
-			});
+			}));
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to generate prompt");
 			console.error("Prompt generation error:", err);
@@ -152,18 +186,7 @@ export function ImagePromptWizard({
 			);
 
 			// Reset wizard
-			setState({
-				currentStep: 1,
-				imageType: null,
-				subject: "",
-				style: "",
-				mood: "",
-				composition: "",
-				colors: "",
-				generatedPrompt: "",
-				saveAsTemplate: false,
-				templateName: "",
-			});
+			resetWizard();
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to save template");
 			console.error("Template save error:", err);
@@ -180,7 +203,7 @@ export function ImagePromptWizard({
 				{/* Background overlay */}
 				<div
 					className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-					onClick={onClose}
+					onClick={handleClose}
 				/>
 
 				{/* Modal panel */}
@@ -193,7 +216,7 @@ export function ImagePromptWizard({
 							</h3>
 							<button
 								type="button"
-								onClick={onClose}
+								onClick={handleClose}
 								className="text-gray-400 hover:text-gray-500"
 								aria-label="Close wizard"
 							>
@@ -299,8 +322,8 @@ export function ImagePromptWizard({
 										<textarea
 											id="subject"
 											value={state.subject}
-											onChange={(e) => setState({ ...state, subject: e.target.value })}
-											className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+											onChange={(e) => setState((prev) => ({ ...prev, subject: e.target.value }))}
+											className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 											rows={4}
 											placeholder="e.g., A modern office workspace with natural lighting..."
 											maxLength={500}
@@ -339,8 +362,8 @@ export function ImagePromptWizard({
 											id="style"
 											type="text"
 											value={state.style}
-											onChange={(e) => setState({ ...state, style: e.target.value })}
-											className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+											onChange={(e) => setState((prev) => ({ ...prev, style: e.target.value }))}
+											className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 											placeholder="e.g., Minimalist, Watercolor, 3D render, Vintage..."
 											maxLength={200}
 										/>
@@ -386,8 +409,8 @@ export function ImagePromptWizard({
 											id="mood"
 											type="text"
 											value={state.mood}
-											onChange={(e) => setState({ ...state, mood: e.target.value })}
-											className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+											onChange={(e) => setState((prev) => ({ ...prev, mood: e.target.value }))}
+											className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 											placeholder="e.g., Calm, Energetic, Professional, Whimsical..."
 											maxLength={200}
 										/>
@@ -421,8 +444,8 @@ export function ImagePromptWizard({
 											id="composition"
 											type="text"
 											value={state.composition}
-											onChange={(e) => setState({ ...state, composition: e.target.value })}
-											className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+											onChange={(e) => setState((prev) => ({ ...prev, composition: e.target.value }))}
+											className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 											placeholder="e.g., Centered, Rule of thirds, Wide angle..."
 											maxLength={200}
 										/>
@@ -433,8 +456,8 @@ export function ImagePromptWizard({
 											id="colors"
 											type="text"
 											value={state.colors}
-											onChange={(e) => setState({ ...state, colors: e.target.value })}
-											className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+											onChange={(e) => setState((prev) => ({ ...prev, colors: e.target.value }))}
+											className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 											placeholder="e.g., Warm tones, Blue and gold, Pastel colors..."
 											maxLength={200}
 										/>
@@ -464,13 +487,17 @@ export function ImagePromptWizard({
 									<h4 className="text-md font-medium text-gray-900 mb-4">Review & Generate Prompt</h4>
 
 									{/* Summary */}
-									<div className="bg-gray-50 rounded-lg p-4 text-sm space-y-2">
-										<div>
-											<span className="font-medium">Type:</span> {state.imageType}
-										</div>
-										<div>
-											<span className="font-medium">Subject:</span> {state.subject}
-										</div>
+									<div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-900 space-y-2">
+										{state.imageType && (
+											<div>
+												<span className="font-medium">Type:</span> {state.imageType}
+											</div>
+										)}
+										{state.subject && (
+											<div>
+												<span className="font-medium">Subject:</span> {state.subject}
+											</div>
+										)}
 										{state.style && (
 											<div>
 												<span className="font-medium">Style:</span> {state.style}
@@ -495,21 +522,32 @@ export function ImagePromptWizard({
 
 									{/* Generate or edit prompt */}
 									{!state.generatedPrompt ? (
-										<button
-											type="button"
-											onClick={handleGeneratePrompt}
-											disabled={isGenerating}
-											className="w-full bg-cyan-600 text-white px-4 py-3 rounded-md hover:bg-cyan-700 disabled:opacity-50 font-medium"
-										>
-											{isGenerating ? (
-												<span className="flex items-center justify-center gap-2">
-													<span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-													Generating Prompt...
-												</span>
-											) : (
-												"Generate Prompt"
-											)}
-										</button>
+										<div className="space-y-4">
+											<button
+												type="button"
+												onClick={handleGeneratePrompt}
+												disabled={isGenerating}
+												className="w-full bg-cyan-600 text-white px-4 py-3 rounded-md hover:bg-cyan-700 disabled:opacity-50 font-medium"
+											>
+												{isGenerating ? (
+													<span className="flex items-center justify-center gap-2">
+														<span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+														Generating Prompt...
+													</span>
+												) : (
+													"Generate Prompt"
+												)}
+											</button>
+											<div className="flex justify-center">
+												<button
+													type="button"
+													onClick={goToPreviousStep}
+													className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+												>
+													← Back
+												</button>
+											</div>
+										</div>
 									) : (
 										<div className="space-y-4">
 											<div>
@@ -519,8 +557,8 @@ export function ImagePromptWizard({
 												<textarea
 													id="generated-prompt"
 													value={state.generatedPrompt}
-													onChange={(e) => setState({ ...state, generatedPrompt: e.target.value })}
-													className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+													onChange={(e) => setState((prev) => ({ ...prev, generatedPrompt: e.target.value }))}
+													className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 													rows={6}
 													maxLength={4000}
 												/>
@@ -537,7 +575,7 @@ export function ImagePromptWizard({
 															type="checkbox"
 															checked={state.saveAsTemplate}
 															onChange={(e) =>
-																setState({ ...state, saveAsTemplate: e.target.checked })
+																setState((prev) => ({ ...prev, saveAsTemplate: e.target.checked }))
 															}
 															className="rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
 															aria-label="Save as template"
@@ -549,8 +587,8 @@ export function ImagePromptWizard({
 														<input
 															type="text"
 															value={state.templateName}
-															onChange={(e) => setState({ ...state, templateName: e.target.value })}
-															className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+															onChange={(e) => setState((prev) => ({ ...prev, templateName: e.target.value }))}
+															className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 															placeholder="Template name..."
 															maxLength={100}
 														/>

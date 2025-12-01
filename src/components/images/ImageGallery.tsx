@@ -205,7 +205,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 										type="text"
 										value={editedCaption}
 										onChange={(e) => setEditedCaption(e.target.value)}
-										className="w-full text-sm border rounded px-2 py-1 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+										className="w-full text-sm text-gray-900 placeholder-gray-400 border rounded px-2 py-1 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 										placeholder="Add caption..."
 										maxLength={500}
 										autoFocus
