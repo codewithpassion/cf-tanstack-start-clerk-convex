@@ -39,7 +39,9 @@ import {
 	MessageSquareQuote,
 	Undo,
 	Redo,
+	Sparkles,
 } from "lucide-react";
+import { InlineRefinePopover } from "./InlineRefinePopover";
 import type { Editor } from "@tiptap/core";
 import type { Transaction } from "@tiptap/pm/state";
 import { useMutation } from "convex/react";
@@ -73,6 +75,20 @@ export interface ContentEditorProps {
 	 * Debounce delay in milliseconds (default: 3000ms).
 	 */
 	debounceMs?: number;
+
+	/**
+	 * Callback when user triggers inline refine for selected text.
+	 */
+	onTriggerInlineRefine?: (
+		selectedText: string,
+		selectionRange: { from: number; to: number },
+		instructions: string
+	) => void;
+
+	/**
+	 * Callback to receive the editor instance when it's ready.
+	 */
+	onEditorReady?: (editor: Editor | null) => void;
 }
 
 /**
@@ -303,7 +319,7 @@ function markdownToTiptap(markdown: string): JSONContent {
  * Parse JSON content safely and ensure it has proper doc schema.
  * Handles both JSON (TipTap format) and markdown/plain text content.
  */
-function parseContent(content: string): JSONContent {
+export function parseContent(content: string): JSONContent {
 	// Handle empty content
 	if (!content || content.trim() === "") {
 		return { type: "doc", content: [] };
@@ -539,12 +555,97 @@ export function ContentEditor({
 	contentPieceId,
 	disabled = false,
 	debounceMs = 3000,
+	onTriggerInlineRefine,
+	onEditorReady,
 }: ContentEditorProps) {
 	const [isSaving, setIsSaving] = useState(false);
 	const [lastSaved, setLastSaved] = useState<Date | null>(null);
 	const [toolbarEditor, setToolbarEditor] = useState<Editor | null>(null);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const updateContentPiece = useMutation(api.contentPieces.updateContentPiece);
+
+	// State for inline refine popover
+	const [showInlineRefinePopover, setShowInlineRefinePopover] =
+		useState(false);
+	const [refinePopoverPosition, setRefinePopoverPosition] = useState({
+		x: 0,
+		y: 0,
+	});
+	const [selectedTextForRefine, setSelectedTextForRefine] = useState("");
+	const [selectionRangeForRefine, setSelectionRangeForRefine] = useState<{
+		from: number;
+		to: number;
+	} | null>(null);
+
+	/**
+	 * Handle inline refine trigger from bubble menu
+	 */
+	const handleInlineRefineTrigger = useCallback(
+		(editor: Editor) => {
+			// Get selection range
+			const from = editor.state.selection.from;
+			const to = editor.state.selection.to;
+
+			// Don't open if no selection
+			if (from === to) {
+				return;
+			}
+
+			// Get selected text for validation
+			const selectedText = editor.state.doc.textBetween(from, to);
+			if (!selectedText.trim()) {
+				return;
+			}
+
+			// Get selection position for popover placement
+			const coords = editor.view.coordsAtPos(from);
+
+			// Store selection range and text
+			setSelectionRangeForRefine({ from, to });
+			setSelectedTextForRefine(selectedText);
+
+			// Position popover below the selection
+			setRefinePopoverPosition({
+				x: coords.left,
+				y: coords.bottom + 8, // 8px below selection
+			});
+
+			// Open popover
+			setShowInlineRefinePopover(true);
+		},
+		[]
+	);
+
+	/**
+	 * Handle inline refine submit from popover
+	 */
+	const handleInlineRefineSubmit = useCallback(
+		(instructions: string) => {
+			// Close popover
+			setShowInlineRefinePopover(false);
+
+			// Trigger parent callback with selected text, range, and instructions
+			if (onTriggerInlineRefine && selectionRangeForRefine) {
+				onTriggerInlineRefine(
+					selectedTextForRefine,
+					selectionRangeForRefine,
+					instructions
+				);
+			}
+		},
+		[
+			onTriggerInlineRefine,
+			selectedTextForRefine,
+			selectionRangeForRefine,
+		]
+	);
+
+	// Call onEditorReady when editor is set
+	useEffect(() => {
+		if (onEditorReady) {
+			onEditorReady(toolbarEditor);
+		}
+	}, [toolbarEditor, onEditorReady]);
 
 	// Memoize parsed content to prevent unnecessary re-renders
 	const parsedInitialContent = useMemo(
@@ -719,6 +820,19 @@ export function ContentEditor({
 							>
 								<Code className="h-4 w-4" />
 							</EditorBubbleItem>
+
+							{/* Refine button - only show if callback is provided */}
+							{onTriggerInlineRefine && (
+								<>
+									<div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+									<EditorBubbleItem
+										onSelect={handleInlineRefineTrigger}
+										className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+									>
+										<Sparkles className="h-4 w-4" />
+									</EditorBubbleItem>
+								</>
+							)}
 						</EditorBubble>
 
 						<ImageResizer />
@@ -738,6 +852,14 @@ export function ContentEditor({
 					<strong>Slash commands:</strong> Type / to see all commands
 				</p>
 			</div>
+
+			{/* Inline Refine Popover */}
+			<InlineRefinePopover
+				isOpen={showInlineRefinePopover}
+				onClose={() => setShowInlineRefinePopover(false)}
+				onSubmit={handleInlineRefineSubmit}
+				position={refinePopoverPosition}
+			/>
 		</div>
 	);
 }

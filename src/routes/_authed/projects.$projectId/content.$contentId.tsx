@@ -1,9 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
-import { ContentEditor } from "@/components/content/ContentEditor";
+import { ContentEditor, parseContent } from "@/components/content/ContentEditor";
 import { ContentEditorLayout } from "@/components/content/ContentEditorLayout";
 import { ToolsPanel } from "@/components/content/ToolsPanel";
 import { FinalizeDialog } from "@/components/content/FinalizeDialog";
@@ -11,6 +11,111 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { VersionHistorySidebar } from "@/components/content/VersionHistorySidebar";
 import { RefineDialog } from "@/components/content/RefineDialog";
+import { SelectionRefineDialog } from "@/components/content/SelectionRefineDialog";
+import { refineSelection } from "@/server/ai";
+import { useStreamingResponse } from "@/hooks/useStreamingResponse";
+import type { Editor } from "@tiptap/core";
+import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
+
+/**
+ * Convert TipTap slice to markdown
+ */
+function convertSliceToMarkdown(slice: any): string {
+	let markdown = "";
+
+	slice.content.forEach((node: ProseMirrorNode, index: number) => {
+		const nodeMarkdown = nodeToMarkdown(node);
+		markdown += nodeMarkdown;
+
+		// Add spacing between nodes
+		if (index < slice.content.childCount - 1) {
+			markdown += "\n\n";
+		}
+	});
+
+	return markdown.trim();
+}
+
+/**
+ * Convert individual node to markdown
+ */
+function nodeToMarkdown(node: ProseMirrorNode): string {
+	const { type, attrs, content } = node;
+
+	// Handle different node types
+	if (type.name === "heading") {
+		const level = "#".repeat(attrs.level || 1);
+		return `${level} ${node.textContent}`;
+	}
+
+	if (type.name === "paragraph") {
+		let text = "";
+		if (content) {
+			content.forEach((child: ProseMirrorNode) => {
+				text += applyMarks(child.text || "", Array.from(child.marks || []));
+			});
+		}
+		return text;
+	}
+
+	if (type.name === "bulletList") {
+		let listMarkdown = "";
+		if (content) {
+			content.forEach((listItem: ProseMirrorNode) => {
+				listMarkdown += `- ${listItem.textContent}\n`;
+			});
+		}
+		return listMarkdown.trim();
+	}
+
+	if (type.name === "orderedList") {
+		let listMarkdown = "";
+		let index = 1;
+		if (content) {
+			content.forEach((listItem: ProseMirrorNode) => {
+				listMarkdown += `${index}. ${listItem.textContent}\n`;
+				index++;
+			});
+		}
+		return listMarkdown.trim();
+	}
+
+	if (type.name === "blockquote") {
+		return `> ${node.textContent}`;
+	}
+
+	if (type.name === "codeBlock") {
+		const lang = attrs.language || "";
+		return `\`\`\`${lang}\n${node.textContent}\n\`\`\``;
+	}
+
+	// Default: return text content
+	return node.textContent || "";
+}
+
+/**
+ * Apply markdown marks (bold, italic, code, etc.) to text
+ */
+function applyMarks(text: string, marks: any[]): string {
+	let result = text;
+
+	for (const mark of marks) {
+		if (mark.type.name === "bold") {
+			result = `**${result}**`;
+		} else if (mark.type.name === "italic") {
+			result = `*${result}*`;
+		} else if (mark.type.name === "code") {
+			result = `\`${result}\``;
+		} else if (mark.type.name === "strike") {
+			result = `~~${result}~~`;
+		} else if (mark.type.name === "link") {
+			const href = mark.attrs.href || "";
+			result = `[${result}](${href})`;
+		}
+	}
+
+	return result;
+}
 
 /**
  * Route for editing a content piece with AI chat assistance.
@@ -32,6 +137,24 @@ function ContentEditorPage() {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 	const [showVersionSidebar, setShowVersionSidebar] = useState(false);
 	const [showRefineDialog, setShowRefineDialog] = useState(false);
+	const [showSelectionRefineDialog, setShowSelectionRefineDialog] =
+		useState(false);
+
+	// State for inline refine
+	const [inlineRefineSelection, setInlineRefineSelection] = useState<{
+		text: string;
+		range: { from: number; to: number };
+	} | null>(null);
+	const editorRef = useRef<Editor | null>(null);
+
+	// Streaming hook for inline refine
+	const {
+		content: refinedSelectionContent,
+		isStreaming: isStreamingSelection,
+		error: selectionRefineError,
+		startStream: startSelectionStream,
+		reset: resetSelectionStream,
+	} = useStreamingResponse();
 
 	// Load content piece with relations
 	const contentPiece = useQuery(api.contentPieces.getContentPieceWithRelations, {
@@ -104,7 +227,87 @@ function ContentEditorPage() {
 		}
 	};
 
-	// Handle accepting refined content
+	// Handle inline refine trigger
+	const handleInlineRefineTrigger = async (
+		_selectedText: string,
+		selectionRange: { from: number; to: number },
+		instructions: string
+	) => {
+		try {
+			if (!editorRef.current) return;
+
+			const editor = editorRef.current;
+			const { from, to } = selectionRange;
+
+			// Get the slice of content
+			const slice = editor.state.doc.slice(from, to);
+
+			// Convert slice to markdown
+			const markdownContent = convertSliceToMarkdown(slice);
+
+			// Store selection info with markdown
+			setInlineRefineSelection({
+				text: markdownContent,
+				range: selectionRange,
+			});
+
+			// Blur editor to close bubble menu
+			editor.commands.blur();
+
+			// Open selection refine dialog immediately to show streaming
+			setShowSelectionRefineDialog(true);
+
+			// Call refineSelection server function with markdown
+			const response = await refineSelection({
+				data: {
+					contentPieceId: contentId as Id<"contentPieces">,
+					selectedText: markdownContent, // Send markdown, not plain text
+					instructions,
+				},
+			});
+
+			// Start streaming (dialog will show progress)
+			await startSelectionStream(response);
+		} catch (error) {
+			console.error("Inline refine error:", error);
+			alert("Failed to refine selection. Please try again.");
+			setShowSelectionRefineDialog(false);
+		}
+	};
+
+	// Handle accepting refined selection
+	const handleAcceptRefinedSelection = async (refinedMarkdown: string) => {
+		if (inlineRefineSelection && editorRef.current) {
+			const editor = editorRef.current;
+			const { range } = inlineRefineSelection;
+
+			// Parse markdown to TipTap JSON
+			const parsedContent = parseContent(refinedMarkdown);
+
+			// Extract the content nodes (skip the doc wrapper)
+			const contentNodes =
+				parsedContent.type === "doc" && parsedContent.content
+					? parsedContent.content
+					: [parsedContent];
+
+			// Replace the selected range with parsed content
+			editor.chain().focus().deleteRange(range).insertContentAt(range.from, contentNodes).run();
+
+			// Get the updated content and save it
+			const updatedContent = JSON.stringify(editor.getJSON());
+			await updateContentPiece({
+				contentPieceId: contentId as Id<"contentPieces">,
+				content: updatedContent,
+			});
+
+			// Reset and close
+			setInlineRefineSelection(null);
+			resetSelectionStream();
+			setShowSelectionRefineDialog(false);
+		}
+	};
+
+	// Handle accepting refined content (full content mode)
 	const handleAcceptRefine = async (newContent: string) => {
 		await updateContentPiece({
 			contentPieceId: contentId as Id<"contentPieces">,
@@ -264,6 +467,10 @@ function ContentEditorPage() {
 							}}
 							contentPieceId={contentId as Id<"contentPieces">}
 							disabled={isFinalized}
+							onTriggerInlineRefine={handleInlineRefineTrigger}
+							onEditorReady={(editor) => {
+								editorRef.current = editor;
+							}}
 						/>
 					}
 					toolsPanel={
@@ -354,6 +561,20 @@ function ContentEditorPage() {
 			currentContent={contentPiece.content}
 			contentPieceId={contentId as Id<"contentPieces">}
 			onAccept={handleAcceptRefine}
+		/>
+
+		{/* Selection Refine Dialog */}
+		<SelectionRefineDialog
+			isOpen={showSelectionRefineDialog}
+			onClose={() => {
+				setShowSelectionRefineDialog(false);
+				resetSelectionStream();
+				setInlineRefineSelection(null);
+			}}
+			content={refinedSelectionContent}
+			isStreaming={isStreamingSelection}
+			error={selectionRefineError ?? undefined}
+			onAccept={handleAcceptRefinedSelection}
 		/>
 		</div>
 	);

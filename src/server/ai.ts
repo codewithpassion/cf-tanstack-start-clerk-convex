@@ -121,6 +121,15 @@ export interface RefineContentInput {
 }
 
 /**
+ * Input parameters for selection refinement
+ */
+export interface RefineSelectionInput {
+	contentPieceId: Id<"contentPieces">;
+	selectedText: string;
+	instructions: string;
+}
+
+/**
  * Input parameters for image prompt generation
  */
 export interface GenerateImagePromptInput {
@@ -888,6 +897,170 @@ export const refineContent = createServerFn({ method: "POST" })
 
 			throw new Error(
 				`Failed to refine content: ${errorMessage}. Please check your AI provider configuration and try again.`,
+			);
+		}
+	});
+
+/**
+ * Construct system prompt for selection refinement
+ * CRITICAL: Emphasizes refining ONLY the selected text
+ */
+function constructRefineSelectionSystemPrompt(
+	context: GenerationContext
+): string {
+	const parts = [
+		"You are an expert content editor. Refine the selected text based on user instructions.",
+		"",
+		"CRITICAL INSTRUCTIONS:",
+		"- The input is in MARKDOWN format",
+		"- PRESERVE the markdown structure EXACTLY (headings, paragraphs, lists, formatting)",
+		"- If input has '## Heading', keep it as '## Heading' in the output (don't change to paragraph)",
+		"- If input has a paragraph, keep it as a paragraph (don't add heading markers)",
+		"- If input has '**bold**' or '*italic*', preserve those marks in the refined text",
+		"- Only refine the TEXT CONTENT, not the STRUCTURE or FORMATTING",
+		"- Return the refined content in the SAME markdown format as the input",
+		"- You are refining ONLY the selected portion - do NOT add any content before or after",
+	];
+
+	if (context.brandVoiceDescription) {
+		parts.push(`\nBRAND VOICE:\n${context.brandVoiceDescription}`);
+	}
+
+	if (context.personaDescription) {
+		parts.push(`\nPERSONA:\n${context.personaDescription}`);
+	}
+
+	if (context.formatGuidelines) {
+		parts.push(`\nFORMAT GUIDELINES:\n${context.formatGuidelines}`);
+	}
+
+	return parts.join("\n");
+}
+
+/**
+ * Construct user prompt for selection refinement
+ */
+function constructRefineSelectionUserPrompt(
+	selectedText: string,
+	instructions: string
+): string {
+	return `SELECTED CONTENT (in markdown format):
+${selectedText}
+
+REFINEMENT REQUEST:
+${instructions}
+
+IMPORTANT:
+- Preserve the exact markdown structure (headings stay headings, paragraphs stay paragraphs)
+- Only refine the text content, not the structure
+- Return the result in markdown format with the same structure as the input
+- Example: If input is "## Title\n\nSome text", output should be "## [Refined Title]\n\n[Refined text]"`;
+}
+
+/**
+ * Refine selected text based on user instructions
+ *
+ * Server function that takes selected text and user refinement instructions,
+ * assembles context (persona, brand voice, etc.), and streams back refined content.
+ * CRITICAL: Instructs the LLM to modify ONLY the selected text.
+ */
+export const refineSelection = createServerFn({ method: "POST" })
+	.inputValidator((input: RefineSelectionInput) => input)
+	.handler(async ({ data }) => {
+		try {
+			const convex = await getAuthenticatedConvexClient();
+			const { contentPieceId, selectedText, instructions } = data;
+
+			// Get content piece to retrieve project context
+			const contentPiece = await convex.query(
+				api.contentPieces.getContentPiece,
+				{
+					contentPieceId,
+				}
+			);
+
+			// Get project for AI configuration
+			const project = await convex.query(api.projects.getProject, {
+				projectId: contentPiece.projectId,
+			});
+
+			// Assemble context (persona, brand voice, category guidelines, etc.)
+			const context = await assembleGenerationContext({
+				data: {
+					categoryId: contentPiece.categoryId,
+					personaId: contentPiece.personaId,
+					brandVoiceId: contentPiece.brandVoiceId,
+					projectId: contentPiece.projectId,
+				},
+			});
+
+			// Resolve AI configuration
+			const env = getAIEnvironment();
+			const aiConfig = resolveAIConfig(env, {
+				defaultAiProvider: project.defaultAiProvider,
+				defaultAiModel: project.defaultAiModel,
+			});
+
+			// Create AI provider
+			const model = createAIProvider(aiConfig, env);
+
+			// Construct selection-specific prompts
+			const systemPrompt = constructRefineSelectionSystemPrompt(context);
+			const userPrompt = constructRefineSelectionUserPrompt(
+				selectedText,
+				instructions
+			);
+
+			// Estimate token count for logging
+			const estimatedPromptTokens = countPromptTokens(
+				systemPrompt,
+				userPrompt
+			);
+			console.log(
+				"Refine selection estimated prompt tokens:",
+				estimatedPromptTokens
+			);
+
+			// Stream text generation
+			const result = streamText({
+				model,
+				system: systemPrompt,
+				prompt: userPrompt,
+				temperature: 0.7,
+				maxOutputTokens: 4096,
+			});
+
+			// Track token usage when finished (async, does not block response)
+			(async () => {
+				try {
+					const usage = await result.usage;
+					if (usage) {
+						const tokenUsage: TokenUsage = {
+							promptTokens: usage.inputTokens || 0,
+							completionTokens: usage.outputTokens || 0,
+							totalTokens:
+								(usage.inputTokens || 0) + (usage.outputTokens || 0),
+						};
+
+						// TODO: Store token usage in database for billing
+						console.log("Refine selection token usage:", tokenUsage);
+					}
+				} catch (error) {
+					console.error("Error tracking refine selection token usage:", error);
+				}
+			})();
+
+			// Return streaming response
+			return result.toTextStreamResponse();
+		} catch (error) {
+			console.error("Selection refinement error:", error);
+
+			// Return detailed error message
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error occurred";
+
+			throw new Error(
+				`Failed to refine selection: ${errorMessage}. Please check your AI provider configuration and try again.`
 			);
 		}
 	});
