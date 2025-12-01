@@ -20,7 +20,9 @@ import {
 	Trash2,
 	Download,
 	GitFork,
+	ArrowRight,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export interface ToolsPanelProps {
 	/**
@@ -29,9 +31,32 @@ export interface ToolsPanelProps {
 	contentPieceId: Id<"contentPieces">;
 
 	/**
+	 * Project ID for linking
+	 */
+	projectId: Id<"projects">;
+
+	/**
 	 * Current editor content for AI context
 	 */
 	currentContent: string;
+
+	/**
+	 * Parent content if this piece was derived from another
+	 */
+	parentContent?: {
+		_id: string;
+		title: string;
+		category?: { name: string } | null;
+	} | null;
+
+	/**
+	 * Derived content pieces (children)
+	 */
+	derivedContent?: {
+		_id: string;
+		title: string;
+		category?: { name: string } | null;
+	}[];
 
 	/**
 	 * Callback to trigger refine action
@@ -74,6 +99,9 @@ export interface ToolsPanelProps {
  */
 export function ToolsPanel({
 	contentPieceId,
+	projectId,
+	parentContent,
+	derivedContent,
 	onRefine,
 	onRepurpose,
 	onShowVersions,
@@ -82,6 +110,8 @@ export function ToolsPanel({
 	onDelete,
 	isFinalized = false,
 }: ToolsPanelProps) {
+	const hasRelationships =
+		parentContent || (derivedContent && derivedContent.length > 0);
 	// Fetch attached images from Convex
 	const contentImages = useQuery(api.contentImages.listContentImages, {
 		contentPieceId,
@@ -203,6 +233,86 @@ export function ToolsPanel({
 					Delete
 				</button>
 			</div>
+
+			{/* Relationships Section */}
+			{hasRelationships && (
+				<div className="px-4 py-4 border-b border-gray-200">
+					<h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">
+						Relationships
+					</h4>
+
+					<div className="space-y-3">
+						{/* Parent Content (Derived From) */}
+						{parentContent && (
+							<div>
+								<div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+									<GitFork className="w-3.5 h-3.5" />
+									<span>Derived from</span>
+								</div>
+								<Link
+									to="/projects/$projectId/content/$contentId"
+									params={{
+										projectId,
+										contentId: parentContent._id,
+									}}
+									className="block p-2 rounded-lg border border-amber-200 bg-amber-50 hover:bg-amber-100 transition-colors"
+								>
+									<div className="flex items-center gap-2">
+										<span className="text-amber-600">←</span>
+										<div className="min-w-0 flex-1">
+											<p className="text-sm font-medium text-amber-900 truncate">
+												{parentContent.title}
+											</p>
+											{parentContent.category && (
+												<p className="text-xs text-amber-700">
+													{parentContent.category.name}
+												</p>
+											)}
+										</div>
+									</div>
+								</Link>
+							</div>
+						)}
+
+						{/* Derived Content (Children) */}
+						{derivedContent && derivedContent.length > 0 && (
+							<div>
+								<div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+									<ArrowRight className="w-3.5 h-3.5" />
+									<span>Repurposed to ({derivedContent.length})</span>
+								</div>
+								<div className="space-y-1.5">
+									{derivedContent.map((child) => (
+										<Link
+											key={child._id}
+											to="/projects/$projectId/content/$contentId"
+											params={{
+												projectId,
+												contentId: child._id,
+											}}
+											className="block p-2 rounded-lg border border-cyan-200 bg-cyan-50 hover:bg-cyan-100 transition-colors"
+										>
+											<div className="flex items-center gap-2">
+												<span className="text-cyan-600">→</span>
+												<div className="min-w-0 flex-1">
+													<p className="text-sm font-medium text-cyan-900 truncate">
+														{child.title}
+													</p>
+													{child.category && (
+														<p className="text-xs text-cyan-700">
+															{child.category.name}
+														</p>
+													)}
+												</div>
+											</div>
+										</Link>
+									))}
+								</div>
+							</div>
+						)}
+					</div>
+				</div>
+			)}
 
 			{/* Images Gallery */}
 			<div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">

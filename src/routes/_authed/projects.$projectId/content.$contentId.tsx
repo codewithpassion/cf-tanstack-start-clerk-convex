@@ -17,7 +17,6 @@ import { refineSelection } from "@/server/ai";
 import { useStreamingResponse } from "@/hooks/useStreamingResponse";
 import type { Editor } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
-import { GitFork } from "lucide-react";
 
 /**
  * Convert TipTap slice to markdown
@@ -163,6 +162,12 @@ function ContentEditorPage() {
 	const contentPiece = useQuery(api.contentPieces.getContentPieceWithRelations, {
 		contentPieceId: contentId as Id<"contentPieces">,
 	});
+
+	// Load derived content (children)
+	const derivedContent = useQuery(
+		api.contentPieces.getDerivedContent,
+		contentPiece ? { parentContentId: contentId as Id<"contentPieces"> } : "skip"
+	);
 
 	// Mutations
 	const updateContentPiece = useMutation(api.contentPieces.updateContentPiece);
@@ -434,23 +439,6 @@ function ContentEditorPage() {
 					</div>
 
 					<div className="flex items-center gap-2">
-						{/* Source Content Indicator (for derived content) */}
-						{contentPiece.parentContent && (
-							<Link
-								to="/projects/$projectId/content/$contentId"
-								params={{
-									projectId,
-									contentId: contentPiece.parentContent._id,
-								}}
-								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors"
-								title={`Derived from: ${contentPiece.parentContent.title}`}
-							>
-								<GitFork className="w-4 h-4" />
-								<span className="max-w-[150px] truncate">
-									{contentPiece.parentContent.title}
-								</span>
-							</Link>
-						)}
 						{contentPiece.persona && (
 							<button
 								type="button"
@@ -522,8 +510,22 @@ function ContentEditorPage() {
 					toolsPanel={
 						<ToolsPanel
 							contentPieceId={contentId as Id<"contentPieces">}
+							projectId={projectId as Id<"projects">}
 							currentContent={contentPiece.content}
 							isFinalized={isFinalized}
+							parentContent={
+								contentPiece.parentContent
+									? {
+											_id: contentPiece.parentContent._id,
+											title: contentPiece.parentContent.title,
+										}
+									: null
+							}
+							derivedContent={derivedContent?.map((child) => ({
+								_id: child._id,
+								title: child.title,
+								category: child.category ? { name: child.category.name } : null,
+							}))}
 							onRefine={() => setShowRefineDialog(true)}
 							onRepurpose={() => setShowRepurposeDialog(true)}
 							onShowVersions={() => setShowVersionSidebar(true)}

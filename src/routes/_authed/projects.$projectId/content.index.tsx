@@ -199,6 +199,9 @@ function ContentArchivePage() {
 		category: categories.find((c) => c._id === cp.categoryId) || null,
 		persona: personas.find((p) => p._id === cp.personaId) || null,
 		brandVoice: brandVoices.find((bv) => bv._id === cp.brandVoiceId) || null,
+		// Preserve relationship data from query
+		parentContent: cp.parentContent,
+		derivedCount: cp.derivedCount,
 	}));
 
 	// Map search results to SearchResult type

@@ -218,8 +218,37 @@ export const listContentPieces = query({
 		const offset = pagination?.offset ?? 0;
 		contentPieces = contentPieces.slice(offset, offset + limit);
 
+		// Fetch parent content info and derived count for each content piece
+		const contentPiecesWithRelationships = await Promise.all(
+			contentPieces.map(async (cp) => {
+				// Fetch parent content info if this is derived content
+				let parentContent: { _id: string; title: string } | null = null;
+				if (cp.parentContentId) {
+					const parent = await ctx.db.get(cp.parentContentId);
+					if (parent && !parent.deletedAt) {
+						parentContent = { _id: parent._id, title: parent.title };
+					}
+				}
+
+				// Count derived content pieces
+				const derivedContent = await ctx.db
+					.query("contentPieces")
+					.withIndex("by_parentContentId", (q) =>
+						q.eq("parentContentId", cp._id)
+					)
+					.collect();
+				const derivedCount = derivedContent.filter((d) => !d.deletedAt).length;
+
+				return {
+					...cp,
+					parentContent,
+					derivedCount,
+				};
+			})
+		);
+
 		return {
-			contentPieces,
+			contentPieces: contentPiecesWithRelationships,
 			totalCount,
 			hasMore: offset + limit < totalCount,
 		};

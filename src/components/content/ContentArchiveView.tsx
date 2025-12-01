@@ -12,6 +12,8 @@ export interface ContentArchiveViewProps {
 		category: { name: string } | null;
 		persona: { name: string } | null;
 		brandVoice: { name: string } | null;
+		parentContent?: { _id: string; title: string } | null;
+		derivedCount?: number;
 	})[];
 	totalCount: number;
 	categories: Pick<Category, "_id" | "name">[];

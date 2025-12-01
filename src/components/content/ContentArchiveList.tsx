@@ -1,11 +1,14 @@
 import type { ContentPiece } from "@/types/entities";
 import { formatDistanceToNow } from "date-fns";
+import { GitFork, ArrowRight } from "lucide-react";
 
 export interface ContentArchiveListProps {
 	contentPieces: (ContentPiece & {
 		category: { name: string } | null;
 		persona: { name: string } | null;
 		brandVoice: { name: string } | null;
+		parentContent?: { _id: string; title: string } | null;
+		derivedCount?: number;
 	})[];
 	onEdit: (contentPieceId: string) => void;
 	onDelete: (contentPieceId: string) => void;
@@ -230,7 +233,7 @@ export function ContentArchiveList({
 									onClick={(e) => e.stopPropagation()}
 								/>
 							</td>
-							<td className="px-6 py-4 whitespace-nowrap">
+							<td className="px-6 py-4">
 								<div className="text-sm font-medium text-gray-900">
 									{contentPiece.title}
 								</div>
@@ -239,6 +242,34 @@ export function ContentArchiveList({
 										{contentPiece.persona.name}
 									</div>
 								)}
+								{/* Repurpose relationship indicators */}
+								<div className="flex flex-wrap items-center gap-2 mt-1">
+									{contentPiece.parentContent && (
+										<button
+											type="button"
+											onClick={(e) => {
+												e.stopPropagation();
+												onEdit(contentPiece.parentContent!._id);
+											}}
+											className="inline-flex items-center gap-1 text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full hover:bg-amber-100 transition-colors"
+											title={`Derived from: ${contentPiece.parentContent.title}`}
+										>
+											<GitFork className="h-3 w-3" />
+											<span className="max-w-[120px] truncate">
+												← {contentPiece.parentContent.title}
+											</span>
+										</button>
+									)}
+									{contentPiece.derivedCount && contentPiece.derivedCount > 0 && (
+										<span
+											className="inline-flex items-center gap-1 text-xs text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded-full"
+											title={`Repurposed ${contentPiece.derivedCount} time${contentPiece.derivedCount > 1 ? "s" : ""}`}
+										>
+											<ArrowRight className="h-3 w-3" />
+											<span>{contentPiece.derivedCount} repurposed</span>
+										</span>
+									)}
+								</div>
 							</td>
 							<td className="px-6 py-4 whitespace-nowrap">
 								<div className="text-sm text-gray-900">

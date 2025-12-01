@@ -1,11 +1,14 @@
 import type { ContentPiece } from "@/types/entities";
 import { formatDistanceToNow } from "date-fns";
+import { GitFork, ArrowRight } from "lucide-react";
 
 export interface ContentCardProps {
 	contentPiece: ContentPiece & {
 		category: { name: string } | null;
 		persona: { name: string } | null;
 		brandVoice: { name: string } | null;
+		parentContent?: { _id: string; title: string } | null;
+		derivedCount?: number;
 	};
 	onClick: (contentPieceId: string) => void;
 	isSelected?: boolean;
@@ -97,6 +100,38 @@ export function ContentCard({
 						</span>
 					)}
 				</div>
+
+				{/* Repurpose relationship indicators */}
+				{(contentPiece.parentContent ||
+					(contentPiece.derivedCount && contentPiece.derivedCount > 0)) && (
+					<div className="flex flex-wrap items-center gap-2 mb-3">
+						{contentPiece.parentContent && (
+							<button
+								type="button"
+								onClick={(e) => {
+									e.stopPropagation();
+									onClick(contentPiece.parentContent!._id);
+								}}
+								className="inline-flex items-center gap-1 text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full hover:bg-amber-100 transition-colors"
+								title={`Derived from: ${contentPiece.parentContent.title}`}
+							>
+								<GitFork className="h-3 w-3" />
+								<span className="max-w-[100px] truncate">
+									← {contentPiece.parentContent.title}
+								</span>
+							</button>
+						)}
+						{contentPiece.derivedCount && contentPiece.derivedCount > 0 && (
+							<span
+								className="inline-flex items-center gap-1 text-xs text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded-full"
+								title={`Repurposed ${contentPiece.derivedCount} time${contentPiece.derivedCount > 1 ? "s" : ""}`}
+							>
+								<ArrowRight className="h-3 w-3" />
+								<span>{contentPiece.derivedCount} repurposed</span>
+							</span>
+						)}
+					</div>
+				)}
 
 				{/* Timestamps */}
 				<div className="text-xs text-gray-500 space-y-1">
