@@ -5,6 +5,7 @@ import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
 import { ContentEditor } from "@/components/content/ContentEditor";
 import { ContentEditorLayout } from "@/components/content/ContentEditorLayout";
+import { ToolsPanel } from "@/components/content/ToolsPanel";
 import { FinalizeDialog } from "@/components/content/FinalizeDialog";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { LoadingState } from "@/components/shared/LoadingState";
@@ -148,184 +149,98 @@ function ContentEditorPage() {
 			{/* Page Header */}
 			<div className="bg-white border-b border-gray-200 px-6 py-4">
 				<div className="flex items-center justify-between">
-					<div className="flex-1 min-w-0">
-						<div className="flex items-center gap-3">
-							<Link
-								to="/projects/$projectId"
-								params={{ projectId }}
-								className="text-gray-400 hover:text-gray-600"
+					<div className="flex items-center gap-3">
+						<Link
+							to="/projects/$projectId"
+							params={{ projectId }}
+							className="text-gray-400 hover:text-gray-600"
+						>
+							<svg
+								className="w-5 h-5"
+								fill="none"
+								viewBox="0 0 24 24"
+								strokeWidth="1.5"
+								stroke="currentColor"
 							>
-								<svg
-									className="w-5 h-5"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth="1.5"
-									stroke="currentColor"
-								>
-									<title>Back</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-									/>
-								</svg>
-							</Link>
-							<div>
-								<h1 className="text-2xl font-bold text-gray-900 truncate">
-									{contentPiece.title}
-								</h1>
-								<div className="flex items-center gap-2 mt-1">
-									{contentPiece.category && (
-										<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-											{contentPiece.category.name}
-										</span>
-									)}
-									{isFinalized ? (
-										<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-											Finalized v{contentPiece.currentFinalizedVersion}
-										</span>
-									) : (
-										<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-											Draft
-										</span>
-									)}
-								</div>
-							</div>
-						</div>
+								<title>Back</title>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+								/>
+							</svg>
+						</Link>
+						<svg
+							className="w-5 h-5 text-gray-400"
+							fill="none"
+							viewBox="0 0 24 24"
+							strokeWidth="1.5"
+							stroke="currentColor"
+						>
+							<title>Document</title>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+							/>
+						</svg>
+						<h1 className="text-xl font-bold text-gray-900 truncate">
+							{contentPiece.title}
+						</h1>
 					</div>
 
-					{/* Toolbar Actions */}
-					<div className="flex items-center gap-3">
-						{/* Version History Button */}
-						<button
-							type="button"
-							onClick={() => setShowVersionSidebar(true)}
-							className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
-						>
-							<svg
-								className="w-4 h-4 mr-2"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth="1.5"
-								stroke="currentColor"
-							>
-								<title>History</title>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
-							Versions
-						</button>
-
-						{/* Image Gallery Link */}
-						<Link
-							to="/projects/$projectId/content/$contentId/images"
-							params={{ projectId, contentId }}
-							search={{
-								page: 1,
-								pageSize: 25,
-								categoryId: undefined,
-								personaId: undefined,
-								brandVoiceId: undefined,
-								status: "draft" as const,
-								dateFrom: undefined,
-								dateTo: undefined,
-							}}
-							className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
-						>
-							<svg
-								className="w-4 h-4 mr-2"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth="1.5"
-								stroke="currentColor"
-							>
-								<title>Images</title>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-								/>
-							</svg>
-							Images
-						</Link>
-
-						{/* Finalize or Unlock Button */}
-						{isFinalized ? (
+					<div className="flex items-center gap-2">
+						{contentPiece.persona && (
 							<button
 								type="button"
-								onClick={() => setShowUnfinalizeDialog(true)}
-								className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-pink-50 text-pink-700 border border-pink-200 hover:bg-pink-100 transition-colors"
+								title={`Persona: ${contentPiece.persona.name}`}
 							>
 								<svg
-									className="w-4 h-4 mr-2"
+									className="w-4 h-4"
 									fill="none"
 									viewBox="0 0 24 24"
 									strokeWidth="1.5"
 									stroke="currentColor"
 								>
-									<title>Unlock</title>
+									<title>Persona</title>
 									<path
 										strokeLinecap="round"
 										strokeLinejoin="round"
-										d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+										d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
 									/>
 								</svg>
-								Unlock
-							</button>
-						) : (
-							<button
-								type="button"
-								onClick={() => setShowFinalizeDialog(true)}
-								className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
-							>
-								<svg
-									className="w-4 h-4 mr-2"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth="1.5"
-									stroke="currentColor"
-								>
-									<title>Finalize</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
-								Finalize
+								{contentPiece.persona.name}
 							</button>
 						)}
-
-						{/* Delete Button */}
-						<button
-							type="button"
-							onClick={() => setShowDeleteDialog(true)}
-							className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-						>
-							<svg
-								className="w-4 h-4 mr-2"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth="1.5"
-								stroke="currentColor"
+						{contentPiece.brandVoice && (
+							<button
+								type="button"
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 transition-colors"
+								title={`Voice: ${contentPiece.brandVoice.name}`}
 							>
-								<title>Delete</title>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-								/>
-							</svg>
-							Delete
-						</button>
+								<svg
+									className="w-4 h-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									strokeWidth="1.5"
+									stroke="currentColor"
+								>
+									<title>Voice</title>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"
+									/>
+								</svg>
+								{contentPiece.brandVoice.name}
+							</button>
+						)}
 					</div>
 				</div>
 			</div>
 
-			{/* Editor Layout with AI Panel */}
+			{/* Editor Layout with Tools Panel */}
 			<div className="flex-1 overflow-y-auto px-6 py-6">
 				<ContentEditorLayout
 					editor={
@@ -338,17 +253,49 @@ function ContentEditorPage() {
 							disabled={isFinalized}
 						/>
 					}
-					aiPanel={
-						// AI Chat Panel will be implemented in Task Group 16
-						// For now, show a placeholder
-						<div className="bg-white border border-gray-200 rounded-lg p-4 h-full">
-							<h3 className="text-lg font-semibold text-gray-900 mb-2">
-								AI Assistant
-							</h3>
-							<p className="text-sm text-gray-500">
-								AI chat panel will be available here.
-							</p>
-						</div>
+					toolsPanel={
+						<ToolsPanel
+							contentPieceId={contentId as Id<"contentPieces">}
+							currentContent={contentPiece.content}
+							isFinalized={isFinalized}
+							onApplyToContent={(newContent) => {
+								// TODO: Implement content application logic
+								console.log("Apply content:", newContent);
+							}}
+							onRefine={() => {
+								// TODO: Implement refine logic
+								console.log("Refine clicked");
+							}}
+							onChangeTone={(tone) => {
+								// TODO: Implement change tone logic
+								console.log("Change tone:", tone);
+							}}
+							onShowVersions={() => setShowVersionSidebar(true)}
+							onShowImages={() =>
+								navigate({
+									to: "/projects/$projectId/content/$contentId/images",
+									params: { projectId, contentId },
+									search: {
+										page: 1,
+										pageSize: 25,
+										categoryId: undefined,
+										personaId: undefined,
+										brandVoiceId: undefined,
+										status: "draft" as const,
+										dateFrom: undefined,
+										dateTo: undefined,
+									},
+								})
+							}
+							onFinalize={() => {
+								if (isFinalized) {
+									setShowUnfinalizeDialog(true);
+								} else {
+									setShowFinalizeDialog(true);
+								}
+							}}
+							onDelete={() => setShowDeleteDialog(true)}
+						/>
 					}
 				/>
 			</div>

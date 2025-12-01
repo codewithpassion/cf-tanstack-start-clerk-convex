@@ -1,8 +1,8 @@
 /**
  * ContentEditorLayout component provides a responsive layout for the content editor
- * with an optional AI chat panel.
+ * with an optional tools panel.
  *
- * Layout: Editor takes full width, AI panel positioned below
+ * Layout: Editor on the left (~70%), Tools panel on the right (~30%)
  */
 import type { ReactNode } from "react";
 
@@ -13,27 +13,26 @@ export interface ContentEditorLayoutProps {
 	editor: ReactNode;
 
 	/**
-	 * Optional AI chat panel component to render.
+	 * Optional tools panel component to render.
 	 */
-	aiPanel: ReactNode | null;
+	toolsPanel: ReactNode | null;
 }
 
 /**
- * Vertical layout for content editor with AI panel below.
+ * Horizontal layout for content editor with tools panel on the right.
  */
-export function ContentEditorLayout({ editor, aiPanel }: ContentEditorLayoutProps) {
+export function ContentEditorLayout({
+	editor,
+	toolsPanel,
+}: ContentEditorLayoutProps) {
 	return (
-		<div className="flex flex-col gap-6 w-full" data-testid="editor-layout">
-			{/* Main editor area - full width */}
-			<div className="w-full">
-				{editor}
-			</div>
+		<div className="flex gap-6 h-full w-full" data-testid="editor-layout">
+			{/* Main editor area - flexible width, grows to fill space */}
+			<div className="flex-1 min-w-0">{editor}</div>
 
-			{/* AI panel - below editor, full width */}
-			{aiPanel && (
-				<div className="w-full">
-					{aiPanel}
-				</div>
+			{/* Tools panel - fixed width on the right, always visible */}
+			{toolsPanel && (
+				<div className="w-80 flex-shrink-0">{toolsPanel}</div>
 			)}
 		</div>
 	);
