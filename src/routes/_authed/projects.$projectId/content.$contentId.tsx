@@ -10,6 +10,7 @@ import { FinalizeDialog } from "@/components/content/FinalizeDialog";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { VersionHistorySidebar } from "@/components/content/VersionHistorySidebar";
+import { RefineDialog } from "@/components/content/RefineDialog";
 
 /**
  * Route for editing a content piece with AI chat assistance.
@@ -30,6 +31,7 @@ function ContentEditorPage() {
 	const [showUnfinalizeDialog, setShowUnfinalizeDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 	const [showVersionSidebar, setShowVersionSidebar] = useState(false);
+	const [showRefineDialog, setShowRefineDialog] = useState(false);
 
 	// Load content piece with relations
 	const contentPiece = useQuery(api.contentPieces.getContentPieceWithRelations, {
@@ -37,6 +39,7 @@ function ContentEditorPage() {
 	});
 
 	// Mutations
+	const updateContentPiece = useMutation(api.contentPieces.updateContentPiece);
 	const finalizeContentPiece = useMutation(api.contentPieces.finalizeContentPiece);
 	const unfinalizeContentPiece = useMutation(
 		api.contentPieces.unfinalizeContentPiece
@@ -99,6 +102,15 @@ function ContentEditorPage() {
 			setIsDeleting(false);
 			setShowDeleteDialog(false);
 		}
+	};
+
+	// Handle accepting refined content
+	const handleAcceptRefine = async (newContent: string) => {
+		await updateContentPiece({
+			contentPieceId: contentId as Id<"contentPieces">,
+			content: newContent,
+		});
+		setShowRefineDialog(false);
 	};
 
 	// Loading state
@@ -245,6 +257,7 @@ function ContentEditorPage() {
 				<ContentEditorLayout
 					editor={
 						<ContentEditor
+							key={contentPiece.content}
 							initialContent={contentPiece.content}
 							onChange={() => {
 								// Content changes are handled by autosave in ContentEditor
@@ -262,14 +275,7 @@ function ContentEditorPage() {
 								// TODO: Implement content application logic
 								console.log("Apply content:", newContent);
 							}}
-							onRefine={() => {
-								// TODO: Implement refine logic
-								console.log("Refine clicked");
-							}}
-							onChangeTone={(tone) => {
-								// TODO: Implement change tone logic
-								console.log("Change tone:", tone);
-							}}
+							onRefine={() => setShowRefineDialog(true)}
 							onShowVersions={() => setShowVersionSidebar(true)}
 							onShowImages={() =>
 								navigate({
@@ -340,6 +346,15 @@ function ContentEditorPage() {
 				contentPieceId={contentId as Id<"contentPieces">}
 				currentVersion={1}
 			/>
+
+		{/* Refine Dialog */}
+		<RefineDialog
+			isOpen={showRefineDialog}
+			onClose={() => setShowRefineDialog(false)}
+			currentContent={contentPiece.content}
+			contentPieceId={contentId as Id<"contentPieces">}
+			onAccept={handleAcceptRefine}
+		/>
 		</div>
 	);
 }

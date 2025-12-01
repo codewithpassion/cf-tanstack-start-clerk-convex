@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { generateDraft } from "@/server/ai";
-import Markdown from "react-markdown";
+import { useStreamingResponse } from "@/hooks/useStreamingResponse";
+import { StreamingMarkdown } from "@/components/shared/StreamingMarkdown";
 
 export interface GenerationStepProps {
 	projectId: Id<"projects">;
@@ -36,11 +37,9 @@ export function GenerationStep({
 	const updateContentPiece = useMutation(api.contentPieces.updateContentPiece);
 
 	const [state, setState] = useState<GenerationState>("creating");
-	const [streamedContent, setStreamedContent] = useState("");
-	const [error, setError] = useState<string | null>(null);
 	const [contentPieceId, setContentPieceId] =
 		useState<Id<"contentPieces"> | null>(null);
-	const contentEndRef = useRef<HTMLDivElement>(null);
+	const { content, isStreaming, error, startStream } = useStreamingResponse();
 
 	useEffect(() => {
 		let cancelled = false;
@@ -77,45 +76,26 @@ export function GenerationStep({
 
 				if (cancelled) return;
 
-				// Handle the streaming response
-				let fullContent = "";
+			// Stream the response and get the final content
+			const fullContent = await startStream(response);
 
-				// Read the response body as a text stream
-				const reader = response.body?.getReader();
-				const decoder = new TextDecoder();
+			if (cancelled) return;
 
-				if (!reader) {
-					throw new Error("No response body");
-				}
+			// Update the content piece with the final generated content
+			await updateContentPiece({
+				contentPieceId: pieceId.contentPieceId,
+				content: fullContent,
+			});
 
-				while (true) {
-					const { done, value } = await reader.read();
+			if (cancelled) return;
 
-					if (done || cancelled) break;
+			setState("complete");
+		} catch (err) {
+			if (cancelled) return;
 
-					const chunk = decoder.decode(value, { stream: true });
-					fullContent += chunk;
-					setStreamedContent(fullContent);
-				}
-
-				if (cancelled) return;
-
-				// Update the content piece with the final generated content
-				await updateContentPiece({
-					contentPieceId: pieceId.contentPieceId,
-					content: fullContent,
-				});
-
-				if (cancelled) return;
-
-				setState("complete");
-			} catch (err) {
-				if (cancelled) return;
-
-				console.error("Generation error:", err);
-				setError(err instanceof Error ? err.message : "Generation failed");
-				setState("error");
-			}
+			console.error("Generation error:", err);
+			setState("error");
+		}
 		}
 
 		generate();
@@ -137,17 +117,10 @@ export function GenerationStep({
 
 	// When generation is complete, notify parent
 	useEffect(() => {
-		if (state === "complete" && contentPieceId && streamedContent) {
-			onComplete(contentPieceId, streamedContent);
+		if (state === "complete" && contentPieceId && content) {
+			onComplete(contentPieceId, content);
 		}
-	}, [state, contentPieceId, streamedContent, onComplete]);
-
-	// Auto-scroll to bottom as content streams in
-	useEffect(() => {
-		if (streamedContent && contentEndRef.current) {
-			contentEndRef.current.scrollIntoView({ behavior: "smooth" });
-		}
-	}, [streamedContent]);
+	}, [state, contentPieceId, content, onComplete]);
 
 	if (state === "error") {
 		return (
@@ -235,25 +208,13 @@ export function GenerationStep({
 				</div>
 			</div>
 
-			{/* Streaming content display */}
-			<div className="flex-1 min-h-0 overflow-y-auto bg-white border border-gray-200 rounded-lg p-6">
-				{streamedContent ? (
-					<div className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-li:text-gray-700">
-						<Markdown>{streamedContent}</Markdown>
-						{state === "streaming" && (
-							<span className="inline-block w-2 h-4 bg-cyan-600 animate-pulse ml-1" />
-						)}
-						<div ref={contentEndRef} />
-					</div>
-				) : (
-					<div className="flex items-center justify-center h-full text-gray-400">
-						<div className="text-center">
-							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 mx-auto mb-3" />
-							<p>Waiting for content...</p>
-						</div>
-					</div>
-				)}
-			</div>
+		{/* Streaming content display */}
+		<StreamingMarkdown
+			content={content}
+			isStreaming={isStreaming}
+			className="flex-1 min-h-0 overflow-y-auto bg-white border border-gray-200 rounded-lg p-6"
+			emptyMessage="Waiting for content..."
+		/>
 		</div>
 	);
 }

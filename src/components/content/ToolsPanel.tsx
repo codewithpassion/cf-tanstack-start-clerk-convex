@@ -7,7 +7,6 @@
  * - Content management actions (versions, images, finalize, delete)
  * - Always visible on the right side of the editor
  */
-import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
@@ -41,10 +40,6 @@ export interface ToolsPanelProps {
 	 */
 	onRefine?: () => void;
 
-	/**
-	 * Callback to trigger change tone action
-	 */
-	onChangeTone?: (tone: string) => void;
 
 	/**
 	 * Callback to show version history
@@ -79,7 +74,6 @@ export function ToolsPanel({
 	contentPieceId,
 	onApplyToContent,
 	onRefine,
-	onChangeTone,
 	onShowVersions,
 	onShowImages,
 	onFinalize,
@@ -90,9 +84,6 @@ export function ToolsPanel({
 	const chatMessages = useQuery(api.contentChatMessages.listChatMessages, {
 		contentPieceId,
 	});
-
-	// Local state
-	const [selectedTone, setSelectedTone] = useState<string>("professional");
 
 	// Filter to show only assistant messages (AI generations)
 	const recentGenerations = (chatMessages || [])
@@ -145,27 +136,6 @@ export function ToolsPanel({
 					Create images
 				</button>
 
-				{/* Change Tone - Select + Button */}
-				<div className="flex gap-2">
-					<select
-						value={selectedTone}
-						onChange={(e) => setSelectedTone(e.target.value)}
-						className="flex-1 px-3 py-2 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-					>
-						<option value="professional">Professional</option>
-						<option value="casual">Casual</option>
-						<option value="friendly">Friendly</option>
-						<option value="formal">Formal</option>
-						<option value="enthusiastic">Enthusiastic</option>
-					</select>
-					<button
-						type="button"
-						onClick={() => onChangeTone?.(selectedTone)}
-						className="px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors whitespace-nowrap"
-					>
-						Apply Tone
-					</button>
-				</div>
 			</div>
 
 			{/* Content Actions */}

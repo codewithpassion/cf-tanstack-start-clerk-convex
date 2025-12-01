@@ -112,6 +112,15 @@ export interface GenerateChatResponseInput {
 export type QuickAction = "improve" | "shorten" | "changeTone";
 
 /**
+ * Input parameters for content refinement
+ */
+export interface RefineContentInput {
+	contentPieceId: Id<"contentPieces">;
+	currentContent: string;
+	instructions: string;
+}
+
+/**
  * Input parameters for image prompt generation
  */
 export interface GenerateImagePromptInput {
@@ -742,6 +751,143 @@ export const generateChatResponse = createServerFn({ method: "POST" })
 
 			throw new Error(
 				`Failed to generate chat response: ${errorMessage}. Please try again.`,
+			);
+		}
+	});
+
+/**
+ * Construct system prompt for content refinement
+ */
+function constructRefineSystemPrompt(context: GenerationContext): string {
+	const parts = [
+		"You are an expert content editor. Refine the content based on user instructions.",
+		"Maintain the core message unless explicitly asked to change it.",
+		"Output only the refined content, no explanations or meta-commentary.",
+	];
+
+	if (context.brandVoiceDescription) {
+		parts.push(`\nBRAND VOICE:\n${context.brandVoiceDescription}`);
+	}
+
+	if (context.personaDescription) {
+		parts.push(`\nPERSONA:\n${context.personaDescription}`);
+	}
+
+	if (context.formatGuidelines) {
+		parts.push(`\nFORMAT GUIDELINES:\n${context.formatGuidelines}`);
+	}
+
+	return parts.join("\n");
+}
+
+/**
+ * Construct user prompt for content refinement
+ */
+function constructRefineUserPrompt(
+	content: string,
+	instructions: string,
+): string {
+	return `ORIGINAL CONTENT:\n${content}\n\nREFINEMENT REQUEST:\n${instructions}\n\nPlease provide the refined content:`;
+}
+
+/**
+ * Refine existing content based on user instructions
+ *
+ * Server function that takes existing content and user refinement instructions,
+ * assembles context (persona, brand voice, etc.), and streams back refined content.
+ * Similar to generateDraft but focused on iterative refinement rather than creation.
+ */
+export const refineContent = createServerFn({ method: "POST" })
+	.inputValidator((input: RefineContentInput) => input)
+	.handler(async ({ data }) => {
+		try {
+			const convex = await getAuthenticatedConvexClient();
+			const { contentPieceId, currentContent, instructions } = data;
+
+			// Get content piece to retrieve project context
+			const contentPiece = await convex.query(
+				api.contentPieces.getContentPiece,
+				{
+					contentPieceId,
+				},
+			);
+
+			// Get project for AI configuration
+			const project = await convex.query(api.projects.getProject, {
+				projectId: contentPiece.projectId,
+			});
+
+			// Assemble context (persona, brand voice, category guidelines, etc.)
+			const context = await assembleGenerationContext({
+				data: {
+					categoryId: contentPiece.categoryId,
+					personaId: contentPiece.personaId,
+					brandVoiceId: contentPiece.brandVoiceId,
+					projectId: contentPiece.projectId,
+				},
+			});
+
+			// Resolve AI configuration
+			const env = getAIEnvironment();
+			const aiConfig = resolveAIConfig(env, {
+				defaultAiProvider: project.defaultAiProvider,
+				defaultAiModel: project.defaultAiModel,
+			});
+
+			// Create AI provider
+			const model = createAIProvider(aiConfig, env);
+
+			// Construct refine-specific prompts
+			const systemPrompt = constructRefineSystemPrompt(context);
+			const userPrompt = constructRefineUserPrompt(currentContent, instructions);
+
+			// Estimate token count for logging
+			const estimatedPromptTokens = countPromptTokens(
+				systemPrompt,
+				userPrompt,
+			);
+			console.log("Refine estimated prompt tokens:", estimatedPromptTokens);
+
+			// Stream text generation
+			const result = streamText({
+				model,
+				system: systemPrompt,
+				prompt: userPrompt,
+				temperature: 0.7,
+				maxOutputTokens: 4096,
+			});
+
+			// Track token usage when finished (async, does not block response)
+			(async () => {
+				try {
+					const usage = await result.usage;
+					if (usage) {
+						const tokenUsage: TokenUsage = {
+							promptTokens: usage.inputTokens || 0,
+							completionTokens: usage.outputTokens || 0,
+							totalTokens:
+								(usage.inputTokens || 0) + (usage.outputTokens || 0),
+						};
+
+						// TODO: Store token usage in database for billing
+						console.log("Refine token usage:", tokenUsage);
+					}
+				} catch (error) {
+					console.error("Error tracking refine token usage:", error);
+				}
+			})();
+
+			// Return streaming response
+			return result.toTextStreamResponse();
+		} catch (error) {
+			console.error("Content refinement error:", error);
+
+			// Return detailed error message
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error occurred";
+
+			throw new Error(
+				`Failed to refine content: ${errorMessage}. Please check your AI provider configuration and try again.`,
 			);
 		}
 	});
