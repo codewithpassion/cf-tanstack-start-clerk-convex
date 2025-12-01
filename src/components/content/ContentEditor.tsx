@@ -76,9 +76,240 @@ export interface ContentEditorProps {
 }
 
 /**
+ * Parse inline markdown formatting (bold, italic, code, links) into TipTap marks.
+ */
+function parseInlineMarkdown(text: string): JSONContent[] {
+	const result: JSONContent[] = [];
+	let remaining = text;
+
+	while (remaining.length > 0) {
+		// Bold and italic: ***text***
+		const boldItalicMatch = remaining.match(/^\*\*\*(.+?)\*\*\*/);
+		if (boldItalicMatch) {
+			result.push({
+				type: "text",
+				marks: [{ type: "bold" }, { type: "italic" }],
+				text: boldItalicMatch[1],
+			});
+			remaining = remaining.slice(boldItalicMatch[0].length);
+			continue;
+		}
+
+		// Bold: **text** or __text__
+		const boldMatch = remaining.match(/^\*\*(.+?)\*\*/) || remaining.match(/^__(.+?)__/);
+		if (boldMatch) {
+			result.push({
+				type: "text",
+				marks: [{ type: "bold" }],
+				text: boldMatch[1],
+			});
+			remaining = remaining.slice(boldMatch[0].length);
+			continue;
+		}
+
+		// Italic: *text* or _text_
+		const italicMatch = remaining.match(/^\*([^*]+?)\*/) || remaining.match(/^_([^_]+?)_/);
+		if (italicMatch) {
+			result.push({
+				type: "text",
+				marks: [{ type: "italic" }],
+				text: italicMatch[1],
+			});
+			remaining = remaining.slice(italicMatch[0].length);
+			continue;
+		}
+
+		// Inline code: `text`
+		const codeMatch = remaining.match(/^`([^`]+?)`/);
+		if (codeMatch) {
+			result.push({
+				type: "text",
+				marks: [{ type: "code" }],
+				text: codeMatch[1],
+			});
+			remaining = remaining.slice(codeMatch[0].length);
+			continue;
+		}
+
+		// Link: [text](url)
+		const linkMatch = remaining.match(/^\[([^\]]+?)\]\(([^)]+?)\)/);
+		if (linkMatch) {
+			result.push({
+				type: "text",
+				marks: [{ type: "link", attrs: { href: linkMatch[2] } }],
+				text: linkMatch[1],
+			});
+			remaining = remaining.slice(linkMatch[0].length);
+			continue;
+		}
+
+		// Plain text - find next special character or end
+		const nextSpecial = remaining.search(/[\*_`\[]/);
+		if (nextSpecial === -1) {
+			result.push({ type: "text", text: remaining });
+			break;
+		}
+		if (nextSpecial > 0) {
+			result.push({ type: "text", text: remaining.slice(0, nextSpecial) });
+			remaining = remaining.slice(nextSpecial);
+		} else {
+			// Special char at start but not matched - treat as plain text
+			result.push({ type: "text", text: remaining[0] });
+			remaining = remaining.slice(1);
+		}
+	}
+
+	return result.length > 0 ? result : [{ type: "text", text: "" }];
+}
+
+/**
+ * Convert markdown text to TipTap JSON content.
+ * Only uses nodes supported by TipTap's StarterKit.
+ */
+function markdownToTiptap(markdown: string): JSONContent {
+	const lines = markdown.split("\n");
+	const content: JSONContent[] = [];
+	let i = 0;
+
+	while (i < lines.length) {
+		const line = lines[i];
+
+		// Skip empty lines
+		if (line.trim() === "") {
+			i++;
+			continue;
+		}
+
+		// Horizontal rule - convert to a simple paragraph with dashes
+		if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) {
+			content.push({
+				type: "paragraph",
+				content: [{ type: "text", text: "---" }],
+			});
+			i++;
+			continue;
+		}
+
+		// Headers
+		const headerMatch = line.match(/^(#{1,6})\s+(.+)$/);
+		if (headerMatch) {
+			const level = headerMatch[1].length as 1 | 2 | 3 | 4 | 5 | 6;
+			content.push({
+				type: "heading",
+				attrs: { level },
+				content: parseInlineMarkdown(headerMatch[2]),
+			});
+			i++;
+			continue;
+		}
+
+		// Code block - convert to paragraph with code marks for now
+		if (line.startsWith("```")) {
+			const codeLines: string[] = [];
+			i++;
+			while (i < lines.length && !lines[i].startsWith("```")) {
+				codeLines.push(lines[i]);
+				i++;
+			}
+			// Add code as a paragraph with code formatting
+			if (codeLines.length > 0) {
+				content.push({
+					type: "paragraph",
+					content: [{
+						type: "text",
+						marks: [{ type: "code" }],
+						text: codeLines.join("\n"),
+					}],
+				});
+			}
+			i++; // Skip closing ```
+			continue;
+		}
+
+		// Blockquote
+		if (line.startsWith("> ")) {
+			const quoteLines: string[] = [];
+			while (i < lines.length && lines[i].startsWith("> ")) {
+				quoteLines.push(lines[i].slice(2));
+				i++;
+			}
+			content.push({
+				type: "blockquote",
+				content: [{
+					type: "paragraph",
+					content: parseInlineMarkdown(quoteLines.join(" ")),
+				}],
+			});
+			continue;
+		}
+
+		// Unordered list - check for list item pattern but avoid matching bold (**text**)
+		if (/^[\-\+]\s+/.test(line) || /^\*\s+[^*]/.test(line)) {
+			const listItems: JSONContent[] = [];
+			while (i < lines.length && (/^[\-\+]\s+/.test(lines[i]) || /^\*\s+[^*]/.test(lines[i]))) {
+				const itemText = lines[i].replace(/^[\*\-\+]\s+/, "");
+				listItems.push({
+					type: "listItem",
+					content: [{
+						type: "paragraph",
+						content: parseInlineMarkdown(itemText),
+					}],
+				});
+				i++;
+			}
+			content.push({
+				type: "bulletList",
+				content: listItems,
+			});
+			continue;
+		}
+
+		// Ordered list
+		if (/^\d+\.\s+/.test(line)) {
+			const listItems: JSONContent[] = [];
+			while (i < lines.length && /^\d+\.\s+/.test(lines[i])) {
+				const itemText = lines[i].replace(/^\d+\.\s+/, "");
+				listItems.push({
+					type: "listItem",
+					content: [{
+						type: "paragraph",
+						content: parseInlineMarkdown(itemText),
+					}],
+				});
+				i++;
+			}
+			content.push({
+				type: "orderedList",
+				content: listItems,
+			});
+			continue;
+		}
+
+		// Regular paragraph
+		content.push({
+			type: "paragraph",
+			content: parseInlineMarkdown(line),
+		});
+		i++;
+	}
+
+	return {
+		type: "doc",
+		content: content.length > 0 ? content : [],
+	};
+}
+
+/**
  * Parse JSON content safely and ensure it has proper doc schema.
+ * Handles both JSON (TipTap format) and markdown/plain text content.
  */
 function parseContent(content: string): JSONContent {
+	// Handle empty content
+	if (!content || content.trim() === "") {
+		return { type: "doc", content: [] };
+	}
+
+	// Try to parse as JSON first (TipTap format)
 	try {
 		const parsed = JSON.parse(content);
 		// Ensure content has proper doc structure for TipTap schema
@@ -86,9 +317,11 @@ function parseContent(content: string): JSONContent {
 			return parsed.type === "doc" ? parsed : { type: "doc", content: [parsed] };
 		}
 	} catch {
-		// Return empty doc if parsing fails
+		// Not valid JSON - treat as markdown/plain text
 	}
-	return { type: "doc", content: [] };
+
+	// Convert markdown to TipTap format
+	return markdownToTiptap(content);
 }
 
 /**

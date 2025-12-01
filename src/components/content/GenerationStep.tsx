@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { generateDraft } from "@/server/ai";
+import Markdown from "react-markdown";
 
 export interface GenerationStepProps {
 	projectId: Id<"projects">;
@@ -39,6 +40,7 @@ export function GenerationStep({
 	const [error, setError] = useState<string | null>(null);
 	const [contentPieceId, setContentPieceId] =
 		useState<Id<"contentPieces"> | null>(null);
+	const contentEndRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -140,6 +142,13 @@ export function GenerationStep({
 		}
 	}, [state, contentPieceId, streamedContent, onComplete]);
 
+	// Auto-scroll to bottom as content streams in
+	useEffect(() => {
+		if (streamedContent && contentEndRef.current) {
+			contentEndRef.current.scrollIntoView({ behavior: "smooth" });
+		}
+	}, [streamedContent]);
+
 	if (state === "error") {
 		return (
 			<div className="flex flex-col items-center justify-center p-8">
@@ -175,8 +184,8 @@ export function GenerationStep({
 	}
 
 	return (
-		<div className="flex flex-col h-full p-6">
-			<div className="mb-6">
+		<div className="flex flex-col h-[500px] p-6">
+			<div className="mb-4 flex-shrink-0">
 				<h2 className="text-2xl font-bold text-gray-900 mb-2">
 					Generating Your Content
 				</h2>
@@ -190,7 +199,7 @@ export function GenerationStep({
 			</div>
 
 			{/* Progress indicator */}
-			<div className="mb-6">
+			<div className="mb-4 flex-shrink-0">
 				<div className="flex items-center">
 					<div
 						className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -227,16 +236,24 @@ export function GenerationStep({
 			</div>
 
 			{/* Streaming content display */}
-			{streamedContent && (
-				<div className="flex-1 overflow-auto bg-white border border-gray-200 rounded-lg p-6">
-					<div className="prose prose-sm max-w-none">
-						<div className="whitespace-pre-wrap">{streamedContent}</div>
+			<div className="flex-1 min-h-0 overflow-y-auto bg-white border border-gray-200 rounded-lg p-6">
+				{streamedContent ? (
+					<div className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-li:text-gray-700">
+						<Markdown>{streamedContent}</Markdown>
 						{state === "streaming" && (
 							<span className="inline-block w-2 h-4 bg-cyan-600 animate-pulse ml-1" />
 						)}
+						<div ref={contentEndRef} />
 					</div>
-				</div>
-			)}
+				) : (
+					<div className="flex items-center justify-center h-full text-gray-400">
+						<div className="text-center">
+							<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 mx-auto mb-3" />
+							<p>Waiting for content...</p>
+						</div>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }

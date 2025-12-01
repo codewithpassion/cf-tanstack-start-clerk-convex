@@ -126,6 +126,20 @@ function ContentEditorPage() {
 		);
 	}
 
+	// Check if content is still being generated (placeholder)
+	// This ensures the editor only mounts once real content is available
+	const isGenerating =
+		contentPiece.content === "Generating..." || contentPiece.content === "";
+
+	if (isGenerating) {
+		return (
+			<div className="flex flex-col items-center justify-center h-full py-12">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 mb-4" />
+				<p className="text-gray-600">Content is being generated...</p>
+			</div>
+		);
+	}
+
 	const isFinalized = contentPiece.status === "finalized";
 	const nextVersion = (contentPiece.currentFinalizedVersion ?? 0) + 1;
 
