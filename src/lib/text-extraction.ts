@@ -3,7 +3,8 @@
  * Provides functions to extract text from various document formats including
  * plain text, PDF, and Word documents (doc/docx).
  */
-import { PDFParse } from "pdf-parse";
+// Note: pdf-parse is dynamically imported to avoid loading DOMMatrix in Cloudflare Workers
+// when not needed (e.g., when uploading images)
 import mammoth from "mammoth";
 
 // Maximum length for extracted text (50,000 characters as per spec)
@@ -44,11 +45,14 @@ export async function extractTextFromPlainText(buffer: Buffer): Promise<string> 
 
 /**
  * Extracts text from a PDF file buffer using pdf-parse library.
+ * Dynamically imports pdf-parse to avoid loading it when not needed.
  * @param buffer - The PDF file buffer
  * @returns Extracted text content or null if extraction fails
  */
 export async function extractTextFromPdf(buffer: Buffer): Promise<string | null> {
 	try {
+		// Dynamic import to avoid loading pdf-parse (and DOMMatrix) for non-PDF uploads
+		const { PDFParse } = await import("pdf-parse");
 		const parser = new PDFParse({ data: buffer });
 		const result = await parser.getText();
 		return result.text;
