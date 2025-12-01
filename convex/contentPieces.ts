@@ -631,14 +631,21 @@ export const unfinalizeContentPiece = mutation({
 /**
  * Create derived content from an existing content piece.
  * Creates a new content piece with parent reference and inherited properties.
+ * Optionally accepts persona/brandVoice overrides and initial content.
  */
 export const createDerivedContent = mutation({
 	args: {
 		parentContentId: v.id("contentPieces"),
 		categoryId: v.id("categories"),
 		title: v.string(),
+		personaId: v.optional(v.id("personas")),
+		brandVoiceId: v.optional(v.id("brandVoices")),
+		content: v.optional(v.string()),
 	},
-	handler: async (ctx, { parentContentId, categoryId, title }) => {
+	handler: async (
+		ctx,
+		{ parentContentId, categoryId, title, personaId, brandVoiceId, content }
+	) => {
 		const { workspace } = await authorizeWorkspaceAccess(ctx);
 
 		// Verify parent content piece exists and belongs to workspace
@@ -666,20 +673,55 @@ export const createDerivedContent = mutation({
 			throw new ConvexError("Category not found");
 		}
 
+		// Use provided persona or inherit from parent
+		const finalPersonaId = personaId ?? parentContent.personaId;
+
+		// Verify persona if provided
+		if (finalPersonaId) {
+			const persona = await ctx.db.get(finalPersonaId);
+			if (
+				!persona ||
+				persona.projectId !== parentContent.projectId ||
+				persona.deletedAt
+			) {
+				throw new ConvexError("Persona not found");
+			}
+		}
+
+		// Use provided brand voice or inherit from parent
+		const finalBrandVoiceId = brandVoiceId ?? parentContent.brandVoiceId;
+
+		// Verify brand voice if provided
+		if (finalBrandVoiceId) {
+			const brandVoice = await ctx.db.get(finalBrandVoiceId);
+			if (
+				!brandVoice ||
+				brandVoice.projectId !== parentContent.projectId ||
+				brandVoice.deletedAt
+			) {
+				throw new ConvexError("Brand voice not found");
+			}
+		}
+
 		// Validate title
 		const validatedTitle = validateContentPieceTitle(title);
 
+		// Validate content if provided
+		const validatedContent = content
+			? validateContentPieceContent(content)
+			: "";
+
 		const now = Date.now();
 
-		// Create the derived content piece, inheriting persona and brand voice from parent
+		// Create the derived content piece
 		const contentPieceId = await ctx.db.insert("contentPieces", {
 			projectId: parentContent.projectId,
 			categoryId,
-			personaId: parentContent.personaId,
-			brandVoiceId: parentContent.brandVoiceId,
+			personaId: finalPersonaId,
+			brandVoiceId: finalBrandVoiceId,
 			parentContentId,
 			title: validatedTitle,
-			content: "", // Start with empty content for derived piece
+			content: validatedContent,
 			status: "draft",
 			createdAt: now,
 			updatedAt: now,

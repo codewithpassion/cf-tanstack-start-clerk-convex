@@ -12,10 +12,12 @@ import { LoadingState } from "@/components/shared/LoadingState";
 import { VersionHistorySidebar } from "@/components/content/VersionHistorySidebar";
 import { RefineDialog } from "@/components/content/RefineDialog";
 import { SelectionRefineDialog } from "@/components/content/SelectionRefineDialog";
+import { RepurposeDialog } from "@/components/content/RepurposeDialog";
 import { refineSelection } from "@/server/ai";
 import { useStreamingResponse } from "@/hooks/useStreamingResponse";
 import type { Editor } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
+import { GitFork } from "lucide-react";
 
 /**
  * Convert TipTap slice to markdown
@@ -139,6 +141,7 @@ function ContentEditorPage() {
 	const [showRefineDialog, setShowRefineDialog] = useState(false);
 	const [showSelectionRefineDialog, setShowSelectionRefineDialog] =
 		useState(false);
+	const [showRepurposeDialog, setShowRepurposeDialog] = useState(false);
 
 	// State for inline refine
 	const [inlineRefineSelection, setInlineRefineSelection] = useState<{
@@ -168,6 +171,7 @@ function ContentEditorPage() {
 		api.contentPieces.unfinalizeContentPiece
 	);
 	const deleteContentPiece = useMutation(api.contentPieces.deleteContentPiece);
+	const createDerivedContent = useMutation(api.contentPieces.createDerivedContent);
 
 	// Loading states
 	const [isFinalizing, setIsFinalizing] = useState(false);
@@ -316,6 +320,31 @@ function ContentEditorPage() {
 		setShowRefineDialog(false);
 	};
 
+	// Handle accepting repurposed content
+	const handleAcceptRepurpose = async (
+		content: string,
+		categoryId: Id<"categories">,
+		title: string,
+		personaId?: Id<"personas">,
+		brandVoiceId?: Id<"brandVoices">
+	) => {
+		// Create the derived content piece with the repurposed content
+		const result = await createDerivedContent({
+			parentContentId: contentId as Id<"contentPieces">,
+			categoryId,
+			title,
+			personaId,
+			brandVoiceId,
+			content,
+		});
+
+		// Navigate to the new content piece
+		navigate({
+			to: "/projects/$projectId/content/$contentId",
+			params: { projectId, contentId: result.contentPieceId },
+		});
+	};
+
 	// Loading state
 	if (contentPiece === undefined) {
 		return <LoadingState message="Loading content..." />;
@@ -405,6 +434,23 @@ function ContentEditorPage() {
 					</div>
 
 					<div className="flex items-center gap-2">
+						{/* Source Content Indicator (for derived content) */}
+						{contentPiece.parentContent && (
+							<Link
+								to="/projects/$projectId/content/$contentId"
+								params={{
+									projectId,
+									contentId: contentPiece.parentContent._id,
+								}}
+								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition-colors"
+								title={`Derived from: ${contentPiece.parentContent.title}`}
+							>
+								<GitFork className="w-4 h-4" />
+								<span className="max-w-[150px] truncate">
+									{contentPiece.parentContent.title}
+								</span>
+							</Link>
+						)}
 						{contentPiece.persona && (
 							<button
 								type="button"
@@ -479,6 +525,7 @@ function ContentEditorPage() {
 							currentContent={contentPiece.content}
 							isFinalized={isFinalized}
 							onRefine={() => setShowRefineDialog(true)}
+							onRepurpose={() => setShowRepurposeDialog(true)}
 							onShowVersions={() => setShowVersionSidebar(true)}
 							onShowImages={() =>
 								navigate({
@@ -561,6 +608,19 @@ function ContentEditorPage() {
 			isStreaming={isStreamingSelection}
 			error={selectionRefineError ?? undefined}
 			onAccept={handleAcceptRefinedSelection}
+		/>
+
+		{/* Repurpose Dialog */}
+		<RepurposeDialog
+			isOpen={showRepurposeDialog}
+			onClose={() => setShowRepurposeDialog(false)}
+			contentPieceId={contentId as Id<"contentPieces">}
+			projectId={projectId as Id<"projects">}
+			currentCategoryId={contentPiece.categoryId}
+			currentPersonaId={contentPiece.personaId ?? undefined}
+			currentBrandVoiceId={contentPiece.brandVoiceId ?? undefined}
+			sourceTitle={contentPiece.title}
+			onAccept={handleAcceptRepurpose}
 		/>
 		</div>
 	);

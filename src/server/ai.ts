@@ -1288,3 +1288,226 @@ export const generateImage = createServerFn({ method: "POST" })
 			throw new Error(`Failed to generate image: ${errorMessage}`);
 		}
 	});
+
+/**
+ * Input parameters for content repurposing
+ */
+export interface RepurposeContentInput {
+	sourceContentPieceId: Id<"contentPieces">;
+	targetCategoryId: Id<"categories">;
+	targetPersonaId?: Id<"personas">;
+	targetBrandVoiceId?: Id<"brandVoices">;
+	title: string;
+	additionalInstructions?: string;
+}
+
+/**
+ * Construct system prompt for content repurposing
+ */
+function constructRepurposeSystemPrompt(
+	_sourceContext: GenerationContext,
+	targetContext: GenerationContext,
+	sourceCategoryName: string,
+	targetCategoryName: string
+): string {
+	const parts = [
+		"You are an expert content writer specializing in repurposing content across different formats.",
+		"",
+		"YOUR TASK:",
+		`Transform content from "${sourceCategoryName}" format into "${targetCategoryName}" format.`,
+		"Preserve the core message, key points, and valuable information while adapting the structure and style.",
+		"",
+		"IMPORTANT GUIDELINES:",
+		"- Maintain accuracy of all facts and information from the source",
+		"- Adapt the tone and structure for the new format",
+		"- Keep the content engaging and appropriate for the target format",
+		"- Output only the repurposed content, no explanations or meta-commentary",
+	];
+
+	// Add target format guidelines
+	if (targetContext.formatGuidelines) {
+		parts.push(`\nTARGET FORMAT GUIDELINES:\n${targetContext.formatGuidelines}`);
+	}
+
+	// Add target brand voice
+	if (targetContext.brandVoiceDescription) {
+		parts.push(`\nTARGET BRAND VOICE:\n${targetContext.brandVoiceDescription}`);
+	}
+
+	// Add target persona
+	if (targetContext.personaDescription) {
+		parts.push(`\nTARGET PERSONA:\nWrite as if you are: ${targetContext.personaDescription}`);
+	}
+
+	// Add target examples if available
+	if (targetContext.examples.length > 0) {
+		parts.push("\nEXAMPLE OUTPUT CONTENT:");
+		for (const example of targetContext.examples) {
+			parts.push(`\n${example.title}:\n${example.content}`);
+		}
+	}
+
+	return parts.join("\n");
+}
+
+/**
+ * Construct user prompt for content repurposing
+ */
+function constructRepurposeUserPrompt(
+	sourceContent: string,
+	title: string,
+	additionalInstructions?: string
+): string {
+	const parts = [
+		`Please repurpose the following content into the new format.`,
+		``,
+		`NEW TITLE: "${title}"`,
+		``,
+		`SOURCE CONTENT:`,
+		sourceContent,
+	];
+
+	if (additionalInstructions) {
+		parts.push(``, `ADDITIONAL INSTRUCTIONS:`, additionalInstructions);
+	}
+
+	parts.push(``, `Please provide the repurposed content:`);
+
+	return parts.join("\n");
+}
+
+/**
+ * Repurpose content from one format to another
+ *
+ * Server function that takes existing content and transforms it into a new format
+ * (category) while preserving the core message. Supports streaming response.
+ */
+export const repurposeContent = createServerFn({ method: "POST" })
+	.inputValidator((input: RepurposeContentInput) => input)
+	.handler(async ({ data }) => {
+		try {
+			const convex = await getAuthenticatedConvexClient();
+			const {
+				sourceContentPieceId,
+				targetCategoryId,
+				targetPersonaId,
+				targetBrandVoiceId,
+				title,
+				additionalInstructions,
+			} = data;
+
+			// Get source content piece
+			const sourceContentPiece = await convex.query(
+				api.contentPieces.getContentPiece,
+				{
+					contentPieceId: sourceContentPieceId,
+				}
+			);
+
+			// Get source category for display name
+			const sourceCategory = await convex.query(api.categories.getCategory, {
+				categoryId: sourceContentPiece.categoryId,
+			});
+
+			// Get target category for display name
+			const targetCategory = await convex.query(api.categories.getCategory, {
+				categoryId: targetCategoryId,
+			});
+
+			if (!targetCategory) {
+				throw new Error("Target category not found");
+			}
+
+			// Get project for AI configuration
+			const project = await convex.query(api.projects.getProject, {
+				projectId: sourceContentPiece.projectId,
+			});
+
+			// Assemble source context (for reference)
+			const sourceContext = await assembleGenerationContext({
+				data: {
+					categoryId: sourceContentPiece.categoryId,
+					personaId: sourceContentPiece.personaId,
+					brandVoiceId: sourceContentPiece.brandVoiceId,
+					projectId: sourceContentPiece.projectId,
+				},
+			});
+
+			// Assemble target context (persona, brand voice, category guidelines)
+			const targetContext = await assembleGenerationContext({
+				data: {
+					categoryId: targetCategoryId,
+					personaId: targetPersonaId ?? sourceContentPiece.personaId,
+					brandVoiceId: targetBrandVoiceId ?? sourceContentPiece.brandVoiceId,
+					projectId: sourceContentPiece.projectId,
+				},
+			});
+
+			// Resolve AI configuration
+			const env = getAIEnvironment();
+			const aiConfig = resolveAIConfig(env, {
+				defaultAiProvider: project.defaultAiProvider,
+				defaultAiModel: project.defaultAiModel,
+			});
+
+			// Create AI provider
+			const model = createAIProvider(aiConfig, env);
+
+			// Construct prompts
+			const systemPrompt = constructRepurposeSystemPrompt(
+				sourceContext,
+				targetContext,
+				sourceCategory?.name ?? "Unknown",
+				targetCategory.name
+			);
+			const userPrompt = constructRepurposeUserPrompt(
+				sourceContentPiece.content,
+				title,
+				additionalInstructions
+			);
+
+			// Estimate token count for logging
+			const estimatedPromptTokens = countPromptTokens(systemPrompt, userPrompt);
+			console.log("Repurpose estimated prompt tokens:", estimatedPromptTokens);
+
+			// Stream text generation
+			const result = streamText({
+				model,
+				system: systemPrompt,
+				prompt: userPrompt,
+				temperature: 0.7,
+				maxOutputTokens: 4096,
+			});
+
+			// Track token usage when finished (async, does not block response)
+			(async () => {
+				try {
+					const usage = await result.usage;
+					if (usage) {
+						const tokenUsage: TokenUsage = {
+							promptTokens: usage.inputTokens || 0,
+							completionTokens: usage.outputTokens || 0,
+							totalTokens: (usage.inputTokens || 0) + (usage.outputTokens || 0),
+						};
+
+						// TODO: Store token usage in database for billing
+						console.log("Repurpose token usage:", tokenUsage);
+					}
+				} catch (error) {
+					console.error("Error tracking repurpose token usage:", error);
+				}
+			})();
+
+			// Return streaming response
+			return result.toTextStreamResponse();
+		} catch (error) {
+			console.error("Content repurposing error:", error);
+
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error occurred";
+
+			throw new Error(
+				`Failed to repurpose content: ${errorMessage}. Please check your AI provider configuration and try again.`
+			);
+		}
+	});

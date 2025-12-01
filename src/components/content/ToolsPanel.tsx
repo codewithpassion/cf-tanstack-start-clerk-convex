@@ -19,6 +19,7 @@ import {
 	Unlock,
 	Trash2,
 	Download,
+	GitFork,
 } from "lucide-react";
 
 export interface ToolsPanelProps {
@@ -37,6 +38,10 @@ export interface ToolsPanelProps {
 	 */
 	onRefine?: () => void;
 
+	/**
+	 * Callback to trigger repurpose action
+	 */
+	onRepurpose?: () => void;
 
 	/**
 	 * Callback to show version history
@@ -70,6 +75,7 @@ export interface ToolsPanelProps {
 export function ToolsPanel({
 	contentPieceId,
 	onRefine,
+	onRepurpose,
 	onShowVersions,
 	onShowImages,
 	onFinalize,
@@ -126,6 +132,16 @@ export function ToolsPanel({
 				>
 					<Sparkles className="w-4 h-4" />
 					Refine
+				</button>
+
+				{/* Repurpose Button */}
+				<button
+					type="button"
+					onClick={onRepurpose}
+					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+				>
+					<GitFork className="w-4 h-4" />
+					Repurpose
 				</button>
 
 				{/* Create Images Button */}
