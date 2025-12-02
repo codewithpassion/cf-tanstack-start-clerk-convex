@@ -22,6 +22,7 @@ import { estimateTokenCount, TOKEN_LIMITS } from "@/lib/ai/models";
 import { uploadFile } from "@/lib/r2-client";
 import { getR2Bucket } from "@/lib/env";
 import { generateR2Key, sanitizeFilename } from "@/lib/file-validation";
+import { createThumbnail } from "@/lib/image-processing";
 
 /**
  * Context assembled from various sources for AI generation
@@ -1187,40 +1188,59 @@ export const generateImage = createServerFn({ method: "POST" })
 				);
 			}
 
+			// DALL-E 3 has a character prompt limit
+			const DALLE_MAX_PROMPT_LENGTH = 10000;
+			const prompt =
+				data.prompt.length > DALLE_MAX_PROMPT_LENGTH
+					? data.prompt.slice(0, DALLE_MAX_PROMPT_LENGTH - 3) + "..."
+					: data.prompt;
+
 			console.log("Generating image with DALL-E 3:", {
-				promptLength: data.prompt.length,
+				originalPromptLength: data.prompt.length,
+				truncatedPromptLength: prompt.length,
 				size,
 			});
 
 			// Generate image with DALL-E 3
 			const response = await openai.images.generate({
-				model: "dall-e-3",
-				prompt: data.prompt,
+				model: "gpt-image-1-mini",
+				prompt,
 				size,
-				quality: "standard",
+				quality: "auto",
 				n: 1,
 			});
 
-			// Get image URL from response
+			// Get image data from response (handles both URL and base64 formats)
 			if (!response.data || response.data.length === 0) {
 				throw new Error("No image data returned from DALL-E");
 			}
-			const imageUrl = response.data[0]?.url;
-			if (!imageUrl) {
-				throw new Error("No image URL returned from DALL-E");
+
+			const imageData = response.data[0];
+			let imageBuffer: ArrayBuffer;
+
+			if (imageData?.b64_json) {
+				// Handle base64 response (gpt-image-1-mini and newer models)
+				console.log("Image generated, decoding base64 data");
+				const binaryString = atob(imageData.b64_json);
+				const bytes = new Uint8Array(binaryString.length);
+				for (let i = 0; i < binaryString.length; i++) {
+					bytes[i] = binaryString.charCodeAt(i);
+				}
+				imageBuffer = bytes.buffer;
+			} else if (imageData?.url) {
+				// Handle URL response (dall-e-3 and older models)
+				console.log("Image generated, downloading from URL");
+				const imageResponse = await fetch(imageData.url);
+				if (!imageResponse.ok) {
+					throw new Error(
+						`Failed to download image: ${imageResponse.statusText}`,
+					);
+				}
+				imageBuffer = await imageResponse.arrayBuffer();
+			} else {
+				console.log("DALL-E response data:", response.data);
+				throw new Error("No image URL or base64 data returned from DALL-E");
 			}
-
-			console.log("Image generated, downloading from URL");
-
-			// Download image from URL
-			const imageResponse = await fetch(imageUrl);
-			if (!imageResponse.ok) {
-				throw new Error(
-					`Failed to download image: ${imageResponse.statusText}`,
-				);
-			}
-
-			const imageBuffer = await imageResponse.arrayBuffer();
 			const imageSizeBytes = imageBuffer.byteLength;
 
 			console.log("Image downloaded, size:", imageSizeBytes, "bytes");
@@ -1238,6 +1258,25 @@ export const generateImage = createServerFn({ method: "POST" })
 
 			console.log("Image uploaded to R2:", r2Key);
 
+			// Generate and upload thumbnail
+			let thumbnailR2Key: string | undefined;
+			try {
+				const thumbnailBuffer = await createThumbnail(imageBuffer, "image/png");
+				if (thumbnailBuffer) {
+					// Generate thumbnail key by replacing extension with _thumb.jpg
+					const lastDotIndex = r2Key.lastIndexOf(".");
+					thumbnailR2Key =
+						lastDotIndex === -1
+							? `${r2Key}_thumb.jpg`
+							: `${r2Key.substring(0, lastDotIndex)}_thumb.jpg`;
+					await uploadFile(bucket, thumbnailR2Key, thumbnailBuffer, "image/jpeg");
+					console.log("Thumbnail uploaded to R2:", thumbnailR2Key);
+				}
+			} catch (thumbnailError) {
+				// Log thumbnail errors but don't fail the upload
+				console.error("Thumbnail generation failed:", thumbnailError);
+			}
+
 			// Create file record in Convex
 			const convex = await getAuthenticatedConvexClient();
 			const fileId = await convex.mutation(api.files.createFile, {
@@ -1245,7 +1284,7 @@ export const generateImage = createServerFn({ method: "POST" })
 				mimeType: "image/png",
 				sizeBytes: imageSizeBytes,
 				r2Key,
-				// No specific owner yet - will be attached to content via contentImages table
+				thumbnailR2Key,
 			});
 
 			console.log("File record created:", fileId);

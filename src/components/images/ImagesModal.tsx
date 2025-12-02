@@ -157,13 +157,8 @@ export function ImagesModal({
 				},
 			});
 
-			// Append content text if enabled
-			let prompt = result.prompt;
-			if (formState.includeContentText && contentText) {
-				prompt += `\n\nContent context: ${contentText.slice(0, 500)}`;
-			}
-
-			setGeneratedPrompt(prompt);
+			// Store the AI-generated prompt (content context added separately at generation time)
+			setGeneratedPrompt(result.prompt);
 			setView("review-prompt");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to generate prompt");
@@ -195,19 +190,21 @@ export function ImagesModal({
 				},
 			});
 
-			let prompt = promptResult.prompt;
-			if (formState.includeContentText && contentText) {
-				prompt += `\n\nContent context: ${contentText.slice(0, 500)}`;
-			}
-
-			setGeneratedPrompt(prompt);
+			// Store AI-generated prompt for display (without content context)
+			setGeneratedPrompt(promptResult.prompt);
 			setIsGeneratingPrompt(false);
 			setView("generating");
+
+			// Combine prompt with full content context for API call
+			let finalPrompt = promptResult.prompt;
+			if (formState.includeContentText && contentText) {
+				finalPrompt += `\n\nContent context: ${contentText}`;
+			}
 
 			// Then generate the image
 			const imageResult = await generateImage({
 				data: {
-					prompt,
+					prompt: finalPrompt,
 					workspaceId,
 					projectId,
 				},
@@ -216,7 +213,7 @@ export function ImagesModal({
 			setGeneratedImage({
 				fileId: imageResult.fileId,
 				previewUrl: imageResult.previewUrl,
-				prompt,
+				prompt: finalPrompt,
 			});
 			setView("preview");
 		} catch (err) {
@@ -238,9 +235,15 @@ export function ImagesModal({
 		setView("generating");
 
 		try {
+			// Combine prompt with full content context for API call
+			let finalPrompt = generatedPrompt;
+			if (formState.includeContentText && contentText) {
+				finalPrompt += `\n\nContent context: ${contentText}`;
+			}
+
 			const imageResult = await generateImage({
 				data: {
-					prompt: generatedPrompt,
+					prompt: finalPrompt,
 					workspaceId,
 					projectId,
 				},
@@ -249,7 +252,7 @@ export function ImagesModal({
 			setGeneratedImage({
 				fileId: imageResult.fileId,
 				previewUrl: imageResult.previewUrl,
-				prompt: generatedPrompt,
+				prompt: finalPrompt,
 			});
 			setView("preview");
 		} catch (err) {
@@ -655,6 +658,18 @@ export function ImagesModal({
 									/>
 									<p className="mt-1 text-xs text-gray-500">{generatedPrompt.length}/4000 characters</p>
 								</div>
+
+								{/* Content Context (read-only, shown when enabled) */}
+								{formState.includeContentText && contentText && (
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">
+											Content Context <span className="text-gray-400 font-normal">(included with prompt)</span>
+										</label>
+										<div className="p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 max-h-32 overflow-y-auto whitespace-pre-wrap">
+											{contentText}
+										</div>
+									</div>
+								)}
 							</div>
 						)}
 
