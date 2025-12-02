@@ -4,6 +4,7 @@ import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
 import type { ProjectId } from "@/types/entities";
 import { LoadingState } from "@/components/shared/LoadingState";
+import { FileText, Users, MessageSquare, Layers, Plus, Settings, ArrowRight, Clock } from "lucide-react";
 
 export interface ProjectDashboardProps {
 	projectId: ProjectId;
@@ -11,7 +12,7 @@ export interface ProjectDashboardProps {
 
 /**
  * Project dashboard overview.
- * Shows stats, overview cards, and recent content for a project.
+ * Shows stats, quick actions, and recent content for a project.
  */
 export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 	// Query all data needed for dashboard
@@ -33,22 +34,12 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 		projectId: projectId as Id<"projects">,
 	});
 
-	const knowledgeBaseItems = useQuery(api.knowledgeBase.listKnowledgeBaseItemsByProject, {
-		projectId: projectId as Id<"projects">,
-	});
-
-	const examples = useQuery(api.examples.listExamplesByProject, {
-		projectId: projectId as Id<"projects">,
-	});
-
 	// Loading state
 	if (
 		contentPiecesResult === undefined ||
 		categories === undefined ||
 		personas === undefined ||
-		brandVoices === undefined ||
-		knowledgeBaseItems === undefined ||
-		examples === undefined
+		brandVoices === undefined
 	) {
 		return <LoadingState message="Loading dashboard..." />;
 	}
@@ -75,194 +66,204 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 	};
 
 	return (
-		<div className="p-6 space-y-6">
+		<div className="space-y-8">
 			{/* Stats Row */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
-					<div className="p-5">
-						<div className="flex items-center">
-							<div className="flex-shrink-0">
-								<svg
-									className="h-6 w-6 text-slate-400"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<title>Content</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-									/>
-								</svg>
-							</div>
-							<div className="ml-5 w-0 flex-1">
-								<dl>
-									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Total Content</dt>
-									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{totalCount}</dd>
-								</dl>
-							</div>
-						</div>
+				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+					<div>
+						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Content</p>
+						<p className="text-2xl font-semibold text-slate-900 dark:text-white mt-1">{totalCount}</p>
+					</div>
+					<div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
+						<FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" />
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
-					<div className="p-5">
-						<div className="flex items-center">
-							<div className="flex-shrink-0">
-								<svg
-									className="h-6 w-6 text-yellow-400"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<title>Drafts</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-									/>
-								</svg>
-							</div>
-							<div className="ml-5 w-0 flex-1">
-								<dl>
-									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Drafts</dt>
-									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{draftCount}</dd>
-								</dl>
-							</div>
-						</div>
+				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+					<div>
+						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Drafts</p>
+						<p className="text-2xl font-semibold text-slate-900 dark:text-white mt-1">{draftCount}</p>
+					</div>
+					<div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+						<FileText className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
-					<div className="p-5">
-						<div className="flex items-center">
-							<div className="flex-shrink-0">
-								<svg
-									className="h-6 w-6 text-green-400"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<title>Finalized</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
-							</div>
-							<div className="ml-5 w-0 flex-1">
-								<dl>
-									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Finalized</dt>
-									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{finalizedCount}</dd>
-								</dl>
-							</div>
-						</div>
+				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+					<div>
+						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Finalized</p>
+						<p className="text-2xl font-semibold text-slate-900 dark:text-white mt-1">{finalizedCount}</p>
+					</div>
+					<div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+						<FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
-					<div className="p-5">
-						<div className="flex items-center">
-							<div className="flex-shrink-0">
-								<svg
-									className="h-6 w-6 text-cyan-400"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<title>Categories</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-									/>
-								</svg>
-							</div>
-							<div className="ml-5 w-0 flex-1">
-								<dl>
-									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Categories</dt>
-									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{categories.length}</dd>
-								</dl>
-							</div>
+				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+					<div>
+						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Assets</p>
+						<div className="flex gap-3 mt-1 text-sm">
+							<span className="font-medium text-slate-900 dark:text-white">{categories.length} Cats</span>
+							<span className="text-slate-300 dark:text-slate-600">|</span>
+							<span className="font-medium text-slate-900 dark:text-white">{personas.length} Personas</span>
 						</div>
+					</div>
+					<div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
+						<Layers className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
 					</div>
 				</div>
 			</div>
 
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+				{/* Main Content - Recent Content */}
+				<div className="lg:col-span-2 space-y-6">
+					<div className="flex items-center justify-between">
+						<h2 className="text-lg font-medium text-slate-900 dark:text-white">Recent Content</h2>
+						<Link
+							to="/projects/$projectId/content"
+							params={{ projectId }}
+							search={{ page: 1, pageSize: 25 }}
+							className="text-sm font-medium text-cyan-600 hover:text-cyan-500 flex items-center gap-1"
+						>
+							View All <ArrowRight className="w-4 h-4" />
+						</Link>
+					</div>
 
-			{/* Recent Content */}
-			<div className="bg-white dark:bg-slate-900 shadow rounded-lg border border-slate-200 dark:border-slate-800">
-				<div className="px-4 py-5 sm:px-6 flex items-center justify-between">
-					<h2 className="text-lg font-medium text-slate-900 dark:text-white">Recent Content</h2>
-					<Link
-						to="/projects/$projectId/content"
-						params={{ projectId }}
-						search={{ page: 1, pageSize: 25 }}
-						className="text-sm font-medium text-cyan-600 hover:text-cyan-500"
-					>
-						View All →
-					</Link>
-				</div>
-				<div className="border-t border-slate-200 dark:border-slate-700">
-					{contentPieces.length === 0 ? (
-						<div className="px-4 py-12 text-center">
-							<p className="text-sm text-slate-500 dark:text-slate-400">No content yet</p>
-							<Link
-								to="/projects/$projectId/content/new"
-								params={{ projectId }}
-								className="mt-2 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700"
-							>
-								Create your first content
-							</Link>
-						</div>
-					) : (
-						<ul className="divide-y divide-slate-200 dark:divide-slate-700">
-							{contentPieces.map((contentPiece) => {
-								const category = categories.find((c) => c._id === contentPiece.categoryId);
-								return (
-									<li key={contentPiece._id}>
+					<div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+						{contentPieces.length === 0 ? (
+							<div className="p-8 text-center">
+								<div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+									<FileText className="w-6 h-6 text-slate-400" />
+								</div>
+								<h3 className="text-sm font-medium text-slate-900 dark:text-white">No content yet</h3>
+								<p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Get started by creating your first piece of content.</p>
+								<div className="mt-6">
+									<Link
+										to="/projects/$projectId/content/new"
+										params={{ projectId }}
+										className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+									>
+										<Plus className="-ml-1 mr-2 w-5 h-5" />
+										Create Content
+									</Link>
+								</div>
+							</div>
+						) : (
+							<div className="divide-y divide-slate-200 dark:divide-slate-800">
+								{contentPieces.map((contentPiece) => {
+									const category = categories.find((c) => c._id === contentPiece.categoryId);
+									return (
 										<Link
+											key={contentPiece._id}
 											to="/projects/$projectId/content/$contentId"
 											params={{ projectId, contentId: contentPiece._id }}
-											className="block hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+											className="block p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
 										>
-											<div className="px-4 py-4 sm:px-6">
-												<div className="flex items-center justify-between">
-													<div className="flex-1 min-w-0">
+											<div className="flex items-center justify-between">
+												<div className="flex items-center gap-4 min-w-0">
+													<div className={`p-2 rounded-lg ${contentPiece.status === "draft"
+															? "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
+															: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+														}`}>
+														<FileText className="w-5 h-5" />
+													</div>
+													<div className="min-w-0">
 														<p className="text-sm font-medium text-slate-900 dark:text-white truncate">
 															{contentPiece.title}
 														</p>
-														{category && (
-															<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{category.name}</p>
-														)}
+														<div className="flex items-center gap-2 mt-1">
+															{category && (
+																<span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+																	{category.name}
+																</span>
+															)}
+															<span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+																<Clock className="w-3 h-3" />
+																{formatTimeAgo(contentPiece._creationTime)}
+															</span>
+														</div>
 													</div>
-													<div className="ml-4 flex items-center gap-4">
-														<span
-															className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${contentPiece.status === "draft"
-																? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-																: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-																}`}
-														>
-															{contentPiece.status === "draft" ? "Draft" : "Finalized"}
-														</span>
-														<span className="text-sm text-slate-500 dark:text-slate-400">
-															{formatTimeAgo(contentPiece._creationTime)}
-														</span>
-													</div>
+												</div>
+												<div className="flex items-center gap-4">
+													<span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${contentPiece.status === "draft"
+															? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
+															: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
+														}`}>
+														{contentPiece.status === "draft" ? "Draft" : "Finalized"}
+													</span>
+													<ArrowRight className="w-4 h-4 text-slate-400" />
 												</div>
 											</div>
 										</Link>
-									</li>
-								);
-							})}
-						</ul>
-					)}
+									);
+								})}
+							</div>
+						)}
+					</div>
+				</div>
+
+				{/* Sidebar - Quick Actions */}
+				<div className="space-y-6">
+					<h2 className="text-lg font-medium text-slate-900 dark:text-white">Quick Actions</h2>
+					<div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
+						<Link
+							to="/projects/$projectId/content/new"
+							params={{ projectId }}
+							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+						>
+							<div className="p-2 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg group-hover:bg-cyan-100 dark:group-hover:bg-cyan-900/30 transition-colors">
+								<Plus className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+							</div>
+							<div>
+								<p className="text-sm font-medium text-slate-900 dark:text-white">New Content</p>
+								<p className="text-xs text-slate-500 dark:text-slate-400">Create a new post or article</p>
+							</div>
+						</Link>
+
+						<Link
+							to="/projects/$projectId/personas"
+							params={{ projectId }}
+							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+						>
+							<div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
+								<Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+							</div>
+							<div>
+								<p className="text-sm font-medium text-slate-900 dark:text-white">Manage Personas</p>
+								<p className="text-xs text-slate-500 dark:text-slate-400">Add or edit audience personas</p>
+							</div>
+						</Link>
+
+						<Link
+							to="/projects/$projectId/brand-voices"
+							params={{ projectId }}
+							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+						>
+							<div className="p-2 bg-pink-50 dark:bg-pink-900/20 rounded-lg group-hover:bg-pink-100 dark:group-hover:bg-pink-900/30 transition-colors">
+								<MessageSquare className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+							</div>
+							<div>
+								<p className="text-sm font-medium text-slate-900 dark:text-white">Brand Voices</p>
+								<p className="text-xs text-slate-500 dark:text-slate-400">Configure tone and style</p>
+							</div>
+						</Link>
+
+						<div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
+
+						<Link
+							to="/projects/$projectId/settings"
+							params={{ projectId }}
+							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+						>
+							<div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg group-hover:bg-slate-100 dark:group-hover:bg-slate-700 transition-colors">
+								<Settings className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+							</div>
+							<div>
+								<p className="text-sm font-medium text-slate-900 dark:text-white">Project Settings</p>
+								<p className="text-xs text-slate-500 dark:text-slate-400">General configuration</p>
+							</div>
+						</Link>
+					</div>
 				</div>
 			</div>
 		</div>

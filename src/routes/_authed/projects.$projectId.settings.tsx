@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { useState } from "react";
+import { Save, Trash2, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/projects/$projectId/settings")({
 	component: SettingsPage,
@@ -20,7 +21,6 @@ function SettingsPage() {
 	const updateProject = useMutation(api.projects.updateProject);
 	const deleteProject = useMutation(api.projects.deleteProject);
 
-	const [isEditing, setIsEditing] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -32,9 +32,10 @@ function SettingsPage() {
 		name?: string;
 		description?: string;
 	}>({});
+	const [isDirty, setIsDirty] = useState(false);
 
 	// Initialize form data when project loads
-	if (project && !isEditing && formData.name === "") {
+	if (project && !isDirty && formData.name === "") {
 		setFormData({
 			name: project.name,
 			description: project.description || "",
@@ -47,24 +48,14 @@ function SettingsPage() {
 
 	if (project === null) {
 		return (
-			<div className="bg-red-50 border border-red-200 rounded-lg p-6">
-				<h2 className="text-xl font-semibold text-red-900 mb-2">Project not found</h2>
-				<p className="text-red-700">
+			<div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+				<h2 className="text-xl font-semibold text-red-900 dark:text-red-200 mb-2">Project not found</h2>
+				<p className="text-red-700 dark:text-red-300">
 					The project you're looking for doesn't exist or you don't have access to it.
 				</p>
 			</div>
 		);
 	}
-
-	const formatDate = (timestamp: number) => {
-		return new Date(timestamp).toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-		});
-	};
 
 	const validateForm = (): boolean => {
 		const errors: { name?: string; description?: string } = {};
@@ -84,25 +75,8 @@ function SettingsPage() {
 		return Object.keys(errors).length === 0;
 	};
 
-	const handleEdit = () => {
-		setIsEditing(true);
-		setFormData({
-			name: project.name,
-			description: project.description || "",
-		});
-		setFormErrors({});
-	};
-
-	const handleCancel = () => {
-		setIsEditing(false);
-		setFormData({
-			name: project.name,
-			description: project.description || "",
-		});
-		setFormErrors({});
-	};
-
-	const handleSave = async () => {
+	const handleSave = async (e: React.FormEvent) => {
+		e.preventDefault();
 		if (!validateForm()) {
 			return;
 		}
@@ -114,7 +88,7 @@ function SettingsPage() {
 				name: formData.name.trim(),
 				description: formData.description.trim() || undefined,
 			});
-			setIsEditing(false);
+			setIsDirty(false);
 		} catch (error) {
 			console.error("Failed to update project:", error);
 			setFormErrors({
@@ -139,143 +113,136 @@ function SettingsPage() {
 		}
 	};
 
+	const handleChange = (field: string, value: string) => {
+		setFormData(prev => ({ ...prev, [field]: value }));
+		setIsDirty(true);
+		// Clear error when user types
+		if (formErrors[field as keyof typeof formErrors]) {
+			setFormErrors(prev => ({ ...prev, [field]: undefined }));
+		}
+	};
+
 	return (
-		<div>
+		<div className="max-w-4xl">
 			<PageHeader
 				title="Project Settings"
 				description="Manage your project details and settings."
 			/>
 
-			<div className="bg-white shadow-md rounded-lg p-6 space-y-6">
-				<div>
-					<div className="flex items-center justify-between mb-4">
-						<h3 className="text-lg font-semibold text-slate-900">Project Information</h3>
-						{!isEditing && (
-							<button
-								type="button"
-								onClick={handleEdit}
-								className="inline-flex items-center px-3 py-2 border border-slate-300 shadow-sm text-sm leading-4 font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
-							>
-								<svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<title>Edit</title>
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-								</svg>
-								Edit Project
-							</button>
-						)}
+			<div className="space-y-8">
+				{/* General Settings Section */}
+				<section className="bg-white dark:bg-slate-900 shadow-sm rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+					<div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+						<h3 className="text-lg font-medium text-slate-900 dark:text-white">General Information</h3>
+						<p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+							Update your project's name and description.
+						</p>
 					</div>
 
-					{isEditing ? (
-						<form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+					<div className="p-6">
+						<form onSubmit={handleSave} className="space-y-6">
 							<div>
-								<label htmlFor="project-name" className="block text-sm font-medium text-slate-700">
+								<label htmlFor="project-name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
 									Project Name <span className="text-red-500">*</span>
 								</label>
 								<input
 									type="text"
 									id="project-name"
 									value={formData.name}
-									onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${formErrors.name
+									onChange={(e) => handleChange("name", e.target.value)}
+									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm bg-white dark:bg-slate-950 px-3 py-2 border ${formErrors.name
 											? "border-red-300 focus:border-red-500 focus:ring-red-500"
-											: "border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
-										}`}
+											: "border-slate-300 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500"
+										} text-slate-900 dark:text-white placeholder-slate-400`}
 									placeholder="Enter project name"
 									maxLength={100}
 									disabled={isSaving}
 								/>
 								{formErrors.name && (
-									<p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
+									<p className="mt-1 text-sm text-red-600 dark:text-red-400">{formErrors.name}</p>
 								)}
-								<p className="mt-1 text-xs text-slate-500">{formData.name.length}/100 characters</p>
 							</div>
 
 							<div>
-								<label htmlFor="project-description" className="block text-sm font-medium text-slate-700">
+								<label htmlFor="project-description" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
 									Description
 								</label>
 								<textarea
 									id="project-description"
 									value={formData.description}
-									onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+									onChange={(e) => handleChange("description", e.target.value)}
 									rows={4}
-									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${formErrors.description
+									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm bg-white dark:bg-slate-950 px-3 py-2 border ${formErrors.description
 											? "border-red-300 focus:border-red-500 focus:ring-red-500"
-											: "border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
-										}`}
+											: "border-slate-300 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500"
+										} text-slate-900 dark:text-white placeholder-slate-400`}
 									placeholder="Enter project description (optional)"
 									maxLength={2000}
 									disabled={isSaving}
 								/>
 								{formErrors.description && (
-									<p className="mt-1 text-sm text-red-600">{formErrors.description}</p>
+									<p className="mt-1 text-sm text-red-600 dark:text-red-400">{formErrors.description}</p>
 								)}
-								<p className="mt-1 text-xs text-slate-500">{formData.description.length}/2000 characters</p>
+								<p className="mt-1 text-xs text-slate-500 dark:text-slate-400 text-right">
+									{formData.description.length}/2000
+								</p>
 							</div>
 
-							<div className="flex items-center gap-3 pt-4">
+							<div className="flex items-center justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
 								<button
 									type="submit"
-									disabled={isSaving}
+									disabled={isSaving || !isDirty}
 									className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 								>
-									{isSaving ? "Saving..." : "Save Changes"}
-								</button>
-								<button
-									type="button"
-									onClick={handleCancel}
-									disabled={isSaving}
-									className="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-								>
-									Cancel
+									{isSaving ? (
+										<>
+											<svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+												<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+												<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+											</svg>
+											Saving...
+										</>
+									) : (
+										<>
+											<Save className="w-4 h-4 mr-2" />
+											Save Changes
+										</>
+									)}
 								</button>
 							</div>
 						</form>
-					) : (
-						<dl className="space-y-4">
-							<div>
-								<dt className="text-sm font-medium text-slate-500">Project Name</dt>
-								<dd className="mt-1 text-sm text-slate-900">{project.name}</dd>
-							</div>
-							{project.description && (
-								<div>
-									<dt className="text-sm font-medium text-slate-500">Description</dt>
-									<dd className="mt-1 text-sm text-slate-900">{project.description}</dd>
-								</div>
-							)}
-							<div>
-								<dt className="text-sm font-medium text-slate-500">Created</dt>
-								<dd className="mt-1 text-sm text-slate-900">{formatDate(project.createdAt)}</dd>
-							</div>
-							<div>
-								<dt className="text-sm font-medium text-slate-500">Last Updated</dt>
-								<dd className="mt-1 text-sm text-slate-900">{formatDate(project.updatedAt)}</dd>
-							</div>
-						</dl>
-					)}
-				</div>
+					</div>
+				</section>
 
-				<div className="pt-6 border-t border-slate-200">
-					<h3 className="text-lg font-semibold text-slate-900 mb-4">Danger Zone</h3>
-					<div className="bg-red-50 border border-red-200 rounded-lg p-4">
+				{/* Danger Zone Section */}
+				<section className="bg-white dark:bg-slate-900 shadow-sm rounded-xl border border-red-200 dark:border-red-900/30 overflow-hidden">
+					<div className="px-6 py-4 border-b border-red-200 dark:border-red-900/30 bg-red-50 dark:bg-red-900/10">
+						<h3 className="text-lg font-medium text-red-900 dark:text-red-200 flex items-center gap-2">
+							<AlertTriangle className="w-5 h-5" />
+							Danger Zone
+						</h3>
+					</div>
+
+					<div className="p-6">
 						<div className="flex items-start justify-between">
-							<div className="flex-1">
-								<h4 className="text-sm font-medium text-red-900 mb-1">Delete this project</h4>
-								<p className="text-sm text-red-700">
-									Once you delete a project, there is no going back. This will archive the project and all its content.
+							<div className="max-w-xl">
+								<h4 className="text-sm font-medium text-slate-900 dark:text-white">Delete Project</h4>
+								<p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+									Once you delete a project, there is no going back. This will permanently delete the project and all its associated content, including categories, personas, and brand voices.
 								</p>
 							</div>
 							<button
 								type="button"
 								onClick={() => setShowDeleteConfirm(true)}
-								disabled={isEditing || isDeleting}
-								className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+								disabled={isDeleting}
+								className="ml-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
 							>
+								<Trash2 className="w-4 h-4 mr-2" />
 								Delete Project
 							</button>
 						</div>
 					</div>
-				</div>
+				</section>
 			</div>
 
 			<ConfirmDialog
@@ -283,11 +250,11 @@ function SettingsPage() {
 				title="Delete Project"
 				message={
 					<div className="space-y-2">
-						<p className="text-sm text-slate-500">
+						<p className="text-sm text-slate-500 dark:text-slate-400">
 							Are you sure you want to delete <strong>{project.name}</strong>?
 						</p>
-						<p className="text-sm text-slate-500">
-							This action will archive the project and all its associated content. This cannot be undone.
+						<p className="text-sm text-slate-500 dark:text-slate-400">
+							This action will permanently delete the project and all its associated content. This cannot be undone.
 						</p>
 					</div>
 				}
