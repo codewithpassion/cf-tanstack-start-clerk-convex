@@ -402,13 +402,13 @@ function ContentEditorPage() {
 	return (
 		<div className="h-full flex flex-col">
 			{/* Page Header */}
-			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4">
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-3">
+			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 md:px-6 py-3 md:py-4">
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+					<div className="flex items-center gap-2 md:gap-3 min-w-0">
 						<Link
 							to="/projects/$projectId"
 							params={{ projectId }}
-							className="text-slate-400 hover:text-slate-600"
+							className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex-shrink-0"
 						>
 							<svg
 								className="w-5 h-5"
@@ -426,7 +426,7 @@ function ContentEditorPage() {
 							</svg>
 						</Link>
 						<svg
-							className="w-5 h-5 text-slate-400"
+							className="w-5 h-5 text-slate-400 flex-shrink-0 hidden sm:block"
 							fill="none"
 							viewBox="0 0 24 24"
 							strokeWidth="1.5"
@@ -439,20 +439,20 @@ function ContentEditorPage() {
 								d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
 							/>
 						</svg>
-						<h1 className="text-xl font-bold text-slate-900 dark:text-white truncate">
+						<h1 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-white truncate">
 							{contentPiece.title}
 						</h1>
 					</div>
 
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-2 flex-wrap">
 						{contentPiece.persona && (
 							<button
 								type="button"
-								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-pink-50 text-pink-700 border border-pink-200 hover:bg-pink-100 transition-colors"
+								className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800 hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors"
 								title={`Persona: ${contentPiece.persona.name}`}
 							>
 								<svg
-									className="w-4 h-4"
+									className="w-3 h-3 sm:w-4 sm:h-4"
 									fill="none"
 									viewBox="0 0 24 24"
 									strokeWidth="1.5"
@@ -465,17 +465,17 @@ function ContentEditorPage() {
 										d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
 									/>
 								</svg>
-								{contentPiece.persona.name}
+								<span className="truncate max-w-[100px] sm:max-w-none">{contentPiece.persona.name}</span>
 							</button>
 						)}
 						{contentPiece.brandVoice && (
 							<button
 								type="button"
-								className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 transition-colors"
+								className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors"
 								title={`Voice: ${contentPiece.brandVoice.name}`}
 							>
 								<svg
-									className="w-4 h-4"
+									className="w-3 h-3 sm:w-4 sm:h-4"
 									fill="none"
 									viewBox="0 0 24 24"
 									strokeWidth="1.5"
@@ -488,7 +488,7 @@ function ContentEditorPage() {
 										d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"
 									/>
 								</svg>
-								{contentPiece.brandVoice.name}
+								<span className="truncate max-w-[100px] sm:max-w-none">{contentPiece.brandVoice.name}</span>
 							</button>
 						)}
 					</div>
@@ -496,7 +496,7 @@ function ContentEditorPage() {
 			</div>
 
 			{/* Editor Layout with Tools Panel */}
-			<div className="flex-1 overflow-y-auto px-6 py-6">
+			<div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6">
 				<ContentEditorLayout
 					editor={
 						<ContentEditor

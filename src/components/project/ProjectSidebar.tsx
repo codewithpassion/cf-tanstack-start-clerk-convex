@@ -1,8 +1,10 @@
 import { Link, useMatchRoute } from "@tanstack/react-router";
+import { X } from "lucide-react";
 import type { ProjectId } from "@/types/entities";
 
 export interface ProjectSidebarProps {
 	projectId: ProjectId;
+	onClose?: () => void;
 }
 
 interface NavItem {
@@ -15,8 +17,9 @@ interface NavItem {
  * Project workspace sidebar navigation.
  * Shows links to all project sections with active state highlighting.
  * Organized into: Dashboard, Content, Configuration (always expanded), and Settings.
+ * On mobile, can be closed via onClose callback.
  */
-export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
+export function ProjectSidebar({ projectId, onClose }: ProjectSidebarProps) {
 	const matchRoute = useMatchRoute();
 
 	const isActive = (path: string) => {
@@ -81,13 +84,35 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 		},
 	];
 
+	// Close sidebar when clicking a link on mobile
+	const handleLinkClick = () => {
+		if (onClose && window.innerWidth < 1024) {
+			onClose();
+		}
+	};
+
 	return (
-		<aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex-shrink-0">
-			<nav className="p-4 space-y-1" aria-label="Project navigation">
+		<aside className="w-64 h-full bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex-shrink-0 flex flex-col">
+			{/* Mobile close button */}
+			{onClose && (
+				<div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+					<span className="font-semibold text-slate-900 dark:text-white">Navigation</span>
+					<button
+						type="button"
+						onClick={onClose}
+						className="p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+						aria-label="Close navigation"
+					>
+						<X className="w-5 h-5" />
+					</button>
+				</div>
+			)}
+			<nav className="p-4 space-y-1 flex-1 overflow-y-auto" aria-label="Project navigation">
 				{/* Dashboard */}
 				<Link
 					to="/projects/$projectId"
 					params={{ projectId }}
+					onClick={handleLinkClick}
 					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/projects/$projectId/")
 						? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
 						: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
@@ -106,6 +131,7 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 					to="/projects/$projectId/content"
 					params={{ projectId }}
 					search={{}}
+					onClick={handleLinkClick}
 					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isContentActive()
 						? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
 						: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
@@ -132,6 +158,7 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 									key={item.name}
 									to={item.to}
 									params={{ projectId }}
+									onClick={handleLinkClick}
 									className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors pl-6 ${active
 										? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-5"
 										: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
@@ -151,6 +178,7 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 					<Link
 						to="/projects/$projectId/settings"
 						params={{ projectId }}
+						onClick={handleLinkClick}
 						className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/projects/$projectId/settings")
 							? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
 							: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
