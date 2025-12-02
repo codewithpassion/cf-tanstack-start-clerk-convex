@@ -85,16 +85,16 @@ describe("Image Generation Server Functions", () => {
 			// This test validates DALL-E API call structure
 			const input: GenerateImageInput = {
 				prompt: "A modern infographic about AI technology trends",
-				size: "1024x1024",
+				aspectRatio: "square",
 				workspaceId: "workspace123" as never,
 				projectId: "project123" as never,
 			};
 
-			// Mock OpenAI client configuration
+			// Mock OpenAI client configuration (aspectRatio maps to size internally)
 			const mockConfig = {
 				model: "dall-e-3",
 				prompt: input.prompt,
-				size: input.size,
+				size: "1024x1024", // Square aspect ratio maps to 1024x1024
 				quality: "standard",
 				n: 1,
 			};
@@ -106,16 +106,16 @@ describe("Image Generation Server Functions", () => {
 			expect(mockConfig.n).toBe(1);
 		});
 
-		it("should use default size if not specified", () => {
-			// This test validates default size selection
-			const defaultSize = "1024x1024";
+		it("should use default aspect ratio (square) if not specified", () => {
+			// This test validates default aspect ratio selection
+			const defaultAspectRatio = "square";
 			const input: Partial<GenerateImageInput> = {
 				prompt: "Test prompt",
 			};
 
-			const size = input.size || defaultSize;
+			const aspectRatio = input.aspectRatio || defaultAspectRatio;
 
-			expect(size).toBe(defaultSize);
+			expect(aspectRatio).toBe(defaultAspectRatio);
 		});
 
 		it("should validate supported image sizes", () => {

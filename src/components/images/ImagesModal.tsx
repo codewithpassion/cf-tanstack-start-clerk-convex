@@ -42,6 +42,8 @@ export interface ImagesModalProps {
 	initialView?: ModalView;
 }
 
+type AspectRatio = "square" | "landscape" | "portrait";
+
 interface GenerationFormState {
 	imageType: string;
 	subject: string;
@@ -50,6 +52,7 @@ interface GenerationFormState {
 	composition: string;
 	colors: string;
 	includeContentText: boolean;
+	aspectRatio: AspectRatio;
 }
 
 // Preset options for editable selects
@@ -77,6 +80,16 @@ const MOOD_OPTIONS = [
 	{ value: "dramatic", label: "Dramatic" },
 	{ value: "serene", label: "Serene" },
 ];
+
+const ASPECT_RATIO_OPTIONS: {
+	value: AspectRatio;
+	label: string;
+	sublabel: string;
+}[] = [
+		{ value: "square", label: "Square", sublabel: "1:1" },
+		{ value: "landscape", label: "Landscape", sublabel: "16:9" },
+		{ value: "portrait", label: "Portrait", sublabel: "9:16" },
+	];
 
 /**
  * Editable select component - dropdown with ability to type custom values
@@ -141,15 +154,116 @@ function EditableSelect({ id, value, onChange, options, placeholder, maxLength =
 							key={option.value}
 							type="button"
 							onClick={() => handleSelect(option.value)}
-							className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${
-								value === option.value ? "bg-cyan-50 text-cyan-700" : "text-gray-700"
-							}`}
+							className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${value === option.value ? "bg-cyan-50 text-cyan-700" : "text-gray-700"
+								}`}
 						>
 							{option.label}
 						</button>
 					))}
 				</div>
 			)}
+		</div>
+	);
+}
+
+/**
+ * Aspect ratio selector with visual icon cards
+ */
+interface AspectRatioSelectorProps {
+	value: AspectRatio;
+	onChange: (value: AspectRatio) => void;
+}
+
+function AspectRatioSelector({ value, onChange }: AspectRatioSelectorProps) {
+	const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
+		if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+			e.preventDefault();
+			const nextIndex = (currentIndex + 1) % ASPECT_RATIO_OPTIONS.length;
+			onChange(ASPECT_RATIO_OPTIONS[nextIndex].value);
+		} else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+			e.preventDefault();
+			const prevIndex = (currentIndex - 1 + ASPECT_RATIO_OPTIONS.length) % ASPECT_RATIO_OPTIONS.length;
+			onChange(ASPECT_RATIO_OPTIONS[prevIndex].value);
+		}
+	};
+
+	return (
+		<div className="inline-flex gap-2" role="radiogroup" aria-label="Aspect ratio">
+			{ASPECT_RATIO_OPTIONS.map((option, index) => {
+				const isSelected = value === option.value;
+				return (
+					<button
+						key={option.value}
+						type="button"
+						role="radio"
+						aria-checked={isSelected}
+						onClick={() => onChange(option.value)}
+						onKeyDown={(e) => handleKeyDown(e, index)}
+						className={`
+							flex items-center gap-2 px-3 py-2 rounded-lg border
+							cursor-pointer transition-all duration-150 focus:outline-none
+							${isSelected
+								? "border-cyan-500 bg-cyan-50 ring-1 ring-cyan-500"
+								: "border-gray-200 bg-white hover:border-gray-300"
+							}
+						`}
+					>
+						{/* Visual aspect ratio representation */}
+						<svg
+							viewBox="0 0 24 24"
+							className="w-5 h-5"
+							aria-hidden="true"
+						>
+							{option.value === "square" && (
+								<rect
+									x="4"
+									y="4"
+									width="16"
+									height="16"
+									rx="2"
+									className={`transition-colors duration-150 ${isSelected
+											? "fill-cyan-200 stroke-cyan-600"
+											: "fill-gray-100 stroke-gray-400"
+										}`}
+									strokeWidth="1.5"
+								/>
+							)}
+							{option.value === "landscape" && (
+								<rect
+									x="2"
+									y="6"
+									width="20"
+									height="12"
+									rx="2"
+									className={`transition-colors duration-150 ${isSelected
+											? "fill-cyan-200 stroke-cyan-600"
+											: "fill-gray-100 stroke-gray-400"
+										}`}
+									strokeWidth="1.5"
+								/>
+							)}
+							{option.value === "portrait" && (
+								<rect
+									x="6"
+									y="2"
+									width="12"
+									height="20"
+									rx="2"
+									className={`transition-colors duration-150 ${isSelected
+											? "fill-cyan-200 stroke-cyan-600"
+											: "fill-gray-100 stroke-gray-400"
+										}`}
+									strokeWidth="1.5"
+								/>
+							)}
+						</svg>
+						{/* Label */}
+						<span className={`text-sm ${isSelected ? "font-medium text-cyan-700" : "text-gray-700"}`}>
+							{option.sublabel}
+						</span>
+					</button>
+				);
+			})}
 		</div>
 	);
 }
@@ -188,6 +302,7 @@ export function ImagesModal({
 		composition: "",
 		colors: "",
 		includeContentText: false,
+		aspectRatio: "square",
 	});
 	const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
@@ -222,6 +337,7 @@ export function ImagesModal({
 				composition: "",
 				colors: "",
 				includeContentText: false,
+				aspectRatio: "square",
 			});
 			setShowAdvancedOptions(false);
 			setGeneratedPrompt("");
@@ -312,6 +428,7 @@ export function ImagesModal({
 			const imageResult = await generateImage({
 				data: {
 					prompt: finalPrompt,
+					aspectRatio: formState.aspectRatio,
 					workspaceId,
 					projectId,
 				},
@@ -351,6 +468,7 @@ export function ImagesModal({
 			const imageResult = await generateImage({
 				data: {
 					prompt: finalPrompt,
+					aspectRatio: formState.aspectRatio,
 					workspaceId,
 					projectId,
 				},
@@ -390,6 +508,7 @@ export function ImagesModal({
 				composition: "",
 				colors: "",
 				includeContentText: false,
+				aspectRatio: "square",
 			});
 			setView("gallery");
 		} catch (err) {
@@ -511,7 +630,7 @@ export function ImagesModal({
 		<>
 			{/* Backdrop */}
 			<div
-				className="fixed inset-0 bg-black bg-opacity-50 z-40"
+				className="fixed inset-0 bg-gray-900/90  z-40"
 				onClick={onClose}
 			/>
 
@@ -529,9 +648,6 @@ export function ImagesModal({
 					{/* Header */}
 					<div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
 						<div className="flex items-center gap-2">
-							{view === "generating" && (
-								<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600" />
-							)}
 							<ImageIcon className="w-5 h-5 text-cyan-600" />
 							<h2 className="text-xl font-semibold text-gray-900">
 								{view === "gallery" && "Images"}
@@ -629,6 +745,17 @@ export function ImagesModal({
 										maxLength={500}
 									/>
 									<p className="mt-1 text-xs text-gray-500">{formState.subject.length}/500 characters</p>
+								</div>
+
+								{/* Aspect Ratio */}
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-3">
+										Aspect Ratio
+									</label>
+									<AspectRatioSelector
+										value={formState.aspectRatio}
+										onChange={(value) => setFormState({ ...formState, aspectRatio: value })}
+									/>
 								</div>
 
 								{/* Include Content Text Switch - moved above Style */}

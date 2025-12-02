@@ -143,11 +143,26 @@ export interface GenerateImagePromptInput {
 }
 
 /**
+ * Aspect ratio options for image generation
+ */
+export type ImageAspectRatio = "square" | "landscape" | "portrait";
+
+/**
+ * Maps aspect ratio to DALL-E size parameter
+ * Supported sizes: '1024x1024', '1024x1536', '1536x1024', 'auto'
+ */
+const ASPECT_RATIO_TO_SIZE: Record<ImageAspectRatio, "1024x1024" | "1536x1024" | "1024x1536"> = {
+	square: "1024x1024",
+	landscape: "1536x1024",
+	portrait: "1024x1536",
+};
+
+/**
  * Input parameters for image generation
  */
 export interface GenerateImageInput {
 	prompt: string;
-	size?: "1024x1024" | "1792x1024" | "1024x1792";
+	aspectRatio?: ImageAspectRatio;
 	workspaceId: Id<"workspaces">;
 	projectId: Id<"projects">;
 }
@@ -1177,16 +1192,9 @@ export const generateImage = createServerFn({ method: "POST" })
 			// Initialize OpenAI client
 			const openai = new OpenAI({ apiKey });
 
-			// Default size if not specified
-			const size = data.size || "1024x1024";
-
-			// Validate size
-			const validSizes = ["1024x1024", "1792x1024", "1024x1792"];
-			if (!validSizes.includes(size)) {
-				throw new Error(
-					`Invalid image size. Must be one of: ${validSizes.join(", ")}`,
-				);
-			}
+			// Map aspect ratio to DALL-E size
+			const aspectRatio = data.aspectRatio || "square";
+			const size = ASPECT_RATIO_TO_SIZE[aspectRatio];
 
 			// DALL-E 3 has a character prompt limit
 			const DALLE_MAX_PROMPT_LENGTH = 10000;
