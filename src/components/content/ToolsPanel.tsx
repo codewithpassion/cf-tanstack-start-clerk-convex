@@ -79,6 +79,11 @@ export interface ToolsPanelProps {
 	onOpenImagesModal?: () => void;
 
 	/**
+	 * Callback to open images modal in generate mode
+	 */
+	onOpenImagesGenerate?: () => void;
+
+	/**
 	 * Callback to finalize content
 	 */
 	onFinalize?: () => void;
@@ -106,6 +111,7 @@ export function ToolsPanel({
 	onRepurpose,
 	onShowVersions,
 	onOpenImagesModal,
+	onOpenImagesGenerate,
 	onFinalize,
 	onDelete,
 	isFinalized = false,
@@ -305,14 +311,24 @@ export function ToolsPanel({
 					<h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
 						Images
 					</h4>
-					<button
-						type="button"
-						onClick={onOpenImagesModal}
-						className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 border border-cyan-200 rounded hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 transition-colors"
-					>
-						<Image className="w-3 h-3" />
-						Manage
-					</button>
+					<div className="flex items-center gap-1">
+						<button
+							type="button"
+							onClick={onOpenImagesGenerate}
+							className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-700 bg-purple-50 border border-purple-200 rounded hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-purple-500 transition-colors"
+							title="Generate AI image"
+						>
+							<Sparkles className="w-3 h-3" />
+						</button>
+						<button
+							type="button"
+							onClick={onOpenImagesModal}
+							className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 border border-cyan-200 rounded hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 transition-colors"
+						>
+							<Image className="w-3 h-3" />
+							Manage
+						</button>
+					</div>
 				</div>
 
 				{contentImages === undefined ? (

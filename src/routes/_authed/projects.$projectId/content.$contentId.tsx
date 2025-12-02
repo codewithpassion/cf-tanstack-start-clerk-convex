@@ -143,6 +143,7 @@ function ContentEditorPage() {
 		useState(false);
 	const [showRepurposeDialog, setShowRepurposeDialog] = useState(false);
 	const [showImagesModal, setShowImagesModal] = useState(false);
+	const [imagesModalInitialView, setImagesModalInitialView] = useState<"gallery" | "generate">("gallery");
 
 	// State for inline refine
 	const [inlineRefineSelection, setInlineRefineSelection] = useState<{
@@ -534,7 +535,14 @@ function ContentEditorPage() {
 							onRefine={() => setShowRefineDialog(true)}
 							onRepurpose={() => setShowRepurposeDialog(true)}
 							onShowVersions={() => setShowVersionSidebar(true)}
-							onOpenImagesModal={() => setShowImagesModal(true)}
+							onOpenImagesModal={() => {
+								setImagesModalInitialView("gallery");
+								setShowImagesModal(true);
+							}}
+							onOpenImagesGenerate={() => {
+								setImagesModalInitialView("generate");
+								setShowImagesModal(true);
+							}}
 							onFinalize={() => {
 								if (isFinalized) {
 									setShowUnfinalizeDialog(true);
@@ -634,6 +642,7 @@ function ContentEditorPage() {
 				projectId={projectId as Id<"projects">}
 				workspaceId={workspace._id}
 				contentText={contentPiece.content}
+				initialView={imagesModalInitialView}
 			/>
 		)}
 		</div>

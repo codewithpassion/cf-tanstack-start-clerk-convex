@@ -209,7 +209,7 @@ export function ContentArchiveView({
 							id="page-size"
 							value={pageSize}
 							onChange={(e) => onPageSizeChange(Number(e.target.value))}
-							className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm"
+							className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm text-gray-900 bg-white"
 						>
 							<option value={10}>10</option>
 							<option value={25}>25</option>

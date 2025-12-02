@@ -109,7 +109,7 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 					id="name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
-					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
+					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 					placeholder="e.g., Marketing Manager Persona"
 					maxLength={100}
 					required
@@ -126,7 +126,7 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
 					rows={4}
-					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
+					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
 					placeholder="Describe your target persona: demographics, pain points, goals, preferences..."
 					maxLength={2000}
 				/>

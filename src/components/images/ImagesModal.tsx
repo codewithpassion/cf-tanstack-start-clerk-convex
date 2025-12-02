@@ -26,6 +26,8 @@ import {
 	Image as ImageIcon,
 } from "lucide-react";
 
+type ModalView = "gallery" | "generate" | "review-prompt" | "generating" | "preview";
+
 export interface ImagesModalProps {
 	isOpen: boolean;
 	onClose: () => void;
@@ -33,9 +35,12 @@ export interface ImagesModalProps {
 	projectId: Id<"projects">;
 	workspaceId: Id<"workspaces">;
 	contentText?: string;
+	/**
+	 * Initial view to show when modal opens
+	 * @default "gallery"
+	 */
+	initialView?: ModalView;
 }
-
-type ModalView = "gallery" | "generate" | "review-prompt" | "generating" | "preview";
 
 interface GenerationFormState {
 	imageType: string;
@@ -169,6 +174,7 @@ export function ImagesModal({
 	projectId,
 	workspaceId,
 	contentText,
+	initialView = "gallery",
 }: ImagesModalProps) {
 	// View state
 	const [view, setView] = useState<ModalView>("gallery");
@@ -207,7 +213,7 @@ export function ImagesModal({
 	// Reset state when modal opens/closes
 	useEffect(() => {
 		if (isOpen) {
-			setView("gallery");
+			setView(initialView);
 			setFormState({
 				imageType: "illustration",
 				subject: "",
@@ -222,7 +228,7 @@ export function ImagesModal({
 			setGeneratedImage(null);
 			setError(null);
 		}
-	}, [isOpen]);
+	}, [isOpen, initialView]);
 
 	// Handle keyboard shortcut (Ctrl+Enter to generate)
 	const handleKeyDown = (e: React.KeyboardEvent) => {

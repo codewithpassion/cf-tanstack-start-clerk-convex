@@ -306,7 +306,7 @@ export function AIChatPanel({
 							value={selectedTone}
 							onChange={(e) => setSelectedTone(e.target.value)}
 							disabled={isGenerating}
-							className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50"
+							className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50 text-gray-900 bg-white"
 						>
 							<option value="professional">Professional</option>
 							<option value="casual">Casual</option>

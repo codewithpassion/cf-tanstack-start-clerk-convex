@@ -67,7 +67,7 @@ export function ExampleForm({
 					id="title"
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
-					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 bg-white ${
 						errors.title ? "border-red-500" : "border-gray-300"
 					}`}
 					placeholder="Example: Great LinkedIn Post about Product Launch"
@@ -87,7 +87,7 @@ export function ExampleForm({
 					value={content}
 					onChange={(e) => setContent(e.target.value)}
 					rows={10}
-					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 bg-white ${
 						errors.content ? "border-red-500" : "border-gray-300"
 					}`}
 					placeholder="Paste the example content here..."
@@ -106,7 +106,7 @@ export function ExampleForm({
 					value={notes}
 					onChange={(e) => setNotes(e.target.value)}
 					rows={3}
-					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 ${
+					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 bg-white ${
 						errors.notes ? "border-red-500" : "border-gray-300"
 					}`}
 					placeholder="Why was this example successful? What made it work?"
