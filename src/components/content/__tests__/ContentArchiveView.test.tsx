@@ -36,7 +36,7 @@ describe("ContentArchiveView", () => {
 		},
 	];
 
-	it("renders with pagination controls", () => {
+	it("renders with load more button", () => {
 		render(
 			<ContentArchiveView
 				contentPieces={mockContentPieces}
@@ -45,23 +45,16 @@ describe("ContentArchiveView", () => {
 				personas={[]}
 				brandVoices={[]}
 				onFiltersChange={vi.fn()}
-				onPageChange={vi.fn()}
-				onPageSizeChange={vi.fn()}
+				onLoadMore={vi.fn()}
+				hasMore={true}
 				onNavigateToContent={vi.fn()}
 				onBulkDelete={vi.fn()}
-				currentPage={1}
-				pageSize={25}
 				filters={{}}
 			/>
 		);
 
-		// Check for pagination buttons (Previous/Next) - there may be multiple (mobile/desktop)
-		const prevButtons = screen.getAllByText("Previous");
-		expect(prevButtons.length).toBeGreaterThan(0);
-		const nextButtons = screen.getAllByText("Next");
-		expect(nextButtons.length).toBeGreaterThan(0);
-		// Check for page indicator
-		expect(screen.getByText(/Page 1 of/)).toBeInTheDocument();
+		// Check for Load More button
+		expect(screen.getByText("Load More")).toBeInTheDocument();
 	});
 
 	it("displays select all checkbox for bulk actions", () => {
@@ -73,12 +66,10 @@ describe("ContentArchiveView", () => {
 				personas={[]}
 				brandVoices={[]}
 				onFiltersChange={vi.fn()}
-				onPageChange={vi.fn()}
-				onPageSizeChange={vi.fn()}
+				onLoadMore={vi.fn()}
+				hasMore={false}
 				onNavigateToContent={vi.fn()}
 				onBulkDelete={vi.fn()}
-				currentPage={1}
-				pageSize={25}
 				filters={{}}
 			/>
 		);
@@ -96,12 +87,10 @@ describe("ContentArchiveView", () => {
 				personas={[]}
 				brandVoices={[]}
 				onFiltersChange={vi.fn()}
-				onPageChange={vi.fn()}
-				onPageSizeChange={vi.fn()}
+				onLoadMore={vi.fn()}
+				hasMore={false}
 				onNavigateToContent={vi.fn()}
 				onBulkDelete={vi.fn()}
-				currentPage={1}
-				pageSize={25}
 				filters={{}}
 			/>
 		);

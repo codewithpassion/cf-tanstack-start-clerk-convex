@@ -12,14 +12,12 @@ import type { SearchResult } from "@/components/content/SearchResults";
 
 /**
  * Content archive route.
- * Displays a filterable, sortable, paginated list of content pieces for a project.
+ * Displays a filterable, sortable list of content pieces for a project.
  * Includes search functionality with optional cross-project search.
  */
 export const Route = createFileRoute("/_authed/projects/$projectId/content/")({
 	component: ContentArchivePage,
 	validateSearch: (search: Record<string, unknown>): {
-		page: number;
-		pageSize: number;
 		categoryId?: string;
 		personaId?: string;
 		brandVoiceId?: string;
@@ -28,8 +26,6 @@ export const Route = createFileRoute("/_authed/projects/$projectId/content/")({
 		dateTo?: number;
 	} => {
 		return {
-			page: Number(search.page) || 1,
-			pageSize: Number(search.pageSize) || 25,
 			categoryId: (search.categoryId as string) || undefined,
 			personaId: (search.personaId as string) || undefined,
 			brandVoiceId: (search.brandVoiceId as string) || undefined,
@@ -45,9 +41,10 @@ function ContentArchivePage() {
 	const navigate = useNavigate({ from: Route.fullPath });
 	const search = Route.useSearch();
 
-	const { page, pageSize, categoryId, personaId, brandVoiceId, status, dateFrom, dateTo } = search;
+	const { categoryId, personaId, brandVoiceId, status, dateFrom, dateTo } = search;
 
-	// Search state
+	// State
+	const [limit, setLimit] = useState(25);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [crossProjectSearch, setCrossProjectSearch] = useState(false);
 
@@ -68,8 +65,8 @@ function ContentArchivePage() {
 		projectId: projectId as Id<"projects">,
 		filters,
 		pagination: {
-			limit: pageSize,
-			offset: (page - 1) * pageSize,
+			limit,
+			offset: 0,
 		},
 	});
 
@@ -95,15 +92,15 @@ function ContentArchivePage() {
 		searchQuery.trim()
 			? crossProjectSearch
 				? {
-						query: searchQuery,
-						workspaceId: workspace?._id,
-						limit: 10,
-				  }
+					query: searchQuery,
+					workspaceId: workspace?._id,
+					limit: 10,
+				}
 				: {
-						query: searchQuery,
-						projectId: projectId as Id<"projects">,
-						limit: 10,
-				  }
+					query: searchQuery,
+					projectId: projectId as Id<"projects">,
+					limit: 10,
+				}
 			: "skip"
 	);
 
@@ -114,8 +111,6 @@ function ContentArchivePage() {
 	const handleFiltersChange = (newFilters: ContentFilters) => {
 		navigate({
 			search: {
-				page: 1, // Reset to first page when filters change
-				pageSize,
 				categoryId: newFilters.categoryId?.toString(),
 				personaId: newFilters.personaId?.toString(),
 				brandVoiceId: newFilters.brandVoiceId?.toString(),
@@ -124,26 +119,13 @@ function ContentArchivePage() {
 				dateTo: newFilters.dateTo,
 			},
 		});
+		// Reset limit when filters change
+		setLimit(25);
 	};
 
-	// Handle pagination
-	const handlePageChange = (newPage: number) => {
-		navigate({
-			search: {
-				...search,
-				page: newPage,
-			},
-		});
-	};
-
-	const handlePageSizeChange = (newPageSize: number) => {
-		navigate({
-			search: {
-				...search,
-				page: 1, // Reset to first page when page size changes
-				pageSize: newPageSize,
-			},
-		});
+	// Handle load more
+	const handleLoadMore = () => {
+		setLimit((prev) => prev + 25);
 	};
 
 	// Handle navigation to content editor
@@ -192,14 +174,11 @@ function ContentArchivePage() {
 	const { contentPieces, totalCount } = contentPiecesResult;
 
 	// Fetch related entities for each content piece
-	// Note: In a production app, we'd use the getContentPieceWithRelations query
-	// or batch these queries, but for now we'll use the data we have
 	const contentPiecesWithRelations = contentPieces.map((cp) => ({
 		...cp,
 		category: categories.find((c) => c._id === cp.categoryId) || null,
 		persona: personas.find((p) => p._id === cp.personaId) || null,
 		brandVoice: brandVoices.find((bv) => bv._id === cp.brandVoiceId) || null,
-		// Preserve relationship data from query
 		parentContent: cp.parentContent,
 		derivedCount: cp.derivedCount,
 	}));
@@ -259,18 +238,17 @@ function ContentArchivePage() {
 					personas={personas}
 					brandVoices={brandVoices}
 					filters={filters}
-					searchQuery={searchQuery}
-					searchResults={mappedSearchResults}
-					showCrossProjectSearch={crossProjectSearch}
-					currentPage={page}
-					pageSize={pageSize}
 					onFiltersChange={handleFiltersChange}
-					onSearchQueryChange={setSearchQuery}
-					onCrossProjectSearchToggle={setCrossProjectSearch}
-					onPageChange={handlePageChange}
-					onPageSizeChange={handlePageSizeChange}
+					onLoadMore={handleLoadMore}
+					hasMore={contentPieces.length < totalCount}
 					onNavigateToContent={handleNavigateToContent}
 					onBulkDelete={handleBulkDelete}
+					searchQuery={searchQuery}
+					onSearchQueryChange={setSearchQuery}
+					searchResults={mappedSearchResults}
+					showCrossProjectSearch={crossProjectSearch}
+					onCrossProjectSearchToggle={setCrossProjectSearch}
+					isSearching={searchQuery.length > 0 && searchResults === undefined}
 				/>
 			)}
 		</div>

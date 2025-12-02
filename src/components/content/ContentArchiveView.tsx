@@ -21,18 +21,17 @@ export interface ContentArchiveViewProps {
 	brandVoices: Pick<BrandVoice, "_id" | "name">[];
 	filters: ContentFilters;
 	onFiltersChange: (filters: ContentFilters) => void;
-	onPageChange: (page: number) => void;
-	onPageSizeChange: (pageSize: number) => void;
+	onLoadMore: () => void;
+	hasMore: boolean;
 	onNavigateToContent: (contentPieceId: string) => void;
 	onBulkDelete: (contentPieceIds: string[]) => void;
-	currentPage: number;
-	pageSize: number;
 	searchQuery?: string;
 	onSearchQueryChange?: (query: string) => void;
 	searchResults?: SearchResult[];
 	isSearching?: boolean;
 	showCrossProjectSearch?: boolean;
 	onCrossProjectSearchToggle?: (enabled: boolean) => void;
+	defaultViewMode?: ViewMode;
 }
 
 type ViewMode = "table" | "cards";
@@ -49,27 +48,26 @@ export function ContentArchiveView({
 	brandVoices,
 	filters,
 	onFiltersChange,
-	onPageChange,
-	onPageSizeChange,
+	onLoadMore,
+	hasMore,
 	onNavigateToContent,
 	onBulkDelete,
-	currentPage,
-	pageSize,
 	searchQuery = "",
 	onSearchQueryChange,
 	searchResults = [],
 	isSearching = false,
 	showCrossProjectSearch = false,
 	onCrossProjectSearchToggle,
+	defaultViewMode = "table",
 }: ContentArchiveViewProps) {
-	const [viewMode, setViewMode] = useState<ViewMode>("table");
+	const [viewMode, setViewMode] = useState<ViewMode>(defaultViewMode);
 	const [selectedIds, setSelectedIds] = useState<string[]>([]);
 	const [sortColumn, setSortColumn] = useState<
 		"title" | "category" | "status" | "createdAt" | "updatedAt"
 	>("updatedAt");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-	const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+	const [showFilters, setShowFilters] = useState(false);
 
 	const handleSort = (column: typeof sortColumn) => {
 		if (sortColumn === column) {
@@ -78,19 +76,6 @@ export function ContentArchiveView({
 			setSortColumn(column);
 			setSortDirection("desc");
 		}
-	};
-
-	const handleDelete = (contentPieceId: string) => {
-		setDeleteTargetId(contentPieceId);
-		setShowDeleteConfirm(true);
-	};
-
-	const handleConfirmDelete = () => {
-		if (deleteTargetId) {
-			onBulkDelete([deleteTargetId]);
-			setDeleteTargetId(null);
-		}
-		setShowDeleteConfirm(false);
 	};
 
 	const handleBulkDelete = () => {
@@ -112,13 +97,6 @@ export function ContentArchiveView({
 			onSearchQueryChange("");
 		}
 	};
-
-	const startIndex = (currentPage - 1) * pageSize + 1;
-	const endIndex = Math.min(currentPage * pageSize, totalCount);
-	const totalPages = Math.ceil(totalCount / pageSize);
-
-	const canGoPrevious = currentPage > 1;
-	const canGoNext = currentPage < totalPages;
 
 	return (
 		<div>
@@ -146,13 +124,25 @@ export function ContentArchiveView({
 									/>
 								)}
 							</div>
+
+							<button
+								type="button"
+								onClick={() => setShowFilters(!showFilters)}
+								className={`px-4 py-2 text-sm font-medium rounded-md border transition-colors ${showFilters
+									? "bg-slate-100 text-slate-900 border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-700"
+									: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
+									}`}
+							>
+								{showFilters ? "Hide Filters" : "Show Filters"}
+							</button>
+
 							{onCrossProjectSearchToggle && (
-								<label className="flex items-center gap-2 text-sm text-slate-700 whitespace-nowrap">
+								<label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap">
 									<input
 										type="checkbox"
 										checked={showCrossProjectSearch}
 										onChange={(e) => onCrossProjectSearchToggle(e.target.checked)}
-										className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+										className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500 dark:bg-slate-800"
 									/>
 									Search all projects
 								</label>
@@ -162,13 +152,15 @@ export function ContentArchiveView({
 				)}
 
 				{/* Filters */}
-				<ContentFiltersComponent
-					categories={categories}
-					personas={personas}
-					brandVoices={brandVoices}
-					filters={filters}
-					onFiltersChange={onFiltersChange}
-				/>
+				{showFilters && (
+					<ContentFiltersComponent
+						categories={categories}
+						personas={personas}
+						brandVoices={brandVoices}
+						filters={filters}
+						onFiltersChange={onFiltersChange}
+					/>
+				)}
 			</div>
 
 			{/* View Mode Toggle and Bulk Actions */}
@@ -179,42 +171,23 @@ export function ContentArchiveView({
 						<button
 							type="button"
 							onClick={() => setViewMode("table")}
-							className={`px-4 py-2 text-sm font-medium rounded-l-md border ${
-								viewMode === "table"
-									? "bg-cyan-600 text-white border-cyan-600"
-									: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
-							}`}
+							className={`px-4 py-2 text-sm font-medium rounded-l-md border ${viewMode === "table"
+								? "bg-cyan-600 text-white border-cyan-600"
+								: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
+								}`}
 						>
 							Table
 						</button>
 						<button
 							type="button"
 							onClick={() => setViewMode("cards")}
-							className={`px-4 py-2 text-sm font-medium rounded-r-md border-t border-r border-b ${
-								viewMode === "cards"
-									? "bg-cyan-600 text-white border-cyan-600"
-									: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
-							}`}
+							className={`px-4 py-2 text-sm font-medium rounded-r-md border-t border-r border-b ${viewMode === "cards"
+								? "bg-cyan-600 text-white border-cyan-600"
+								: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
+								}`}
 						>
 							Cards
 						</button>
-					</div>
-
-					{/* Page Size Selector */}
-					<div className="flex items-center gap-2">
-						<label htmlFor="page-size" className="text-sm text-slate-700">
-							Show:
-						</label>
-						<select
-							id="page-size"
-							value={pageSize}
-							onChange={(e) => onPageSizeChange(Number(e.target.value))}
-							className="rounded-md border-slate-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm text-slate-900 bg-white"
-						>
-							<option value={10}>10</option>
-							<option value={25}>25</option>
-							<option value={50}>50</option>
-						</select>
 					</div>
 				</div>
 
@@ -240,7 +213,6 @@ export function ContentArchiveView({
 				<ContentArchiveList
 					contentPieces={contentPieces}
 					onEdit={onNavigateToContent}
-					onDelete={handleDelete}
 					onSelectionChange={setSelectedIds}
 					selectedIds={selectedIds}
 					sortColumn={sortColumn}
@@ -267,105 +239,36 @@ export function ContentArchiveView({
 				</div>
 			)}
 
-			{/* Pagination */}
-			<div className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6 mt-6">
-				<div className="flex flex-1 justify-between sm:hidden">
+			{/* Load More */}
+			{hasMore ? (
+				<div className="mt-8 flex justify-center">
 					<button
 						type="button"
-						onClick={() => onPageChange(currentPage - 1)}
-						disabled={!canGoPrevious}
-						className="relative inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+						onClick={onLoadMore}
+						className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
 					>
-						Previous
-					</button>
-					<button
-						type="button"
-						onClick={() => onPageChange(currentPage + 1)}
-						disabled={!canGoNext}
-						className="relative ml-3 inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-					>
-						Next
+						Load More
 					</button>
 				</div>
-				<div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-					<div>
-						<p className="text-sm text-slate-700">
-							Showing <span className="font-medium">{startIndex}</span> to{" "}
-							<span className="font-medium">{endIndex}</span> of{" "}
-							<span className="font-medium">{totalCount}</span> results
-						</p>
+			) : (
+				totalCount > 0 && (
+					<div className="mt-8 flex justify-center">
+						<div className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-sm px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700">
+							No more content to load
+						</div>
 					</div>
-					<div>
-						<nav
-							className="isolate inline-flex -space-x-px rounded-md shadow-sm"
-							aria-label="Pagination"
-						>
-							<button
-								type="button"
-								onClick={() => onPageChange(currentPage - 1)}
-								disabled={!canGoPrevious}
-								className="relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
-							>
-								<span className="sr-only">Previous</span>
-								<svg
-									className="h-5 w-5"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										fillRule="evenodd"
-										d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-										clipRule="evenodd"
-									/>
-								</svg>
-							</button>
-							<span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 focus:outline-offset-0">
-								Page {currentPage} of {totalPages}
-							</span>
-							<button
-								type="button"
-								onClick={() => onPageChange(currentPage + 1)}
-								disabled={!canGoNext}
-								className="relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
-							>
-								<span className="sr-only">Next</span>
-								<svg
-									className="h-5 w-5"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										fillRule="evenodd"
-										d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-										clipRule="evenodd"
-									/>
-								</svg>
-							</button>
-						</nav>
-					</div>
-				</div>
-			</div>
+				)
+			)}
 
 			{/* Delete Confirmation Dialog */}
 			<ConfirmDialog
 				isOpen={showDeleteConfirm}
 				onClose={() => {
 					setShowDeleteConfirm(false);
-					setDeleteTargetId(null);
 				}}
-				onConfirm={deleteTargetId ? handleConfirmDelete : handleConfirmBulkDelete}
-				title={
-					deleteTargetId
-						? "Delete Content Piece"
-						: `Delete ${selectedIds.length} Content Piece${selectedIds.length > 1 ? "s" : ""}`
-				}
-				message={
-					deleteTargetId
-						? "Are you sure you want to delete this content piece? This action cannot be undone."
-						: `Are you sure you want to delete ${selectedIds.length} content piece${selectedIds.length > 1 ? "s" : ""}? This action cannot be undone.`
-				}
+				onConfirm={handleConfirmBulkDelete}
+				title={`Delete ${selectedIds.length} Content Piece${selectedIds.length > 1 ? "s" : ""}`}
+				message={`Are you sure you want to delete ${selectedIds.length} content piece${selectedIds.length > 1 ? "s" : ""}? This action cannot be undone.`}
 				confirmLabel="Delete"
 				cancelLabel="Cancel"
 			/>

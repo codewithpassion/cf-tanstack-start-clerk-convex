@@ -52,7 +52,7 @@ export function SearchInput({
 				{/* Search icon */}
 				<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
 					<svg
-						className="h-5 w-5 text-slate-400"
+						className="h-5 w-5 text-slate-400 dark:text-slate-500"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
@@ -73,7 +73,7 @@ export function SearchInput({
 					value={localValue}
 					onChange={(e) => setLocalValue(e.target.value)}
 					placeholder={placeholder}
-					className="block w-full pl-10 pr-20 py-2 border border-slate-300 rounded-md leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+					className="block w-full pl-10 pr-20 py-2 border border-slate-300 dark:border-slate-700 rounded-md leading-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:placeholder-slate-400 dark:focus:placeholder-slate-500 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
 					aria-label="Search content"
 				/>
 
@@ -81,7 +81,7 @@ export function SearchInput({
 				<div className="absolute inset-y-0 right-0 flex items-center pr-3">
 					{isLoading && (
 						<svg
-							className="animate-spin h-5 w-5 text-slate-400 mr-2"
+							className="animate-spin h-5 w-5 text-slate-400 dark:text-slate-500 mr-2"
 							fill="none"
 							viewBox="0 0 24 24"
 							aria-hidden="true"
@@ -105,7 +105,7 @@ export function SearchInput({
 						<button
 							type="button"
 							onClick={handleClear}
-							className="text-slate-400 hover:text-slate-500 focus:outline-none"
+							className="text-slate-400 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-400 focus:outline-none"
 							aria-label="Clear search"
 						>
 							<svg

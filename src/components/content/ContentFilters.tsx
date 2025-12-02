@@ -91,13 +91,13 @@ export function ContentFilters({
 	};
 
 	return (
-		<div className="bg-white p-4 rounded-lg border border-slate-200 mb-6">
+		<div className="bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 mb-6">
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 				{/* Category Filter */}
 				<div>
 					<label
 						htmlFor="category-filter"
-						className="block text-sm font-medium text-slate-700 mb-1"
+						className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
 					>
 						Category
 					</label>
@@ -105,7 +105,7 @@ export function ContentFilters({
 						id="category-filter"
 						value={filters.categoryId || ""}
 						onChange={(e) => handleCategoryChange(e.target.value)}
-						className="block w-full px-3 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+						className="block w-full px-3 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Categories</option>
 						{categories.map((category) => (
@@ -120,7 +120,7 @@ export function ContentFilters({
 				<div>
 					<label
 						htmlFor="persona-filter"
-						className="block text-sm font-medium text-slate-700 mb-1"
+						className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
 					>
 						Persona
 					</label>
@@ -128,7 +128,7 @@ export function ContentFilters({
 						id="persona-filter"
 						value={filters.personaId || ""}
 						onChange={(e) => handlePersonaChange(e.target.value)}
-						className="block w-full px-3 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+						className="block w-full px-3 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Personas</option>
 						{personas.map((persona) => (
@@ -143,7 +143,7 @@ export function ContentFilters({
 				<div>
 					<label
 						htmlFor="brand-voice-filter"
-						className="block text-sm font-medium text-slate-700 mb-1"
+						className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
 					>
 						Brand Voice
 					</label>
@@ -151,7 +151,7 @@ export function ContentFilters({
 						id="brand-voice-filter"
 						value={filters.brandVoiceId || ""}
 						onChange={(e) => handleBrandVoiceChange(e.target.value)}
-						className="block w-full px-3 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+						className="block w-full px-3 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Brand Voices</option>
 						{brandVoices.map((brandVoice) => (
@@ -166,7 +166,7 @@ export function ContentFilters({
 				<div>
 					<label
 						htmlFor="status-filter"
-						className="block text-sm font-medium text-slate-700 mb-1"
+						className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
 					>
 						Status
 					</label>
@@ -174,7 +174,7 @@ export function ContentFilters({
 						id="status-filter"
 						value={filters.status || ""}
 						onChange={(e) => handleStatusChange(e.target.value)}
-						className="block w-full px-3 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+						className="block w-full px-3 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					>
 						<option value="">All Statuses</option>
 						<option value="draft">Draft</option>
@@ -188,7 +188,7 @@ export function ContentFilters({
 						type="button"
 						onClick={handleClearFilters}
 						disabled={!hasActiveFilters}
-						className="w-full px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed"
+						className="w-full px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						Clear Filters
 					</button>
@@ -200,7 +200,7 @@ export function ContentFilters({
 				<div>
 					<label
 						htmlFor="date-from-filter"
-						className="block text-sm font-medium text-slate-700 mb-1"
+						className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
 					>
 						Created From
 					</label>
@@ -209,13 +209,13 @@ export function ContentFilters({
 						id="date-from-filter"
 						value={filters.dateFrom ? formatDateForInput(filters.dateFrom) : ""}
 						onChange={(e) => handleDateFromChange(e.target.value)}
-						className="block w-full px-3 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+						className="block w-full px-3 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					/>
 				</div>
 				<div>
 					<label
 						htmlFor="date-to-filter"
-						className="block text-sm font-medium text-slate-700 mb-1"
+						className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
 					>
 						Created To
 					</label>
@@ -224,7 +224,7 @@ export function ContentFilters({
 						id="date-to-filter"
 						value={filters.dateTo ? formatDateForInput(filters.dateTo) : ""}
 						onChange={(e) => handleDateToChange(e.target.value)}
-						className="block w-full px-3 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
+						className="block w-full px-3 py-2 text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:border-cyan-500 focus:ring-cyan-500 focus:outline-none sm:text-sm"
 					/>
 				</div>
 			</div>

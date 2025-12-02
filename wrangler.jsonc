@@ -44,7 +44,8 @@
 		"VITE_API_KEY": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 		"R2_BUCKET_NAME": "postmate-files",
 		"DEFAULT_AI_PROVIDER": "openai",
-		"DEFAULT_AI_MODEL": "gpt-4o"
+		"DEFAULT_AI_MODEL": "gpt-4o",
+		"IMAGE_GENERATION_MODEL": "openai",
 	}
 	/**
 	 * Note: Use secrets to store sensitive data.

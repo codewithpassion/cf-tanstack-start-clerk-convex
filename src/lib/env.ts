@@ -1,3 +1,5 @@
+import { env } from 'cloudflare:workers';
+
 /**
  * Helper to access Cloudflare Workers environment bindings.
  * This abstraction allows for easier testing by providing a single
@@ -10,7 +12,7 @@
  * @throws Error if R2 bucket is not configured
  */
 export async function getR2Bucket(): Promise<R2Bucket> {
-	const { env } = await import("cloudflare:workers");
+
 	const bucket = env.R2_BUCKET;
 
 	if (!bucket) {

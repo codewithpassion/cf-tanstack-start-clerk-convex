@@ -10,19 +10,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { auth } from "@clerk/tanstack-react-start/server";
 import { ConvexHttpClient } from "convex/browser";
 import { streamText, generateText } from "ai";
-import OpenAI from "openai";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import {
 	createAIProvider,
 	resolveAIConfig,
-	type AIEnvironment,
 } from "@/lib/ai/providers";
 import { estimateTokenCount, TOKEN_LIMITS } from "@/lib/ai/models";
-import { uploadFile } from "@/lib/r2-client";
-import { getR2Bucket } from "@/lib/env";
-import { generateR2Key, sanitizeFilename } from "@/lib/file-validation";
-import { createThumbnail } from "@/lib/image-processing";
 
 /**
  * Context assembled from various sources for AI generation
@@ -142,125 +136,6 @@ export interface GenerateImagePromptInput {
 	colors?: string;
 }
 
-/**
- * Aspect ratio options for image generation
- */
-export type ImageAspectRatio = "square" | "landscape" | "portrait";
-
-/**
- * Maps aspect ratio to DALL-E size parameter
- * Supported sizes: '1024x1024', '1024x1536', '1536x1024', 'auto'
- */
-const ASPECT_RATIO_TO_SIZE: Record<ImageAspectRatio, "1024x1024" | "1536x1024" | "1024x1536"> = {
-	square: "1024x1024",
-	landscape: "1536x1024",
-	portrait: "1024x1536",
-};
-
-/**
- * Input parameters for image generation
- */
-export interface GenerateImageInput {
-	prompt: string;
-	aspectRatio?: ImageAspectRatio;
-	workspaceId: Id<"workspaces">;
-	projectId: Id<"projects">;
-}
-
-/**
- * Result from image generation
- */
-export interface GenerateImageResult {
-	fileId: Id<"files">;
-	r2Key: string;
-	previewUrl: string;
-}
-
-/**
- * Rate limit tracking per user
- */
-interface RateLimitEntry {
-	timestamps: number[];
-}
-
-// In-memory rate limit store (use KV or Durable Objects in production)
-const rateLimitStore = new Map<string, RateLimitEntry>();
-
-/**
- * Rate limit constants for image generation
- */
-const IMAGE_GENERATION_RATE_LIMIT = {
-	MAX_REQUESTS: 5,
-	WINDOW_MS: 60000, // 1 minute
-};
-
-/**
- * Get Convex client with authentication
- */
-async function getAuthenticatedConvexClient(): Promise<ConvexHttpClient> {
-	const convexUrl = process.env.VITE_CONVEX_URL;
-	if (!convexUrl) {
-		throw new Error("VITE_CONVEX_URL environment variable is not set");
-	}
-	const { userId, getToken } = await auth();
-	const token = await getToken({ template: "convex" });
-	if (!userId) {
-		throw new Error("Authentication required to create Convex client");
-	}
-	if (!token) {
-		throw new Error("Authentication token is required to create Convex client");
-	} else {
-		const client = new ConvexHttpClient(convexUrl);
-		console.log("Setting Convex auth for user:", userId, token);
-		client.setAuth(token);
-		return client;
-	}
-}
-
-/**
- * Get AI environment configuration
- */
-function getAIEnvironment(): AIEnvironment {
-	return {
-		OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-		ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
-		DEFAULT_AI_PROVIDER: process.env.DEFAULT_AI_PROVIDER,
-		DEFAULT_AI_MODEL: process.env.DEFAULT_AI_MODEL,
-	};
-}
-
-/**
- * Check and enforce rate limit for image generation
- *
- * @param userId - User ID to check rate limit for
- * @throws Error if rate limit is exceeded
- */
-function checkImageGenerationRateLimit(userId: string): void {
-	const now = Date.now();
-	const windowStart = now - IMAGE_GENERATION_RATE_LIMIT.WINDOW_MS;
-
-	// Get or create rate limit entry
-	let entry = rateLimitStore.get(userId);
-	if (!entry) {
-		entry = { timestamps: [] };
-		rateLimitStore.set(userId, entry);
-	}
-
-	// Filter out old timestamps outside the window
-	entry.timestamps = entry.timestamps.filter(
-		(timestamp) => timestamp > windowStart,
-	);
-
-	// Check if limit exceeded
-	if (entry.timestamps.length >= IMAGE_GENERATION_RATE_LIMIT.MAX_REQUESTS) {
-		throw new Error(
-			`Image generation rate limit exceeded. Maximum ${IMAGE_GENERATION_RATE_LIMIT.MAX_REQUESTS} requests per minute. Please try again later.`,
-		);
-	}
-
-	// Add current timestamp
-	entry.timestamps.push(now);
-}
 
 /**
  * Fetch category format guidelines
@@ -1165,9 +1040,27 @@ Keep the prompt under 400 words and make it clear and specific.`;
 	});
 
 /**
- * Generate image using DALL-E API
+ * Image Generation Strategy Interface
+ */
+import type {
+	GenerateImageInput,
+	GenerateImageResult,
+	ImageAspectRatio,
+} from "./image-generation/types";
+
+export type {
+	GenerateImageInput,
+	GenerateImageResult,
+	ImageAspectRatio,
+};
+
+import { ImageGenerationFactory } from "./image-generation/factory";
+import { getAuthenticatedConvexClient, getAIEnvironment } from "./utils";
+
+/**
+ * Generate image using configured strategy
  *
- * Server function that calls DALL-E to generate an image, downloads it,
+ * Server function that generates an image using the selected strategy (OpenAI or Google),
  * uploads to R2, and creates a file record in Convex.
  */
 export const generateImage = createServerFn({ method: "POST" })
@@ -1180,131 +1073,17 @@ export const generateImage = createServerFn({ method: "POST" })
 				throw new Error("Authentication required");
 			}
 
-			// Check rate limit
-			checkImageGenerationRateLimit(userId);
+			// Get environment variables
+			// In Cloudflare Workers, process.env might not be fully populated with all vars if not explicitly passed
+			// But here we are in a server function which should have access to process.env
+			const env = process.env;
 
-			// Get OpenAI API key
-			const apiKey = process.env.OPENAI_API_KEY;
-			if (!apiKey) {
-				throw new Error("OPENAI_API_KEY environment variable is not set");
-			}
+			// Create strategy
+			const strategy = ImageGenerationFactory.createStrategy(env);
 
-			// Initialize OpenAI client
-			const openai = new OpenAI({ apiKey });
+			// Execute generation
+			return await strategy.generate(data, userId);
 
-			// Map aspect ratio to DALL-E size
-			const aspectRatio = data.aspectRatio || "square";
-			const size = ASPECT_RATIO_TO_SIZE[aspectRatio];
-
-			// DALL-E 3 has a character prompt limit
-			const DALLE_MAX_PROMPT_LENGTH = 10000;
-			const prompt =
-				data.prompt.length > DALLE_MAX_PROMPT_LENGTH
-					? data.prompt.slice(0, DALLE_MAX_PROMPT_LENGTH - 3) + "..."
-					: data.prompt;
-
-			console.log("Generating image with DALL-E 3:", {
-				originalPromptLength: data.prompt.length,
-				truncatedPromptLength: prompt.length,
-				size,
-			});
-
-			// Generate image with DALL-E 3
-			const response = await openai.images.generate({
-				model: "gpt-image-1-mini",
-				prompt,
-				size,
-				quality: "auto",
-				n: 1,
-			});
-
-			// Get image data from response (handles both URL and base64 formats)
-			if (!response.data || response.data.length === 0) {
-				throw new Error("No image data returned from DALL-E");
-			}
-
-			const imageData = response.data[0];
-			let imageBuffer: ArrayBuffer;
-
-			if (imageData?.b64_json) {
-				// Handle base64 response (gpt-image-1-mini and newer models)
-				console.log("Image generated, decoding base64 data");
-				const binaryString = atob(imageData.b64_json);
-				const bytes = new Uint8Array(binaryString.length);
-				for (let i = 0; i < binaryString.length; i++) {
-					bytes[i] = binaryString.charCodeAt(i);
-				}
-				imageBuffer = bytes.buffer;
-			} else if (imageData?.url) {
-				// Handle URL response (dall-e-3 and older models)
-				console.log("Image generated, downloading from URL");
-				const imageResponse = await fetch(imageData.url);
-				if (!imageResponse.ok) {
-					throw new Error(
-						`Failed to download image: ${imageResponse.statusText}`,
-					);
-				}
-				imageBuffer = await imageResponse.arrayBuffer();
-			} else {
-				console.log("DALL-E response data:", response.data);
-				throw new Error("No image URL or base64 data returned from DALL-E");
-			}
-			const imageSizeBytes = imageBuffer.byteLength;
-
-			console.log("Image downloaded, size:", imageSizeBytes, "bytes");
-
-			// Generate filename and R2 key
-			const timestamp = Date.now();
-			const filename = sanitizeFilename(`generated-${timestamp}.png`);
-			const r2Key = generateR2Key(data.workspaceId, "contentImage", filename);
-
-			// Get R2 bucket
-			const bucket = await getR2Bucket();
-
-			// Upload to R2
-			await uploadFile(bucket, r2Key, imageBuffer, "image/png");
-
-			console.log("Image uploaded to R2:", r2Key);
-
-			// Generate and upload thumbnail
-			let thumbnailR2Key: string | undefined;
-			try {
-				const thumbnailBuffer = await createThumbnail(imageBuffer, "image/png");
-				if (thumbnailBuffer) {
-					// Generate thumbnail key by replacing extension with _thumb.jpg
-					const lastDotIndex = r2Key.lastIndexOf(".");
-					thumbnailR2Key =
-						lastDotIndex === -1
-							? `${r2Key}_thumb.jpg`
-							: `${r2Key.substring(0, lastDotIndex)}_thumb.jpg`;
-					await uploadFile(bucket, thumbnailR2Key, thumbnailBuffer, "image/jpeg");
-					console.log("Thumbnail uploaded to R2:", thumbnailR2Key);
-				}
-			} catch (thumbnailError) {
-				// Log thumbnail errors but don't fail the upload
-				console.error("Thumbnail generation failed:", thumbnailError);
-			}
-
-			// Create file record in Convex
-			const convex = await getAuthenticatedConvexClient();
-			const fileId = await convex.mutation(api.files.createFile, {
-				filename,
-				mimeType: "image/png",
-				sizeBytes: imageSizeBytes,
-				r2Key,
-				thumbnailR2Key,
-			});
-
-			console.log("File record created:", fileId);
-
-			// Generate preview URL (will be handled by client-side download function)
-			const previewUrl = `/api/files/${fileId}/preview`;
-
-			return {
-				fileId,
-				r2Key,
-				previewUrl,
-			};
 		} catch (error) {
 			console.error("Image generation error:", error);
 
@@ -1335,6 +1114,7 @@ export const generateImage = createServerFn({ method: "POST" })
 			throw new Error(`Failed to generate image: ${errorMessage}`);
 		}
 	});
+
 
 /**
  * Input parameters for content repurposing

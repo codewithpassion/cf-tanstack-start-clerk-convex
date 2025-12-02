@@ -15,7 +15,7 @@ import {
 	sanitizeFilename,
 	generateR2Key,
 } from "@/lib/file-validation";
-import { getR2Bucket } from "@/lib/env";
+import { env } from 'cloudflare:workers';
 import {
 	extractAndTruncateText,
 	isTextExtractable,
@@ -118,7 +118,7 @@ export const uploadFileFn = createServerFn({ method: "POST" })
 		const r2Key = generateR2Key(workspaceId, ownerType, sanitizedFilename);
 
 		// Get R2 bucket from Cloudflare Workers environment
-		const bucket = await getR2Bucket();
+		const bucket = env.R2_BUCKET;
 
 		// Upload file to R2
 		await uploadFile(bucket, r2Key, fileContent, mimeType);
@@ -237,7 +237,7 @@ export const downloadFileFn = createServerFn({ method: "GET" })
 		const { r2Key } = data;
 
 		// Get R2 bucket from Cloudflare Workers environment
-		const bucket = await getR2Bucket();
+		const bucket = env.R2_BUCKET;
 
 		// Download file from R2
 		const object = await downloadFile(bucket, r2Key);

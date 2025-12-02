@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
-import type { ProjectId } from "@/types/entities";
+import type { ProjectId, ContentFilters } from "@/types/entities";
 import { LoadingState } from "@/components/shared/LoadingState";
-import { FileText, Users, MessageSquare, Layers, Plus, Settings, ArrowRight, Clock } from "lucide-react";
+import { FileText, Users, MessageSquare, Layers, Plus, Settings } from "lucide-react";
+import { ContentArchiveView } from "@/components/content/ContentArchiveView";
+import type { SearchResult } from "@/components/content/SearchResults";
 
 export interface ProjectDashboardProps {
 	projectId: ProjectId;
@@ -12,14 +15,19 @@ export interface ProjectDashboardProps {
 
 /**
  * Project dashboard overview.
- * Shows stats, quick actions, and recent content for a project.
+ * Shows stats, quick actions, and content list for a project.
  */
 export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
+	// State for content list
+	const [limit, setLimit] = useState(25);
+	const [filters, setFilters] = useState<ContentFilters>({});
+	const [searchQuery, setSearchQuery] = useState("");
+
 	// Query all data needed for dashboard
 	const contentPiecesResult = useQuery(api.contentPieces.listContentPieces, {
 		projectId: projectId as Id<"projects">,
-		filters: {},
-		pagination: { limit: 5, offset: 0 },
+		filters,
+		pagination: { limit, offset: 0 },
 	});
 
 	const categories = useQuery(api.categories.listCategories, {
@@ -33,6 +41,21 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 	const brandVoices = useQuery(api.brandVoices.listBrandVoices, {
 		projectId: projectId as Id<"projects">,
 	});
+
+	// Search query
+	const searchResults = useQuery(
+		api.search.searchContent,
+		searchQuery.trim()
+			? {
+				query: searchQuery,
+				projectId: projectId as Id<"projects">,
+				limit: 10,
+			}
+			: "skip"
+	);
+
+	// Mutations
+	const deleteContentPiece = useMutation(api.contentPieces.deleteContentPiece);
 
 	// Loading state
 	if (
@@ -50,19 +73,51 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 	const draftCount = contentPieces.filter((cp) => cp.status === "draft").length;
 	const finalizedCount = contentPieces.filter((cp) => cp.status === "finalized").length;
 
-	// Format time ago
-	const formatTimeAgo = (timestamp: number) => {
-		const now = Date.now();
-		const diff = now - timestamp;
-		const seconds = Math.floor(diff / 1000);
-		const minutes = Math.floor(seconds / 60);
-		const hours = Math.floor(minutes / 60);
-		const days = Math.floor(hours / 24);
+	// Prepare content pieces with relations
+	const contentPiecesWithRelations = contentPieces.map((cp) => ({
+		...cp,
+		category: categories.find((c) => c._id === cp.categoryId) || null,
+		persona: personas.find((p) => p._id === cp.personaId) || null,
+		brandVoice: brandVoices.find((bv) => bv._id === cp.brandVoiceId) || null,
+		parentContent: cp.parentContent,
+		derivedCount: cp.derivedCount,
+	}));
 
-		if (days > 0) return `${days}d ago`;
-		if (hours > 0) return `${hours}h ago`;
-		if (minutes > 0) return `${minutes}m ago`;
-		return "just now";
+	// Map search results
+	const mappedSearchResults: SearchResult[] =
+		searchResults?.results?.map((result) => ({
+			_id: result._id,
+			title: result.title,
+			snippet: result.snippet,
+			categoryName: result.categoryName,
+			projectName: result.projectName,
+			projectId: result.projectId,
+			status: result.status,
+			updatedAt: result.updatedAt,
+		})) || [];
+
+	// Handlers
+	const handleLoadMore = () => {
+		setLimit((prev) => prev + 25);
+	};
+
+	const handleNavigateToContent = (contentPieceId: string) => {
+		// Navigation is handled by the Link component in ContentCard/List, 
+		// but we need this prop for the view component
+		window.location.href = `/projects/${projectId}/content/${contentPieceId}`;
+	};
+
+	const handleBulkDelete = async (contentPieceIds: string[]) => {
+		try {
+			await Promise.all(
+				contentPieceIds.map((id) =>
+					deleteContentPiece({ contentPieceId: id as Id<"contentPieces"> })
+				)
+			);
+		} catch (error) {
+			console.error("Failed to delete content pieces:", error);
+			alert("Failed to delete content pieces. Please try again.");
+		}
 	};
 
 	return (
@@ -115,91 +170,30 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-				{/* Main Content - Recent Content */}
+				{/* Main Content - Content List */}
 				<div className="lg:col-span-2 space-y-6">
 					<div className="flex items-center justify-between">
-						<h2 className="text-lg font-medium text-slate-900 dark:text-white">Recent Content</h2>
-						<Link
-							to="/projects/$projectId/content"
-							params={{ projectId }}
-							search={{ page: 1, pageSize: 25 }}
-							className="text-sm font-medium text-cyan-600 hover:text-cyan-500 flex items-center gap-1"
-						>
-							View All <ArrowRight className="w-4 h-4" />
-						</Link>
+						<h2 className="text-lg font-medium text-slate-900 dark:text-white">Content</h2>
 					</div>
 
-					<div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-						{contentPieces.length === 0 ? (
-							<div className="p-8 text-center">
-								<div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
-									<FileText className="w-6 h-6 text-slate-400" />
-								</div>
-								<h3 className="text-sm font-medium text-slate-900 dark:text-white">No content yet</h3>
-								<p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Get started by creating your first piece of content.</p>
-								<div className="mt-6">
-									<Link
-										to="/projects/$projectId/content/new"
-										params={{ projectId }}
-										className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
-									>
-										<Plus className="-ml-1 mr-2 w-5 h-5" />
-										Create Content
-									</Link>
-								</div>
-							</div>
-						) : (
-							<div className="divide-y divide-slate-200 dark:divide-slate-800">
-								{contentPieces.map((contentPiece) => {
-									const category = categories.find((c) => c._id === contentPiece.categoryId);
-									return (
-										<Link
-											key={contentPiece._id}
-											to="/projects/$projectId/content/$contentId"
-											params={{ projectId, contentId: contentPiece._id }}
-											className="block p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-										>
-											<div className="flex items-center justify-between">
-												<div className="flex items-center gap-4 min-w-0">
-													<div className={`p-2 rounded-lg ${contentPiece.status === "draft"
-															? "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400"
-															: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
-														}`}>
-														<FileText className="w-5 h-5" />
-													</div>
-													<div className="min-w-0">
-														<p className="text-sm font-medium text-slate-900 dark:text-white truncate">
-															{contentPiece.title}
-														</p>
-														<div className="flex items-center gap-2 mt-1">
-															{category && (
-																<span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
-																	{category.name}
-																</span>
-															)}
-															<span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-																<Clock className="w-3 h-3" />
-																{formatTimeAgo(contentPiece._creationTime)}
-															</span>
-														</div>
-													</div>
-												</div>
-												<div className="flex items-center gap-4">
-													<span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${contentPiece.status === "draft"
-															? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
-															: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
-														}`}>
-														{contentPiece.status === "draft" ? "Draft" : "Finalized"}
-													</span>
-													<ArrowRight className="w-4 h-4 text-slate-400" />
-												</div>
-											</div>
-										</Link>
-									);
-								})}
-							</div>
-						)}
-					</div>
+					<ContentArchiveView
+						contentPieces={contentPiecesWithRelations}
+						totalCount={totalCount}
+						categories={categories}
+						personas={personas}
+						brandVoices={brandVoices}
+						filters={filters}
+						onFiltersChange={setFilters}
+						onLoadMore={handleLoadMore}
+						hasMore={contentPieces.length < totalCount}
+						onNavigateToContent={handleNavigateToContent}
+						onBulkDelete={handleBulkDelete}
+						searchQuery={searchQuery}
+						onSearchQueryChange={setSearchQuery}
+						searchResults={mappedSearchResults}
+						isSearching={searchQuery.length > 0 && searchResults === undefined}
+						defaultViewMode="cards"
+					/>
 				</div>
 
 				{/* Sidebar - Quick Actions */}

@@ -89,8 +89,8 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 					to="/projects/$projectId"
 					params={{ projectId }}
 					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/projects/$projectId/")
-							? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
-							: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+						? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
+						: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
 						}`}
 					aria-current={isActive("/projects/$projectId/") ? "page" : undefined}
 				>
@@ -105,10 +105,10 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 				<Link
 					to="/projects/$projectId/content"
 					params={{ projectId }}
-					search={{ page: 1, pageSize: 25 }}
+					search={{}}
 					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isContentActive()
-							? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
-							: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+						? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
+						: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
 						}`}
 					aria-current={isContentActive() ? "page" : undefined}
 				>
@@ -133,8 +133,8 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 									to={item.to}
 									params={{ projectId }}
 									className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors pl-6 ${active
-											? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-5"
-											: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+										? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-5"
+										: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
 										}`}
 									aria-current={active ? "page" : undefined}
 								>
@@ -152,8 +152,8 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 						to="/projects/$projectId/settings"
 						params={{ projectId }}
 						className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/projects/$projectId/settings")
-								? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
-								: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+							? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
+							: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
 							}`}
 					>
 						<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

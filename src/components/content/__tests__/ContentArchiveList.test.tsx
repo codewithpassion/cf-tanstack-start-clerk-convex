@@ -10,43 +10,55 @@ describe("ContentArchiveList", () => {
 		persona: { name: string } | null;
 		brandVoice: { name: string } | null;
 	})[] = [
-		{
-			_id: "content1" as Id<"contentPieces">,
-			_creationTime: Date.now() - 86400000,
-			projectId: "project1" as Id<"projects">,
-			categoryId: "category1" as Id<"categories">,
-			title: "Test Content 1",
-			content: "{}",
-			status: "draft",
-			createdAt: Date.now() - 86400000,
-			updatedAt: Date.now() - 3600000,
-			category: { name: "Blog Post" },
-			persona: { name: "Marketing Pro" },
-			brandVoice: { name: "Professional" },
-		},
-		{
-			_id: "content2" as Id<"contentPieces">,
-			_creationTime: Date.now() - 172800000,
-			projectId: "project1" as Id<"projects">,
-			categoryId: "category2" as Id<"categories">,
-			title: "Test Content 2",
-			content: "{}",
-			status: "finalized",
-			currentFinalizedVersion: 1,
-			createdAt: Date.now() - 172800000,
-			updatedAt: Date.now() - 7200000,
-			category: { name: "Social Media" },
-			persona: null,
-			brandVoice: null,
-		},
-	];
+			{
+				_id: "content1" as Id<"contentPieces">,
+				_creationTime: Date.now() - 86400000,
+				projectId: "project1" as Id<"projects">,
+				categoryId: "category1" as Id<"categories">,
+				title: "Test Content 1",
+				content: "{}",
+				status: "draft",
+				createdAt: Date.now() - 86400000,
+				updatedAt: Date.now() - 3600000,
+				category: { name: "Blog Post" },
+				persona: { name: "Marketing Pro" },
+				brandVoice: { name: "Professional" },
+			},
+			{
+				_id: "content2" as Id<"contentPieces">,
+				_creationTime: Date.now() - 172800000,
+				projectId: "project1" as Id<"projects">,
+				categoryId: "category2" as Id<"categories">,
+				title: "Test Content 2",
+				content: "{}",
+				status: "finalized",
+				currentFinalizedVersion: 1,
+				createdAt: Date.now() - 172800000,
+				updatedAt: Date.now() - 7200000,
+				category: { name: "Social Media" },
+				persona: null,
+				brandVoice: null,
+			},
+		];
+
+	it("renders empty state when no content pieces", () => {
+		render(
+			<ContentArchiveList
+				contentPieces={[]}
+				onEdit={vi.fn()}
+				onSelectionChange={vi.fn()}
+				selectedIds={[]}
+			/>,
+		);
+
+		expect(screen.getByText("No content pieces found")).toBeInTheDocument();
+	});
 
 	it("renders archive list with content pieces", () => {
 		render(
 			<ContentArchiveList
 				contentPieces={mockContentPieces}
 				onEdit={vi.fn()}
-				onDelete={vi.fn()}
 				onSelectionChange={vi.fn()}
 				selectedIds={[]}
 			/>
@@ -63,7 +75,6 @@ describe("ContentArchiveList", () => {
 			<ContentArchiveList
 				contentPieces={mockContentPieces}
 				onEdit={vi.fn()}
-				onDelete={vi.fn()}
 				onSelectionChange={vi.fn()}
 				selectedIds={[]}
 			/>
@@ -79,7 +90,6 @@ describe("ContentArchiveList", () => {
 			<ContentArchiveList
 				contentPieces={mockContentPieces}
 				onEdit={onEdit}
-				onDelete={vi.fn()}
 				onSelectionChange={vi.fn()}
 				selectedIds={[]}
 			/>
@@ -97,7 +107,6 @@ describe("ContentArchiveList", () => {
 			<ContentArchiveList
 				contentPieces={mockContentPieces}
 				onEdit={vi.fn()}
-				onDelete={vi.fn()}
 				onSelectionChange={onSelectionChange}
 				selectedIds={[]}
 			/>

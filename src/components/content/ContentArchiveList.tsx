@@ -11,7 +11,6 @@ export interface ContentArchiveListProps {
 		derivedCount?: number;
 	})[];
 	onEdit: (contentPieceId: string) => void;
-	onDelete: (contentPieceId: string) => void;
 	onSelectionChange: (selectedIds: string[]) => void;
 	selectedIds: string[];
 	sortColumn?: "title" | "category" | "status" | "createdAt" | "updatedAt";
@@ -26,7 +25,6 @@ export interface ContentArchiveListProps {
 export function ContentArchiveList({
 	contentPieces,
 	onEdit,
-	onDelete,
 	onSelectionChange,
 	selectedIds,
 	sortColumn,
@@ -72,7 +70,7 @@ export function ContentArchiveList({
 		if (sortColumn !== column) {
 			return (
 				<svg
-					className="ml-1 h-4 w-4 text-slate-400"
+					className="ml-1 h-4 w-4 text-slate-400 dark:text-slate-600"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -88,7 +86,7 @@ export function ContentArchiveList({
 		}
 		return sortDirection === "asc" ? (
 			<svg
-				className="ml-1 h-4 w-4 text-slate-700"
+				className="ml-1 h-4 w-4 text-slate-700 dark:text-slate-300"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -102,7 +100,7 @@ export function ContentArchiveList({
 			</svg>
 		) : (
 			<svg
-				className="ml-1 h-4 w-4 text-slate-700"
+				className="ml-1 h-4 w-4 text-slate-700 dark:text-slate-300"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -121,11 +119,10 @@ export function ContentArchiveList({
 		const isDraft = status === "draft";
 		return (
 			<span
-				className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
-					isDraft
-						? "bg-yellow-100 text-yellow-800"
-						: "bg-green-100 text-green-800"
-				}`}
+				className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${isDraft
+						? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
+						: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
+					}`}
 			>
 				{isDraft ? "Draft" : "Finalized"}
 			</span>
@@ -147,8 +144,8 @@ export function ContentArchiveList({
 
 	return (
 		<div className="overflow-x-auto">
-			<table className="min-w-full divide-y divide-slate-200">
-				<thead className="bg-slate-50">
+			<table className="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+				<thead className="bg-slate-50 dark:bg-slate-900">
 					<tr>
 						<th className="px-3 py-3 text-left">
 							<input
@@ -160,12 +157,12 @@ export function ContentArchiveList({
 									}
 								}}
 								onChange={(e) => handleSelectAll(e.target.checked)}
-								className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+								className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500 dark:bg-slate-800"
 								aria-label="Select all content pieces"
 							/>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
 							onClick={() => handleSortClick("title")}
 						>
 							<div className="flex items-center">
@@ -174,7 +171,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
 							onClick={() => handleSortClick("category")}
 						>
 							<div className="flex items-center">
@@ -183,7 +180,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
 							onClick={() => handleSortClick("status")}
 						>
 							<div className="flex items-center">
@@ -192,7 +189,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
 							onClick={() => handleSortClick("createdAt")}
 						>
 							<div className="flex items-center">
@@ -201,7 +198,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
 							onClick={() => handleSortClick("updatedAt")}
 						>
 							<div className="flex items-center">
@@ -209,16 +206,13 @@ export function ContentArchiveList({
 								<SortIcon column="updatedAt" />
 							</div>
 						</th>
-						<th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
-							Actions
-						</th>
 					</tr>
 				</thead>
-				<tbody className="bg-white divide-y divide-slate-200">
+				<tbody className="bg-white dark:bg-slate-950 divide-y divide-slate-200 dark:divide-slate-800">
 					{contentPieces.map((contentPiece) => (
 						<tr
 							key={contentPiece._id}
-							className="hover:bg-slate-50 cursor-pointer"
+							className="hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
 							onClick={(e) => handleRowClick(contentPiece._id, e)}
 						>
 							<td className="px-3 py-4 whitespace-nowrap">
@@ -228,17 +222,17 @@ export function ContentArchiveList({
 									onChange={(e) =>
 										handleSelectOne(contentPiece._id, e.target.checked)
 									}
-									className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
+									className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500 dark:bg-slate-800"
 									aria-label={`Select ${contentPiece.title}`}
 									onClick={(e) => e.stopPropagation()}
 								/>
 							</td>
 							<td className="px-6 py-4">
-								<div className="text-sm font-medium text-slate-900">
+								<div className="text-sm font-medium text-slate-900 dark:text-white">
 									{contentPiece.title}
 								</div>
 								{contentPiece.persona && (
-									<div className="text-xs text-slate-500">
+									<div className="text-xs text-slate-500 dark:text-slate-400">
 										{contentPiece.persona.name}
 									</div>
 								)}
@@ -251,7 +245,7 @@ export function ContentArchiveList({
 												e.stopPropagation();
 												onEdit(contentPiece.parentContent!._id);
 											}}
-											className="inline-flex items-center gap-1 text-xs text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full hover:bg-amber-100 transition-colors"
+											className="inline-flex items-center gap-1 text-xs text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-900/20 px-2 py-0.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
 											title={`Derived from: ${contentPiece.parentContent.title}`}
 										>
 											<GitFork className="h-3 w-3" />
@@ -262,7 +256,7 @@ export function ContentArchiveList({
 									)}
 									{contentPiece.derivedCount && contentPiece.derivedCount > 0 && (
 										<span
-											className="inline-flex items-center gap-1 text-xs text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded-full"
+											className="inline-flex items-center gap-1 text-xs text-cyan-700 bg-cyan-50 dark:text-cyan-400 dark:bg-cyan-900/20 px-2 py-0.5 rounded-full"
 											title={`Repurposed ${contentPiece.derivedCount} time${contentPiece.derivedCount > 1 ? "s" : ""}`}
 										>
 											<ArrowRight className="h-3 w-3" />
@@ -272,34 +266,22 @@ export function ContentArchiveList({
 								</div>
 							</td>
 							<td className="px-6 py-4 whitespace-nowrap">
-								<div className="text-sm text-slate-900">
+								<div className="text-sm text-slate-900 dark:text-white">
 									{contentPiece.category?.name || "—"}
 								</div>
 							</td>
 							<td className="px-6 py-4 whitespace-nowrap">
 								<StatusBadge status={contentPiece.status} />
 							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+							<td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
 								{formatDistanceToNow(new Date(contentPiece.createdAt), {
 									addSuffix: true,
 								})}
 							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+							<td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
 								{formatDistanceToNow(new Date(contentPiece.updatedAt), {
 									addSuffix: true,
 								})}
-							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-								<button
-									type="button"
-									onClick={(e) => {
-										e.stopPropagation();
-										onDelete(contentPiece._id);
-									}}
-									className="text-red-600 hover:text-red-900"
-								>
-									Delete
-								</button>
 							</td>
 						</tr>
 					))}
