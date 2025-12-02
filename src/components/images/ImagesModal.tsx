@@ -36,16 +36,117 @@ export interface ImagesModalProps {
 }
 
 type ModalView = "gallery" | "generate" | "review-prompt" | "generating" | "preview";
-type ImageType = "infographic" | "illustration" | "photo" | "diagram";
 
 interface GenerationFormState {
-	imageType: ImageType;
+	imageType: string;
 	subject: string;
 	style: string;
 	mood: string;
 	composition: string;
 	colors: string;
 	includeContentText: boolean;
+}
+
+// Preset options for editable selects
+const IMAGE_TYPE_OPTIONS = [
+	{ value: "infographic", label: "Infographic - Data visualizations" },
+	{ value: "illustration", label: "Illustration - Artistic drawings" },
+	{ value: "photo", label: "Photo - Realistic images" },
+	{ value: "diagram", label: "Diagram - Technical diagrams" },
+];
+
+const STYLE_OPTIONS = [
+	{ value: "minimalist", label: "Minimalist" },
+	{ value: "watercolor", label: "Watercolor" },
+	{ value: "3d-render", label: "3D Render" },
+	{ value: "flat-design", label: "Flat Design" },
+	{ value: "vintage", label: "Vintage" },
+	{ value: "modern", label: "Modern" },
+];
+
+const MOOD_OPTIONS = [
+	{ value: "calm", label: "Calm" },
+	{ value: "energetic", label: "Energetic" },
+	{ value: "professional", label: "Professional" },
+	{ value: "playful", label: "Playful" },
+	{ value: "dramatic", label: "Dramatic" },
+	{ value: "serene", label: "Serene" },
+];
+
+/**
+ * Editable select component - dropdown with ability to type custom values
+ */
+interface EditableSelectProps {
+	id: string;
+	value: string;
+	onChange: (value: string) => void;
+	options: { value: string; label: string }[];
+	placeholder?: string;
+	maxLength?: number;
+}
+
+function EditableSelect({ id, value, onChange, options, placeholder, maxLength = 200 }: EditableSelectProps) {
+	const [isOpen, setIsOpen] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+				setIsOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => document.removeEventListener("mousedown", handleClickOutside);
+	}, []);
+
+	const handleSelect = (optionValue: string) => {
+		onChange(optionValue);
+		setIsOpen(false);
+		inputRef.current?.blur();
+	};
+
+	return (
+		<div ref={containerRef} className="relative">
+			<div className="relative">
+				<input
+					ref={inputRef}
+					id={id}
+					type="text"
+					value={value}
+					onChange={(e) => onChange(e.target.value)}
+					onFocus={() => setIsOpen(true)}
+					className="w-full px-4 py-2.5 pr-10 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-gray-400"
+					placeholder={placeholder}
+					maxLength={maxLength}
+				/>
+				<button
+					type="button"
+					onClick={() => setIsOpen(!isOpen)}
+					className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600"
+				>
+					<ChevronDown className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+				</button>
+			</div>
+			{isOpen && (
+				<div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+					{options.map((option) => (
+						<button
+							key={option.value}
+							type="button"
+							onClick={() => handleSelect(option.value)}
+							className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 ${
+								value === option.value ? "bg-cyan-50 text-cyan-700" : "text-gray-700"
+							}`}
+						>
+							{option.label}
+						</button>
+					))}
+				</div>
+			)}
+		</div>
+	);
 }
 
 interface GeneratedImageState {
@@ -499,20 +600,13 @@ export function ImagesModal({
 									<label htmlFor="image-type" className="block text-sm font-medium text-gray-700 mb-2">
 										Image Type
 									</label>
-									<div className="relative">
-										<select
-											id="image-type"
-											value={formState.imageType}
-											onChange={(e) => setFormState({ ...formState, imageType: e.target.value as ImageType })}
-											className="w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none bg-white"
-										>
-											<option value="infographic">Infographic - Data visualizations</option>
-											<option value="illustration">Illustration - Artistic drawings</option>
-											<option value="photo">Photo - Realistic images</option>
-											<option value="diagram">Diagram - Technical diagrams</option>
-										</select>
-										<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-									</div>
+									<EditableSelect
+										id="image-type"
+										value={formState.imageType}
+										onChange={(value) => setFormState({ ...formState, imageType: value })}
+										options={IMAGE_TYPE_OPTIONS}
+										placeholder="Select or type an image type..."
+									/>
 								</div>
 
 								{/* Subject */}
@@ -531,19 +625,44 @@ export function ImagesModal({
 									<p className="mt-1 text-xs text-gray-500">{formState.subject.length}/500 characters</p>
 								</div>
 
+								{/* Include Content Text Switch - moved above Style */}
+								{contentText && (
+									<div className="flex items-center justify-between py-3 border-t border-b border-gray-200">
+										<div>
+											<p className="text-sm font-medium text-gray-700">Include content text in prompt</p>
+											<p className="text-xs text-gray-500">Add context from your content to the image prompt</p>
+										</div>
+										<button
+											type="button"
+											role="switch"
+											aria-checked={formState.includeContentText}
+											onClick={() => setFormState({ ...formState, includeContentText: !formState.includeContentText })}
+											className={`
+												relative inline-flex h-6 w-11 items-center rounded-full transition-colors
+												${formState.includeContentText ? "bg-cyan-600" : "bg-gray-200"}
+											`}
+										>
+											<span
+												className={`
+													inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+													${formState.includeContentText ? "translate-x-6" : "translate-x-1"}
+												`}
+											/>
+										</button>
+									</div>
+								)}
+
 								{/* Style */}
 								<div>
 									<label htmlFor="style" className="block text-sm font-medium text-gray-700 mb-2">
 										Style <span className="text-gray-400 font-normal">(optional)</span>
 									</label>
-									<input
+									<EditableSelect
 										id="style"
-										type="text"
 										value={formState.style}
-										onChange={(e) => setFormState({ ...formState, style: e.target.value })}
-										className="w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-gray-400"
-										placeholder="e.g., Minimalist, Watercolor, 3D render..."
-										maxLength={200}
+										onChange={(value) => setFormState({ ...formState, style: value })}
+										options={STYLE_OPTIONS}
+										placeholder="Select or type a style..."
 									/>
 								</div>
 
@@ -552,14 +671,12 @@ export function ImagesModal({
 									<label htmlFor="mood" className="block text-sm font-medium text-gray-700 mb-2">
 										Mood <span className="text-gray-400 font-normal">(optional)</span>
 									</label>
-									<input
+									<EditableSelect
 										id="mood"
-										type="text"
 										value={formState.mood}
-										onChange={(e) => setFormState({ ...formState, mood: e.target.value })}
-										className="w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-gray-400"
-										placeholder="e.g., Calm, Energetic, Professional..."
-										maxLength={200}
+										onChange={(value) => setFormState({ ...formState, mood: value })}
+										options={MOOD_OPTIONS}
+										placeholder="Select or type a mood..."
 									/>
 								</div>
 
@@ -611,33 +728,6 @@ export function ImagesModal({
 										</div>
 									)}
 								</div>
-
-								{/* Include Content Text Switch */}
-								{contentText && (
-									<div className="flex items-center justify-between py-3 border-t border-gray-200">
-										<div>
-											<p className="text-sm font-medium text-gray-700">Include content text in prompt</p>
-											<p className="text-xs text-gray-500">Add context from your content to the image prompt</p>
-										</div>
-										<button
-											type="button"
-											role="switch"
-											aria-checked={formState.includeContentText}
-											onClick={() => setFormState({ ...formState, includeContentText: !formState.includeContentText })}
-											className={`
-												relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-												${formState.includeContentText ? "bg-cyan-600" : "bg-gray-200"}
-											`}
-										>
-											<span
-												className={`
-													inline-block h-4 w-4 transform rounded-full bg-white transition-transform
-													${formState.includeContentText ? "translate-x-6" : "translate-x-1"}
-												`}
-											/>
-										</button>
-									</div>
-								)}
 							</div>
 						)}
 
@@ -712,7 +802,13 @@ export function ImagesModal({
 						{/* Gallery View Footer */}
 						{view === "gallery" && (
 							<>
-								<div />
+								<button
+									type="button"
+									onClick={onClose}
+									className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+								>
+									Close
+								</button>
 								<button
 									type="button"
 									onClick={() => setView("generate")}

@@ -149,7 +149,7 @@ export function ToolsPanel({
 		>
 			{/* Panel Header */}
 			<div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-				<h3 className="font-semibold text-gray-900">Tools</h3>
+				<h3 className="font-semibold text-gray-900">Content Actions</h3>
 			</div>
 
 			{/* AI Action Buttons */}
@@ -162,44 +162,6 @@ export function ToolsPanel({
 				>
 					<Sparkles className="w-4 h-4" />
 					Refine
-				</button>
-
-				{/* Repurpose Button */}
-				<button
-					type="button"
-					onClick={onRepurpose}
-					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
-				>
-					<GitFork className="w-4 h-4" />
-					Repurpose
-				</button>
-
-				{/* Create Images Button */}
-				<button
-					type="button"
-					onClick={onOpenImagesModal}
-					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
-				>
-					<Image className="w-4 h-4" />
-					Create images
-				</button>
-
-			</div>
-
-			{/* Content Actions */}
-			<div className="px-4 py-4 space-y-2 border-b border-gray-200">
-				<h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">
-					Content Actions
-				</h4>
-
-				{/* Version History Button */}
-				<button
-					type="button"
-					onClick={onShowVersions}
-					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
-				>
-					<Clock className="w-4 h-4" />
-					Versions
 				</button>
 
 				{/* Finalize or Unlock Button */}
@@ -222,6 +184,29 @@ export function ToolsPanel({
 						Finalize
 					</button>
 				)}
+
+				{/* Repurpose Button */}
+				<button
+					type="button"
+					onClick={onRepurpose}
+					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+				>
+					<GitFork className="w-4 h-4" />
+					Repurpose
+				</button>
+			</div>
+
+			{/* Content Actions */}
+			<div className="px-4 py-4 space-y-2 border-b border-gray-200">
+				{/* Version History Button */}
+				<button
+					type="button"
+					onClick={onShowVersions}
+					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+				>
+					<Clock className="w-4 h-4" />
+					Versions
+				</button>
 
 				{/* Delete Button */}
 				<button
@@ -316,9 +301,19 @@ export function ToolsPanel({
 
 			{/* Images Gallery */}
 			<div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">
-				<h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">
-					Images
-				</h4>
+				<div className="flex items-center justify-between mb-3">
+					<h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wide">
+						Images
+					</h4>
+					<button
+						type="button"
+						onClick={onOpenImagesModal}
+						className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-cyan-700 bg-cyan-50 border border-cyan-200 rounded hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 transition-colors"
+					>
+						<Image className="w-3 h-3" />
+						Manage
+					</button>
+				</div>
 
 				{contentImages === undefined ? (
 					<div className="flex items-center justify-center py-8">
@@ -342,7 +337,7 @@ export function ToolsPanel({
 						</svg>
 						<p>No images attached</p>
 						<p className="mt-1 text-xs">
-							Use the button above to create images
+							Click Manage to create images
 						</p>
 					</div>
 				) : (

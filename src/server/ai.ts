@@ -134,7 +134,7 @@ export interface RefineSelectionInput {
  * Input parameters for image prompt generation
  */
 export interface GenerateImagePromptInput {
-	imageType: "infographic" | "illustration" | "photo" | "diagram";
+	imageType: string;
 	subject: string;
 	style?: string;
 	mood?: string;

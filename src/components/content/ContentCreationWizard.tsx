@@ -324,7 +324,7 @@ export function ContentCreationWizard({
 					<div className="flex min-h-screen items-center justify-center p-4">
 						<div className="fixed inset-0 bg-gray-500 bg-opacity-75" aria-hidden="true" />
 						<div className="relative bg-white rounded-lg p-6 max-w-md">
-							<h3 className="text-lg font-semibold mb-2">Close wizard?</h3>
+							<h3 className="text-lg font-semibold mb-2 text-gray-900">Close wizard?</h3>
 							<p className="text-gray-600 mb-4">
 								Your progress will be lost. Are you sure you want to close this wizard?
 							</p>
