@@ -34,7 +34,6 @@ import { Route as AuthedProjectsProjectIdBrandVoicesRouteImport } from './routes
 import { Route as AuthedProjectsProjectIdContentIndexRouteImport } from './routes/_authed/projects.$projectId/content.index'
 import { Route as AuthedProjectsProjectIdContentNewRouteImport } from './routes/_authed/projects.$projectId/content.new'
 import { Route as AuthedProjectsProjectIdContentContentIdRouteImport } from './routes/_authed/projects.$projectId/content.$contentId'
-import { Route as AuthedProjectsProjectIdContentContentIdImagesRouteImport } from './routes/_authed/projects.$projectId/content.$contentId_.images'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -170,12 +169,6 @@ const AuthedProjectsProjectIdContentContentIdRoute =
     path: '/content/$contentId',
     getParentRoute: () => AuthedProjectsProjectIdRoute,
   } as any)
-const AuthedProjectsProjectIdContentContentIdImagesRoute =
-  AuthedProjectsProjectIdContentContentIdImagesRouteImport.update({
-    id: '/content/$contentId_/images',
-    path: '/content/$contentId/images',
-    getParentRoute: () => AuthedProjectsProjectIdRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -202,7 +195,6 @@ export interface FileRoutesByFullPath {
   '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
-  '/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -228,7 +220,6 @@ export interface FileRoutesByTo {
   '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
-  '/projects/$projectId/content/$contentId/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -257,7 +248,6 @@ export interface FileRoutesById {
   '/_authed/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/_authed/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
   '/_authed/projects/$projectId/content/': typeof AuthedProjectsProjectIdContentIndexRoute
-  '/_authed/projects/$projectId/content/$contentId_/images': typeof AuthedProjectsProjectIdContentContentIdImagesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -286,7 +276,6 @@ export interface FileRouteTypes {
     | '/projects/$projectId/content/$contentId'
     | '/projects/$projectId/content/new'
     | '/projects/$projectId/content'
-    | '/projects/$projectId/content/$contentId/images'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -312,7 +301,6 @@ export interface FileRouteTypes {
     | '/projects/$projectId/content/$contentId'
     | '/projects/$projectId/content/new'
     | '/projects/$projectId/content'
-    | '/projects/$projectId/content/$contentId/images'
   id:
     | '__root__'
     | '/'
@@ -340,7 +328,6 @@ export interface FileRouteTypes {
     | '/_authed/projects/$projectId/content/$contentId'
     | '/_authed/projects/$projectId/content/new'
     | '/_authed/projects/$projectId/content/'
-    | '/_authed/projects/$projectId/content/$contentId_/images'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -534,13 +521,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProjectsProjectIdContentContentIdRouteImport
       parentRoute: typeof AuthedProjectsProjectIdRoute
     }
-    '/_authed/projects/$projectId/content/$contentId_/images': {
-      id: '/_authed/projects/$projectId/content/$contentId_/images'
-      path: '/content/$contentId/images'
-      fullPath: '/projects/$projectId/content/$contentId/images'
-      preLoaderRoute: typeof AuthedProjectsProjectIdContentContentIdImagesRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdRoute
-    }
   }
 }
 
@@ -555,7 +535,6 @@ interface AuthedProjectsProjectIdRouteChildren {
   AuthedProjectsProjectIdContentContentIdRoute: typeof AuthedProjectsProjectIdContentContentIdRoute
   AuthedProjectsProjectIdContentNewRoute: typeof AuthedProjectsProjectIdContentNewRoute
   AuthedProjectsProjectIdContentIndexRoute: typeof AuthedProjectsProjectIdContentIndexRoute
-  AuthedProjectsProjectIdContentContentIdImagesRoute: typeof AuthedProjectsProjectIdContentContentIdImagesRoute
 }
 
 const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren =
@@ -576,8 +555,6 @@ const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren
       AuthedProjectsProjectIdContentNewRoute,
     AuthedProjectsProjectIdContentIndexRoute:
       AuthedProjectsProjectIdContentIndexRoute,
-    AuthedProjectsProjectIdContentContentIdImagesRoute:
-      AuthedProjectsProjectIdContentContentIdImagesRoute,
   }
 
 const AuthedProjectsProjectIdRouteWithChildren =

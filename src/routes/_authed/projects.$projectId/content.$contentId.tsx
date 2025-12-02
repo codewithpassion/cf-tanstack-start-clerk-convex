@@ -13,6 +13,7 @@ import { VersionHistorySidebar } from "@/components/content/VersionHistorySideba
 import { RefineDialog } from "@/components/content/RefineDialog";
 import { SelectionRefineDialog } from "@/components/content/SelectionRefineDialog";
 import { RepurposeDialog } from "@/components/content/RepurposeDialog";
+import { ImagesModal } from "@/components/images/ImagesModal";
 import { refineSelection } from "@/server/ai";
 import { useStreamingResponse } from "@/hooks/useStreamingResponse";
 import type { Editor } from "@tiptap/core";
@@ -141,6 +142,7 @@ function ContentEditorPage() {
 	const [showSelectionRefineDialog, setShowSelectionRefineDialog] =
 		useState(false);
 	const [showRepurposeDialog, setShowRepurposeDialog] = useState(false);
+	const [showImagesModal, setShowImagesModal] = useState(false);
 
 	// State for inline refine
 	const [inlineRefineSelection, setInlineRefineSelection] = useState<{
@@ -168,6 +170,9 @@ function ContentEditorPage() {
 		api.contentPieces.getDerivedContent,
 		contentPiece ? { parentContentId: contentId as Id<"contentPieces"> } : "skip"
 	);
+
+	// Load workspace for images modal
+	const workspace = useQuery(api.workspaces.getMyWorkspace);
 
 	// Mutations
 	const updateContentPiece = useMutation(api.contentPieces.updateContentPiece);
@@ -529,12 +534,7 @@ function ContentEditorPage() {
 							onRefine={() => setShowRefineDialog(true)}
 							onRepurpose={() => setShowRepurposeDialog(true)}
 							onShowVersions={() => setShowVersionSidebar(true)}
-							onShowImages={() =>
-								navigate({
-									to: "/projects/$projectId/content/$contentId/images",
-									params: { projectId, contentId },
-								})
-							}
+							onOpenImagesModal={() => setShowImagesModal(true)}
 							onFinalize={() => {
 								if (isFinalized) {
 									setShowUnfinalizeDialog(true);
@@ -624,6 +624,18 @@ function ContentEditorPage() {
 			sourceTitle={contentPiece.title}
 			onAccept={handleAcceptRepurpose}
 		/>
+
+		{/* Images Modal */}
+		{workspace && (
+			<ImagesModal
+				isOpen={showImagesModal}
+				onClose={() => setShowImagesModal(false)}
+				contentPieceId={contentId as Id<"contentPieces">}
+				projectId={projectId as Id<"projects">}
+				workspaceId={workspace._id}
+				contentText={contentPiece.content}
+			/>
+		)}
 		</div>
 	);
 }

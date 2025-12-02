@@ -74,9 +74,9 @@ export interface ToolsPanelProps {
 	onShowVersions?: () => void;
 
 	/**
-	 * Callback to show images
+	 * Callback to open images modal
 	 */
-	onShowImages?: () => void;
+	onOpenImagesModal?: () => void;
 
 	/**
 	 * Callback to finalize content
@@ -105,7 +105,7 @@ export function ToolsPanel({
 	onRefine,
 	onRepurpose,
 	onShowVersions,
-	onShowImages,
+	onOpenImagesModal,
 	onFinalize,
 	onDelete,
 	isFinalized = false,
@@ -177,7 +177,7 @@ export function ToolsPanel({
 				{/* Create Images Button */}
 				<button
 					type="button"
-					onClick={onShowImages}
+					onClick={onOpenImagesModal}
 					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 				>
 					<Image className="w-4 h-4" />
