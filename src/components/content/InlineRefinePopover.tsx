@@ -117,7 +117,7 @@ export function InlineRefinePopover({
 	return (
 		<div
 			ref={popoverRef}
-			className="fixed z-50 bg-white rounded-lg shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+			className="fixed z-50 bg-white rounded-lg shadow-xl border border-slate-200 dark:bg-slate-800 dark:border-slate-700"
 			style={{
 				left: `${position.x}px`,
 				top: `${position.y}px`,
@@ -125,17 +125,17 @@ export function InlineRefinePopover({
 			}}
 		>
 			{/* Header */}
-			<div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700">
+			<div className="flex items-center justify-between px-3 py-2 border-b border-slate-200 dark:border-slate-700">
 				<div className="flex items-center gap-2">
 					<Sparkles className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-					<h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+					<h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
 						Refine Selection
 					</h3>
 				</div>
 				<button
 					type="button"
 					onClick={onClose}
-					className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+					className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
 				>
 					<X className="w-4 h-4" />
 				</button>
@@ -146,7 +146,7 @@ export function InlineRefinePopover({
 				<div>
 					<label
 						htmlFor="inline-refine-instructions"
-						className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5"
+						className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5"
 					>
 						How would you like to refine this?
 					</label>
@@ -157,15 +157,15 @@ export function InlineRefinePopover({
 						onChange={(e) => setInstructions(e.target.value)}
 						onKeyDown={handleKeyDown}
 						placeholder="e.g., Make this more concise..."
-						className="w-full h-24 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-400 resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
+						className="w-full h-24 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-400 resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
 					/>
-					<p className="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+					<p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
 						Press{" "}
-						<kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-xs">
+						<kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-xs">
 							Ctrl
 						</kbd>{" "}
 						+{" "}
-						<kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-xs">
+						<kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded text-xs">
 							Enter
 						</kbd>{" "}
 						to send
@@ -177,7 +177,7 @@ export function InlineRefinePopover({
 					<button
 						type="button"
 						onClick={onClose}
-						className="px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+						className="px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 					>
 						Cancel
 					</button>

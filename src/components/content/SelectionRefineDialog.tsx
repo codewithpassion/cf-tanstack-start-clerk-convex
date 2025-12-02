@@ -74,19 +74,19 @@ export function SelectionRefineDialog({
 					onClick={(e) => e.stopPropagation()}
 				>
 					{/* Header */}
-					<div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+					<div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
 						<div className="flex items-center gap-2">
 							{isStreaming && (
 								<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600" />
 							)}
-							<h2 className="text-xl font-semibold text-gray-900">
+							<h2 className="text-xl font-semibold text-slate-900">
 								{isStreaming ? "Refining Selection..." : "Refined Selection"}
 							</h2>
 						</div>
 						<button
 							type="button"
 							onClick={onClose}
-							className="text-gray-400 hover:text-gray-600 transition-colors"
+							className="text-slate-400 hover:text-slate-600 transition-colors"
 						>
 							<X className="w-5 h-5" />
 						</button>
@@ -112,10 +112,10 @@ export function SelectionRefineDialog({
 										/>
 									</svg>
 								</div>
-								<h3 className="text-lg font-semibold text-gray-900 mb-2">
+								<h3 className="text-lg font-semibold text-slate-900 mb-2">
 									Refinement Failed
 								</h3>
-								<p className="text-gray-600 mb-4 text-center">{error}</p>
+								<p className="text-slate-600 mb-4 text-center">{error}</p>
 							</div>
 						) : (
 							<StreamingMarkdown
@@ -127,12 +127,12 @@ export function SelectionRefineDialog({
 					</div>
 
 					{/* Footer */}
-					<div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+					<div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
 						{isStreaming ? (
 							<button
 								type="button"
 								disabled
-								className="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
+								className="px-4 py-2 bg-slate-300 text-slate-500 rounded-lg cursor-not-allowed"
 							>
 								Generating...
 							</button>
@@ -140,7 +140,7 @@ export function SelectionRefineDialog({
 							<button
 								type="button"
 								onClick={onClose}
-								className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+								className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 							>
 								Close
 							</button>
@@ -149,7 +149,7 @@ export function SelectionRefineDialog({
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-gray-700 bg-white border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
 								>
 									Reject
 								</button>

@@ -143,9 +143,9 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 	// Empty state
 	if (images.length === 0) {
 		return (
-			<div className="text-center py-12 text-gray-500">
+			<div className="text-center py-12 text-slate-500">
 				<svg
-					className="mx-auto h-12 w-12 text-gray-400"
+					className="mx-auto h-12 w-12 text-slate-400"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke="currentColor"
@@ -159,7 +159,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 					/>
 				</svg>
 				<p className="mt-2 text-sm">No images attached yet</p>
-				<p className="text-xs text-gray-400">Upload or generate images to get started</p>
+				<p className="text-xs text-slate-400">Upload or generate images to get started</p>
 			</div>
 		);
 	}
@@ -183,7 +183,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 					>
 						{/* Image Thumbnail */}
 						<div
-							className="aspect-square bg-gray-100 flex items-center justify-center overflow-hidden cursor-pointer"
+							className="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer"
 							onClick={() => openPreview(image)}
 						>
 							{image.file ? (
@@ -196,7 +196,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 									className="w-full h-full object-cover"
 								/>
 							) : (
-								<div className="text-gray-400 text-sm">No preview</div>
+								<div className="text-slate-400 text-sm">No preview</div>
 							)}
 						</div>
 
@@ -208,7 +208,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 										type="text"
 										value={editedCaption}
 										onChange={(e) => setEditedCaption(e.target.value)}
-										className="w-full text-sm text-gray-900 placeholder-gray-400 border rounded px-2 py-1 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+										className="w-full text-sm text-slate-900 placeholder-slate-400 border rounded px-2 py-1 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 										placeholder="Add caption..."
 										maxLength={500}
 										autoFocus
@@ -225,7 +225,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 										<button
 											type="button"
 											onClick={cancelEditingCaption}
-											className="flex-1 text-xs bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400"
+											className="flex-1 text-xs bg-slate-300 text-slate-700 px-2 py-1 rounded hover:bg-slate-400"
 										>
 											Cancel
 										</button>
@@ -233,15 +233,15 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 								</div>
 							) : (
 								<div className="flex items-start justify-between gap-2">
-									<p className="text-sm text-gray-700 flex-1 line-clamp-2">
+									<p className="text-sm text-slate-700 flex-1 line-clamp-2">
 										{image.caption || (
-											<span className="text-gray-400 italic">No caption</span>
+											<span className="text-slate-400 italic">No caption</span>
 										)}
 									</p>
 									<button
 										type="button"
 										onClick={() => startEditingCaption(image._id, image.caption)}
-										className="text-gray-400 hover:text-cyan-600 flex-shrink-0"
+										className="text-slate-400 hover:text-cyan-600 flex-shrink-0"
 										aria-label="Edit caption"
 									>
 										<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -284,19 +284,19 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 				<div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
 					<div className="flex min-h-screen items-center justify-center p-4">
 						<div
-							className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+							className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity"
 							onClick={() => setDeleteConfirmId(null)}
 						/>
 						<div className="relative bg-white rounded-lg p-6 max-w-sm w-full">
-							<h3 className="text-lg font-medium text-gray-900 mb-4">Delete Image</h3>
-							<p className="text-sm text-gray-500 mb-6">
+							<h3 className="text-lg font-medium text-slate-900 mb-4">Delete Image</h3>
+							<p className="text-sm text-slate-500 mb-6">
 								Are you sure you want to remove this image? This action cannot be undone.
 							</p>
 							<div className="flex gap-3 justify-end">
 								<button
 									type="button"
 									onClick={() => setDeleteConfirmId(null)}
-									className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+									className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50"
 								>
 									Cancel
 								</button>
@@ -324,13 +324,13 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 						<div className="relative bg-white rounded-lg max-w-4xl w-full">
 							<div className="p-4 border-b">
 								<div className="flex items-center justify-between">
-									<h3 id="image-preview-title" className="text-lg font-medium text-gray-900">
+									<h3 id="image-preview-title" className="text-lg font-medium text-slate-900">
 										Image Preview
 									</h3>
 									<button
 										type="button"
 										onClick={closePreview}
-										className="text-gray-400 hover:text-gray-500"
+										className="text-slate-400 hover:text-slate-500"
 										aria-label="Close preview"
 									>
 										<svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -345,7 +345,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 								</div>
 							</div>
 							<div className="p-4">
-								<div className="bg-gray-100 rounded flex items-center justify-center max-h-96 overflow-auto">
+								<div className="bg-slate-100 rounded flex items-center justify-center max-h-96 overflow-auto">
 									<img
 										src={`/api/files/${previewImage.fileId}/preview`}
 										alt={previewImage.caption || previewImage.filename}
@@ -353,9 +353,9 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 									/>
 								</div>
 								{previewImage.caption && (
-									<p className="mt-4 text-sm text-gray-700">{previewImage.caption}</p>
+									<p className="mt-4 text-sm text-slate-700">{previewImage.caption}</p>
 								)}
-								<p className="mt-2 text-xs text-gray-500">{previewImage.filename}</p>
+								<p className="mt-2 text-xs text-slate-500">{previewImage.filename}</p>
 							</div>
 						</div>
 					</div>

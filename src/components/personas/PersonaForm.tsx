@@ -101,7 +101,7 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
 			<div>
-				<label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 					Name <span className="text-red-500">*</span>
 				</label>
 				<input
@@ -109,16 +109,16 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 					id="name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
-					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
 					placeholder="e.g., Marketing Manager Persona"
 					maxLength={100}
 					required
 				/>
-				<p className="text-xs text-gray-500 mt-1">{name.length}/100 characters</p>
+				<p className="text-xs text-slate-500 mt-1">{name.length}/100 characters</p>
 			</div>
 
 			<div>
-				<label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="description" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 					Description
 				</label>
 				<textarea
@@ -126,16 +126,16 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
 					rows={4}
-					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
 					placeholder="Describe your target persona: demographics, pain points, goals, preferences..."
 					maxLength={2000}
 				/>
-				<p className="text-xs text-gray-500 mt-1">{description.length}/2000 characters</p>
+				<p className="text-xs text-slate-500 mt-1">{description.length}/2000 characters</p>
 			</div>
 
 			{persona && (
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-2">Upload Files</label>
+					<label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Upload Files</label>
 					<FileUpload
 						onUploadComplete={handleFileUploadComplete}
 						ownerType="persona"
@@ -147,7 +147,7 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 
 					{files && files.length > 0 && (
 						<div className="mt-4">
-							<h4 className="text-sm font-medium text-gray-700 mb-2">Attached Files</h4>
+							<h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Attached Files</h4>
 							<FileList files={files} onDelete={handleFileDelete} />
 						</div>
 					)}
@@ -173,7 +173,7 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 				<button
 					type="button"
 					onClick={onCancel}
-					className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
+					className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500"
 					disabled={isSubmitting}
 				>
 					Cancel

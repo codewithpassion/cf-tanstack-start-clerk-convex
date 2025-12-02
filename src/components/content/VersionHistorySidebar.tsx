@@ -104,7 +104,7 @@ export function VersionHistorySidebar({
 
 			{/* Sidebar Panel - Desktop: slide from right, 2/3 width. Mobile: slide from bottom, full width */}
 			<div
-				className={`fixed bottom-0 left-0 right-0 max-h-[80vh] lg:max-h-full lg:inset-y-0 lg:left-auto lg:right-0 lg:w-2/3 flex flex-col bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300 ease-out rounded-t-2xl lg:rounded-none z-50 border-l border-gray-200 dark:border-slate-700 ${
+				className={`fixed bottom-0 left-0 right-0 max-h-[80vh] lg:max-h-full lg:inset-y-0 lg:left-auto lg:right-0 lg:w-2/3 flex flex-col bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300 ease-out rounded-t-2xl lg:rounded-none z-50 border-l border-slate-200 dark:border-slate-700 ${
 					isAnimating
 						? "translate-y-0 lg:translate-x-0"
 						: "translate-y-full lg:translate-y-0 lg:translate-x-full"
@@ -113,10 +113,10 @@ export function VersionHistorySidebar({
 				aria-modal="false"
 			>
 				{/* Header */}
-				<header className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-900">
+				<header className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-900">
 					<h2
 						id="sidebar-title"
-						className="text-lg font-semibold text-gray-900 dark:text-slate-100"
+						className="text-lg font-semibold text-slate-900 dark:text-slate-100"
 					>
 						Version History
 					</h2>
@@ -125,7 +125,7 @@ export function VersionHistorySidebar({
 						type="button"
 						onClick={onClose}
 						aria-label="Close version history"
-						className="rounded-md text-gray-400 hover:text-gray-500 dark:text-slate-400 dark:hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+						className="rounded-md text-slate-400 hover:text-slate-500 dark:text-slate-400 dark:hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-500"
 					>
 						<svg
 							className="h-6 w-6"
@@ -146,7 +146,7 @@ export function VersionHistorySidebar({
 
 				{/* Desktop: Two-panel grid - Diff (2/3) and Version List (1/3) */}
 				<div className="hidden lg:grid lg:grid-cols-3 flex-1 overflow-hidden">
-					<div className="lg:col-span-2 overflow-y-auto border-r border-gray-200 dark:border-slate-700">
+					<div className="lg:col-span-2 overflow-y-auto border-r border-slate-200 dark:border-slate-700">
 						<VersionDiffPanel
 							selectedVersionId={selectedVersionId}
 							currentVersionId={currentVersionId}
@@ -167,14 +167,14 @@ export function VersionHistorySidebar({
 				{/* Mobile: Tabs */}
 				<div className="lg:hidden flex-1 flex flex-col overflow-hidden">
 					{/* Tab List */}
-					<div className="flex border-b border-gray-200 dark:border-slate-700">
+					<div className="flex border-b border-slate-200 dark:border-slate-700">
 						<button
 							type="button"
 							onClick={() => setActiveTab("list")}
 							className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
 								activeTab === "list"
 									? "border-cyan-500 text-cyan-600 dark:text-cyan-400"
-									: "border-transparent text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300 hover:border-gray-300 dark:hover:border-slate-600"
+									: "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600"
 							}`}
 						>
 							Versions
@@ -186,7 +186,7 @@ export function VersionHistorySidebar({
 							className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
 								activeTab === "diff"
 									? "border-cyan-500 text-cyan-600 dark:text-cyan-400"
-									: "border-transparent text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300 hover:border-gray-300 dark:hover:border-slate-600"
+									: "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600"
 							}`}
 						>
 							Changes

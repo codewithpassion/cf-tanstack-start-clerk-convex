@@ -238,13 +238,13 @@ export function RepurposeDialog({
 					onKeyDown={handleKeyDown}
 				>
 					{/* Header */}
-					<div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+					<div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
 						<div className="flex items-center gap-2">
 							{state === "streaming" && (
 								<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600" />
 							)}
 							<GitFork className="w-5 h-5 text-cyan-600" />
-							<h2 className="text-xl font-semibold text-gray-900">
+							<h2 className="text-xl font-semibold text-slate-900">
 								{state === "form" && "Repurpose Content"}
 								{state === "streaming" && "Generating..."}
 								{state === "complete" && "Repurposed Content"}
@@ -254,7 +254,7 @@ export function RepurposeDialog({
 						<button
 							type="button"
 							onClick={onClose}
-							className="text-gray-400 hover:text-gray-600 transition-colors"
+							className="text-slate-400 hover:text-slate-600 transition-colors"
 						>
 							<X className="w-5 h-5" />
 						</button>
@@ -269,7 +269,7 @@ export function RepurposeDialog({
 								<div>
 									<label
 										htmlFor="target-category"
-										className="block text-sm font-medium text-gray-700 mb-2"
+										className="block text-sm font-medium text-slate-700 mb-2"
 									>
 										Target Format <span className="text-red-500">*</span>
 									</label>
@@ -282,7 +282,7 @@ export function RepurposeDialog({
 													e.target.value as Id<"categories"> | null
 												)
 											}
-											className="w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none bg-white"
+											className="w-full px-4 py-2.5 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none bg-white"
 										>
 											<option value="">Select target format...</option>
 											{availableCategories.map((category) => (
@@ -291,7 +291,7 @@ export function RepurposeDialog({
 												</option>
 											))}
 										</select>
-										<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+										<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
 									</div>
 									{availableCategories.length === 0 && (
 										<p className="mt-2 text-sm text-amber-600">
@@ -305,7 +305,7 @@ export function RepurposeDialog({
 								<div>
 									<label
 										htmlFor="repurpose-title"
-										className="block text-sm font-medium text-gray-700 mb-2"
+										className="block text-sm font-medium text-slate-700 mb-2"
 									>
 										Title <span className="text-red-500">*</span>
 									</label>
@@ -315,7 +315,7 @@ export function RepurposeDialog({
 										value={title}
 										onChange={(e) => setTitle(e.target.value)}
 										placeholder="Enter title for the new content..."
-										className="w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-gray-400"
+										className="w-full px-4 py-2.5 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-slate-400"
 									/>
 								</div>
 
@@ -323,10 +323,10 @@ export function RepurposeDialog({
 								<div>
 									<label
 										htmlFor="target-persona"
-										className="block text-sm font-medium text-gray-700 mb-2"
+										className="block text-sm font-medium text-slate-700 mb-2"
 									>
 										Persona{" "}
-										<span className="text-gray-400 font-normal">(optional)</span>
+										<span className="text-slate-400 font-normal">(optional)</span>
 									</label>
 									<div className="relative">
 										<select
@@ -337,7 +337,7 @@ export function RepurposeDialog({
 													(e.target.value as Id<"personas">) || undefined
 												)
 											}
-											className="w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none bg-white"
+											className="w-full px-4 py-2.5 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none bg-white"
 										>
 											<option value="">No persona</option>
 											{personas?.map((persona) => (
@@ -346,7 +346,7 @@ export function RepurposeDialog({
 												</option>
 											))}
 										</select>
-										<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+										<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
 									</div>
 								</div>
 
@@ -354,10 +354,10 @@ export function RepurposeDialog({
 								<div>
 									<label
 										htmlFor="target-brandvoice"
-										className="block text-sm font-medium text-gray-700 mb-2"
+										className="block text-sm font-medium text-slate-700 mb-2"
 									>
 										Brand Voice{" "}
-										<span className="text-gray-400 font-normal">(optional)</span>
+										<span className="text-slate-400 font-normal">(optional)</span>
 									</label>
 									<div className="relative">
 										<select
@@ -368,7 +368,7 @@ export function RepurposeDialog({
 													(e.target.value as Id<"brandVoices">) || undefined
 												)
 											}
-											className="w-full px-4 py-2.5 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none bg-white"
+											className="w-full px-4 py-2.5 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 appearance-none bg-white"
 										>
 											<option value="">No brand voice</option>
 											{brandVoices?.map((voice) => (
@@ -377,7 +377,7 @@ export function RepurposeDialog({
 												</option>
 											))}
 										</select>
-										<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+										<ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
 									</div>
 								</div>
 
@@ -385,25 +385,25 @@ export function RepurposeDialog({
 								<div>
 									<label
 										htmlFor="additional-instructions"
-										className="block text-sm font-medium text-gray-700 mb-2"
+										className="block text-sm font-medium text-slate-700 mb-2"
 									>
 										Additional Instructions{" "}
-										<span className="text-gray-400 font-normal">(optional)</span>
+										<span className="text-slate-400 font-normal">(optional)</span>
 									</label>
 									<textarea
 										id="additional-instructions"
 										value={additionalInstructions}
 										onChange={(e) => setAdditionalInstructions(e.target.value)}
 										placeholder="e.g., Focus on the key takeaways, make it more conversational, include a call-to-action..."
-										className="w-full h-24 px-4 py-3 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none placeholder:text-gray-400"
+										className="w-full h-24 px-4 py-3 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none placeholder:text-slate-400"
 									/>
-									<p className="mt-2 text-xs text-gray-500">
+									<p className="mt-2 text-xs text-slate-500">
 										Press{" "}
-										<kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded">
+										<kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded">
 											Ctrl
 										</kbd>{" "}
 										+{" "}
-										<kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded">
+										<kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded">
 											Enter
 										</kbd>{" "}
 										to generate
@@ -449,10 +449,10 @@ export function RepurposeDialog({
 										/>
 									</svg>
 								</div>
-								<h3 className="text-lg font-semibold text-gray-900 mb-2">
+								<h3 className="text-lg font-semibold text-slate-900 mb-2">
 									Repurposing Failed
 								</h3>
-								<p className="text-gray-600 mb-4 text-center">
+								<p className="text-slate-600 mb-4 text-center">
 									{error || "An error occurred while repurposing the content"}
 								</p>
 							</div>
@@ -460,14 +460,14 @@ export function RepurposeDialog({
 					</div>
 
 					{/* Footer */}
-					<div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+					<div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
 						{/* Form State Footer */}
 						{state === "form" && (
 							<>
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 								>
 									Cancel
 								</button>
@@ -488,7 +488,7 @@ export function RepurposeDialog({
 							<button
 								type="button"
 								disabled
-								className="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
+								className="px-4 py-2 bg-slate-300 text-slate-500 rounded-lg cursor-not-allowed"
 							>
 								Generating...
 							</button>
@@ -500,14 +500,14 @@ export function RepurposeDialog({
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-gray-700 bg-white border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
 								>
 									Reject
 								</button>
 								<button
 									type="button"
 									onClick={handleRegenerate}
-									className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 								>
 									Regenerate
 								</button>
@@ -551,7 +551,7 @@ export function RepurposeDialog({
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 								>
 									Close
 								</button>

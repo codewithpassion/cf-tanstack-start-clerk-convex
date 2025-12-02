@@ -14,12 +14,12 @@ export interface CategoryCardProps {
 export function CategoryCard({ category, onEdit, onDelete, isDragging = false }: CategoryCardProps) {
 	return (
 		<div
-			className={`bg-white shadow-md rounded-lg p-6 border border-gray-200 transition-all ${
+			className={`bg-white shadow-md rounded-lg p-6 border border-slate-200 transition-all ${
 				isDragging ? "opacity-50 rotate-2 scale-105" : "hover:border-cyan-500"
 			}`}
 		>
 			<div className="flex items-start justify-between mb-2">
-				<h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
+				<h3 className="text-lg font-semibold text-slate-900">{category.name}</h3>
 				<div className="flex items-center gap-2">
 					{category.isDefault && (
 						<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
@@ -30,23 +30,23 @@ export function CategoryCard({ category, onEdit, onDelete, isDragging = false }:
 			</div>
 
 			{category.description && (
-				<p className="text-sm text-gray-600 mb-3">{category.description}</p>
+				<p className="text-sm text-slate-600 mb-3">{category.description}</p>
 			)}
 
 			{category.formatGuidelines && (
-				<div className="mt-4 pt-4 border-t border-gray-200">
-					<p className="text-xs font-medium text-gray-700 mb-2">Format Guidelines:</p>
-					<p className="text-xs text-gray-600 whitespace-pre-line line-clamp-3">
+				<div className="mt-4 pt-4 border-t border-slate-200">
+					<p className="text-xs font-medium text-slate-700 mb-2">Format Guidelines:</p>
+					<p className="text-xs text-slate-600 whitespace-pre-line line-clamp-3">
 						{category.formatGuidelines}
 					</p>
 				</div>
 			)}
 
-			<div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-end gap-2">
+			<div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
 				<button
 					type="button"
 					onClick={() => onEdit(category)}
-					className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+					className="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 					aria-label={`Edit ${category.name}`}
 				>
 					<svg

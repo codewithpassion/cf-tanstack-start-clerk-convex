@@ -41,7 +41,7 @@ export function ProjectLayout({ projectId }: ProjectLayoutProps) {
 			<div className="flex flex-1 overflow-hidden">
 				<ProjectSidebar projectId={projectId} />
 
-				<main className="flex-1 overflow-y-auto bg-gray-50">
+				<main className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950">
 					<div className="max-w-7xl mx-auto p-6">
 						<Outlet />
 					</div>

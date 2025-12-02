@@ -44,7 +44,7 @@ export function ProjectCard({ project, stats }: ProjectCardProps) {
 			to="/projects/$projectId"
 			params={{ projectId: project._id }}
 			className={`block bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition-shadow duration-200 border ${
-				isActive ? "border-cyan-500" : "border-gray-200 hover:border-cyan-500"
+				isActive ? "border-cyan-500" : "border-slate-200 hover:border-cyan-500"
 			}`}
 		>
 			{/* Active indicator badge */}
@@ -55,12 +55,12 @@ export function ProjectCard({ project, stats }: ProjectCardProps) {
 				</div>
 			)}
 
-			<h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+			<h3 className="text-lg font-semibold text-slate-900 mb-2 line-clamp-1">
 				{project.name}
 			</h3>
 
 			{project.description && (
-				<p className="text-sm text-gray-600 mb-4 line-clamp-2">
+				<p className="text-sm text-slate-600 mb-4 line-clamp-2">
 					{project.description}
 				</p>
 			)}
@@ -74,14 +74,14 @@ export function ProjectCard({ project, stats }: ProjectCardProps) {
 								<title>Content</title>
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
 							</svg>
-							<span className="font-medium text-gray-900">
+							<span className="font-medium text-slate-900">
 								{stats.contentCount} {stats.contentCount === 1 ? "piece" : "pieces"}
 							</span>
 						</div>
 					)}
 
 					{/* Other stats - more compact */}
-					<div className="flex gap-4 text-xs text-gray-500">
+					<div className="flex gap-4 text-xs text-slate-500">
 						<span className="flex items-center gap-1">
 							<svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<title>Categories</title>
@@ -107,7 +107,7 @@ export function ProjectCard({ project, stats }: ProjectCardProps) {
 				</div>
 			)}
 
-			<div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-200">
+			<div className="flex items-center justify-between text-xs text-slate-500 pt-4 border-t border-slate-200">
 				<div className="flex flex-col gap-1">
 					<span>Updated {formatRelativeTime(project.updatedAt)}</span>
 					{stats?.recentActivityAt && (

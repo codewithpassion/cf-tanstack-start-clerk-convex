@@ -72,7 +72,7 @@ export function ContentArchiveList({
 		if (sortColumn !== column) {
 			return (
 				<svg
-					className="ml-1 h-4 w-4 text-gray-400"
+					className="ml-1 h-4 w-4 text-slate-400"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -88,7 +88,7 @@ export function ContentArchiveList({
 		}
 		return sortDirection === "asc" ? (
 			<svg
-				className="ml-1 h-4 w-4 text-gray-700"
+				className="ml-1 h-4 w-4 text-slate-700"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -102,7 +102,7 @@ export function ContentArchiveList({
 			</svg>
 		) : (
 			<svg
-				className="ml-1 h-4 w-4 text-gray-700"
+				className="ml-1 h-4 w-4 text-slate-700"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -135,7 +135,7 @@ export function ContentArchiveList({
 	if (contentPieces.length === 0) {
 		return (
 			<div className="text-center py-12">
-				<p className="text-gray-500 text-sm">No content pieces found</p>
+				<p className="text-slate-500 text-sm">No content pieces found</p>
 			</div>
 		);
 	}
@@ -147,8 +147,8 @@ export function ContentArchiveList({
 
 	return (
 		<div className="overflow-x-auto">
-			<table className="min-w-full divide-y divide-gray-200">
-				<thead className="bg-gray-50">
+			<table className="min-w-full divide-y divide-slate-200">
+				<thead className="bg-slate-50">
 					<tr>
 						<th className="px-3 py-3 text-left">
 							<input
@@ -160,12 +160,12 @@ export function ContentArchiveList({
 									}
 								}}
 								onChange={(e) => handleSelectAll(e.target.checked)}
-								className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
+								className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
 								aria-label="Select all content pieces"
 							/>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
 							onClick={() => handleSortClick("title")}
 						>
 							<div className="flex items-center">
@@ -174,7 +174,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
 							onClick={() => handleSortClick("category")}
 						>
 							<div className="flex items-center">
@@ -183,7 +183,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
 							onClick={() => handleSortClick("status")}
 						>
 							<div className="flex items-center">
@@ -192,7 +192,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
 							onClick={() => handleSortClick("createdAt")}
 						>
 							<div className="flex items-center">
@@ -201,7 +201,7 @@ export function ContentArchiveList({
 							</div>
 						</th>
 						<th
-							className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+							className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:bg-slate-100"
 							onClick={() => handleSortClick("updatedAt")}
 						>
 							<div className="flex items-center">
@@ -209,16 +209,16 @@ export function ContentArchiveList({
 								<SortIcon column="updatedAt" />
 							</div>
 						</th>
-						<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+						<th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
 							Actions
 						</th>
 					</tr>
 				</thead>
-				<tbody className="bg-white divide-y divide-gray-200">
+				<tbody className="bg-white divide-y divide-slate-200">
 					{contentPieces.map((contentPiece) => (
 						<tr
 							key={contentPiece._id}
-							className="hover:bg-gray-50 cursor-pointer"
+							className="hover:bg-slate-50 cursor-pointer"
 							onClick={(e) => handleRowClick(contentPiece._id, e)}
 						>
 							<td className="px-3 py-4 whitespace-nowrap">
@@ -228,17 +228,17 @@ export function ContentArchiveList({
 									onChange={(e) =>
 										handleSelectOne(contentPiece._id, e.target.checked)
 									}
-									className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
+									className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
 									aria-label={`Select ${contentPiece.title}`}
 									onClick={(e) => e.stopPropagation()}
 								/>
 							</td>
 							<td className="px-6 py-4">
-								<div className="text-sm font-medium text-gray-900">
+								<div className="text-sm font-medium text-slate-900">
 									{contentPiece.title}
 								</div>
 								{contentPiece.persona && (
-									<div className="text-xs text-gray-500">
+									<div className="text-xs text-slate-500">
 										{contentPiece.persona.name}
 									</div>
 								)}
@@ -272,19 +272,19 @@ export function ContentArchiveList({
 								</div>
 							</td>
 							<td className="px-6 py-4 whitespace-nowrap">
-								<div className="text-sm text-gray-900">
+								<div className="text-sm text-slate-900">
 									{contentPiece.category?.name || "—"}
 								</div>
 							</td>
 							<td className="px-6 py-4 whitespace-nowrap">
 								<StatusBadge status={contentPiece.status} />
 							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+							<td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
 								{formatDistanceToNow(new Date(contentPiece.createdAt), {
 									addSuffix: true,
 								})}
 							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+							<td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
 								{formatDistanceToNow(new Date(contentPiece.updatedAt), {
 									addSuffix: true,
 								})}

@@ -77,9 +77,9 @@ export function SearchResults({
 
 	if (isLoading) {
 		return (
-			<div className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg border border-gray-200">
+			<div className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg border border-slate-200">
 				<div className="p-4 text-center">
-					<div className="inline-flex items-center text-sm text-gray-500">
+					<div className="inline-flex items-center text-sm text-slate-500">
 						<svg
 							className="animate-spin h-5 w-5 mr-2 text-cyan-600"
 							fill="none"
@@ -112,8 +112,8 @@ export function SearchResults({
 
 	if (results.length === 0) {
 		return (
-			<div className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg border border-gray-200">
-				<div className="p-4 text-center text-sm text-gray-500">
+			<div className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg border border-slate-200">
+				<div className="p-4 text-center text-sm text-slate-500">
 					No results found for "{query}"
 				</div>
 			</div>
@@ -121,31 +121,31 @@ export function SearchResults({
 	}
 
 	return (
-		<div className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg border border-gray-200 max-h-96 overflow-y-auto">
+		<div className="absolute z-10 mt-2 w-full bg-white rounded-md shadow-lg border border-slate-200 max-h-96 overflow-y-auto">
 			<div className="py-2">
 				{results.map((result) => (
 					<button
 						key={result._id}
 						type="button"
 						onClick={() => onResultClick(result._id, result.projectId)}
-						className="w-full text-left px-4 py-3 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 border-b border-gray-100 last:border-b-0"
+						className="w-full text-left px-4 py-3 hover:bg-slate-50 focus:outline-none focus:bg-slate-50 border-b border-slate-100 last:border-b-0"
 					>
 						<div className="flex items-start justify-between">
 							<div className="flex-1 min-w-0">
 								{/* Title with highlighting */}
-								<div className="text-sm font-medium text-gray-900 mb-1">
+								<div className="text-sm font-medium text-slate-900 mb-1">
 									{highlightMatch(result.title, query)}
 								</div>
 
 								{/* Snippet with highlighting */}
-								<div className="text-sm text-gray-600 mb-2 line-clamp-2">
+								<div className="text-sm text-slate-600 mb-2 line-clamp-2">
 									{highlightMatch(result.snippet, query)}
 								</div>
 
 								{/* Metadata */}
-								<div className="flex items-center gap-2 text-xs text-gray-500">
+								<div className="flex items-center gap-2 text-xs text-slate-500">
 									{result.categoryName && (
-										<span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+										<span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-700">
 											{result.categoryName}
 										</span>
 									)}
@@ -164,7 +164,7 @@ export function SearchResults({
 							{/* Arrow icon */}
 							<div className="ml-3 flex-shrink-0">
 								<svg
-									className="h-5 w-5 text-gray-400"
+									className="h-5 w-5 text-slate-400"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"

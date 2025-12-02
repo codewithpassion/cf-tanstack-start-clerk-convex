@@ -205,8 +205,8 @@ export function ImageUploader({
 					onClick={handleClick}
 					className={`
 						border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-						${disabled ? "bg-gray-100 cursor-not-allowed opacity-60" : "hover:border-cyan-500 hover:bg-cyan-50"}
-						${isDragging ? "border-cyan-500 bg-cyan-50" : "border-gray-300"}
+						${disabled ? "bg-slate-100 cursor-not-allowed opacity-60" : "hover:border-cyan-500 hover:bg-cyan-50"}
+						${isDragging ? "border-cyan-500 bg-cyan-50" : "border-slate-300"}
 						${error ? "border-red-300 bg-red-50" : ""}
 					`}
 				>
@@ -222,7 +222,7 @@ export function ImageUploader({
 
 					<div className="space-y-2">
 						<svg
-							className="mx-auto h-12 w-12 text-gray-400"
+							className="mx-auto h-12 w-12 text-slate-400"
 							stroke="currentColor"
 							fill="none"
 							viewBox="0 0 48 48"
@@ -236,21 +236,21 @@ export function ImageUploader({
 							/>
 						</svg>
 
-						<div className="text-sm text-gray-600">
+						<div className="text-sm text-slate-600">
 							<span className="font-medium text-cyan-600">Click to upload</span> or drag and drop
 						</div>
 
-						<p className="text-xs text-gray-500">JPG, PNG, GIF, or WEBP</p>
+						<p className="text-xs text-slate-500">JPG, PNG, GIF, or WEBP</p>
 
-						<p className="text-xs text-gray-500">Maximum file size: 15 MB</p>
+						<p className="text-xs text-slate-500">Maximum file size: 15 MB</p>
 					</div>
 				</div>
 			) : (
 				<div className="border rounded-lg p-4 bg-white">
-					<h4 className="font-medium text-gray-900 mb-3">Preview</h4>
+					<h4 className="font-medium text-slate-900 mb-3">Preview</h4>
 
 					{/* Image Preview */}
-					<div className="bg-gray-100 rounded flex items-center justify-center mb-4 max-h-64 overflow-hidden">
+					<div className="bg-slate-100 rounded flex items-center justify-center mb-4 max-h-64 overflow-hidden">
 						<img
 							src={previewFile.previewUrl}
 							alt="Upload preview"
@@ -260,7 +260,7 @@ export function ImageUploader({
 
 					{/* Caption Input */}
 					<div className="mb-4">
-						<label htmlFor="image-caption" className="block text-sm font-medium text-gray-700 mb-1">
+						<label htmlFor="image-caption" className="block text-sm font-medium text-slate-700 mb-1">
 							Caption (optional)
 						</label>
 						<input
@@ -273,18 +273,18 @@ export function ImageUploader({
 									caption: e.target.value,
 								})
 							}
-							className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+							className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
 							placeholder="Add a caption for this image..."
 							maxLength={500}
 							disabled={isUploading}
 						/>
-						<p className="mt-1 text-xs text-gray-500">
+						<p className="mt-1 text-xs text-slate-500">
 							{previewFile.caption.length}/500 characters
 						</p>
 					</div>
 
 					{/* File Info */}
-					<div className="mb-4 text-xs text-gray-500">
+					<div className="mb-4 text-xs text-slate-500">
 						<p>File: {previewFile.file.name}</p>
 						<p>Size: {(previewFile.file.size / 1024 / 1024).toFixed(2)} MB</p>
 					</div>
@@ -310,7 +310,7 @@ export function ImageUploader({
 							type="button"
 							onClick={cancelPreview}
 							disabled={isUploading}
-							className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
+							className="flex-1 bg-slate-300 text-slate-700 px-4 py-2 rounded-md hover:bg-slate-400 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
 						>
 							Cancel
 						</button>

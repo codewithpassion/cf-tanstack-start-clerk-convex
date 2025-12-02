@@ -169,8 +169,8 @@ export function FileUpload({
 				onClick={handleClick}
 				className={`
 					border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
-					${disabled ? "bg-gray-100 cursor-not-allowed opacity-60" : "hover:border-cyan-500 hover:bg-cyan-50"}
-					${isDragging ? "border-cyan-500 bg-cyan-50" : "border-gray-300"}
+					${disabled ? "bg-slate-100 cursor-not-allowed opacity-60" : "hover:border-cyan-500 hover:bg-cyan-50"}
+					${isDragging ? "border-cyan-500 bg-cyan-50" : "border-slate-300"}
 					${error ? "border-red-300 bg-red-50" : ""}
 				`}
 			>
@@ -187,7 +187,7 @@ export function FileUpload({
 
 				<div className="space-y-2">
 					<svg
-						className="mx-auto h-12 w-12 text-gray-400"
+						className="mx-auto h-12 w-12 text-slate-400"
 						stroke="currentColor"
 						fill="none"
 						viewBox="0 0 48 48"
@@ -201,22 +201,22 @@ export function FileUpload({
 						/>
 					</svg>
 
-					<div className="text-sm text-gray-600">
+					<div className="text-sm text-slate-600">
 						<span className="font-medium text-cyan-600">Click to upload</span> or drag and drop
 					</div>
 
-					<p className="text-xs text-gray-500">
+					<p className="text-xs text-slate-500">
 						PDF, Word (.doc, .docx), Text, or Images (JPG, PNG, GIF, WEBP)
 					</p>
 
-					<p className="text-xs text-gray-500">Maximum file size: 15 MB</p>
+					<p className="text-xs text-slate-500">Maximum file size: 15 MB</p>
 				</div>
 			</div>
 
 			{uploadingFiles.length > 0 && (
 				<div className="space-y-1">
 					{uploadingFiles.map((filename) => (
-						<div key={filename} className="flex items-center gap-2 text-sm text-gray-600">
+						<div key={filename} className="flex items-center gap-2 text-sm text-slate-600">
 							<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-600" />
 							<span>Uploading {filename}...</span>
 						</div>

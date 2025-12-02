@@ -87,16 +87,16 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 			<div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
 				{/* Background overlay */}
 				<div
-					className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+					className="fixed inset-0 bg-slate-500 dark:bg-slate-900 bg-opacity-75 dark:bg-opacity-85 transition-opacity"
 					aria-hidden="true"
 					onClick={handleClose}
 				/>
 
 				{/* Modal panel */}
-				<div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+				<div className="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
 					<form onSubmit={handleSubmit}>
-						<div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-							<h3 className="text-lg font-semibold leading-6 text-gray-900 mb-4" id="create-project-title">
+						<div className="bg-white dark:bg-slate-900 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+							<h3 className="text-lg font-semibold leading-6 text-slate-900 dark:text-white mb-4" id="create-project-title">
 								Create New Project
 							</h3>
 
@@ -108,7 +108,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 
 							<div className="space-y-4">
 								<div>
-									<label htmlFor="project-name" className="block text-sm font-medium text-gray-700 mb-1">
+									<label htmlFor="project-name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 										Project Name <span className="text-red-500">*</span>
 									</label>
 									<input
@@ -117,18 +117,18 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 										value={name}
 										onChange={(e) => setName(e.target.value)}
 										maxLength={VALIDATION.project.nameMaxLength}
-										className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+										className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-slate-950 text-slate-900 dark:text-white"
 										placeholder="e.g., Tech Blog, Marketing Campaign"
 										required
 										autoFocus
 									/>
-									<p className="mt-1 text-xs text-gray-500">
+									<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
 										{name.length} / {VALIDATION.project.nameMaxLength}
 									</p>
 								</div>
 
 								<div>
-									<label htmlFor="project-description" className="block text-sm font-medium text-gray-700 mb-1">
+									<label htmlFor="project-description" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 										Description (optional)
 									</label>
 									<textarea
@@ -137,17 +137,17 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 										onChange={(e) => setDescription(e.target.value)}
 										maxLength={VALIDATION.project.descriptionMaxLength}
 										rows={4}
-										className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+										className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-slate-950 text-slate-900 dark:text-white"
 										placeholder="Describe the purpose and goals of this project"
 									/>
-									<p className="mt-1 text-xs text-gray-500">
+									<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
 										{description.length} / {VALIDATION.project.descriptionMaxLength}
 									</p>
 								</div>
 							</div>
 						</div>
 
-						<div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
+						<div className="bg-slate-50 dark:bg-slate-800 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
 							<button
 								type="submit"
 								disabled={isSubmitting}
@@ -159,7 +159,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 								type="button"
 								onClick={handleClose}
 								disabled={isSubmitting}
-								className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+								className="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-slate-800 px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-300 dark:ring-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 sm:mt-0 sm:w-auto transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								Cancel
 							</button>

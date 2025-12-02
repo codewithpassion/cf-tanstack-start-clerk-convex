@@ -56,7 +56,7 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
 			<div>
-				<label htmlFor="category-name" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="category-name" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 					Name <span className="text-red-500">*</span>
 				</label>
 				<input
@@ -66,7 +66,7 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 					onChange={(e) => setName(e.target.value)}
 					maxLength={50}
 					disabled={isLoading}
-					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-slate-100 disabled:cursor-not-allowed text-slate-900 bg-white"
 					placeholder="e.g., Newsletter, Product Update"
 					aria-invalid={!!errors.name}
 					aria-describedby={errors.name ? "name-error" : undefined}
@@ -76,11 +76,11 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 						{errors.name}
 					</p>
 				)}
-				<p className="mt-1 text-xs text-gray-500">{name.length}/50 characters</p>
+				<p className="mt-1 text-xs text-slate-500">{name.length}/50 characters</p>
 			</div>
 
 			<div>
-				<label htmlFor="category-description" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="category-description" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 					Description
 				</label>
 				<textarea
@@ -90,7 +90,7 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 					maxLength={2000}
 					rows={3}
 					disabled={isLoading}
-					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-slate-100 disabled:cursor-not-allowed text-slate-900 bg-white"
 					placeholder="Describe the purpose of this category"
 					aria-invalid={!!errors.description}
 					aria-describedby={errors.description ? "description-error" : undefined}
@@ -100,11 +100,11 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 						{errors.description}
 					</p>
 				)}
-				<p className="mt-1 text-xs text-gray-500">{description.length}/2000 characters</p>
+				<p className="mt-1 text-xs text-slate-500">{description.length}/2000 characters</p>
 			</div>
 
 			<div>
-				<label htmlFor="category-guidelines" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="category-guidelines" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 					Format Guidelines
 				</label>
 				<textarea
@@ -114,7 +114,7 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 					maxLength={5000}
 					rows={6}
 					disabled={isLoading}
-					className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 font-mono text-sm disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 font-mono text-sm disabled:bg-slate-100 disabled:cursor-not-allowed text-slate-900 dark:text-white bg-white dark:bg-slate-950"
 					placeholder="Word count: 500-1000 words&#10;Structure: Title, introduction, body, conclusion&#10;Tone: Professional yet conversational"
 					aria-invalid={!!errors.formatGuidelines}
 					aria-describedby={errors.formatGuidelines ? "guidelines-error" : undefined}
@@ -124,7 +124,7 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 						{errors.formatGuidelines}
 					</p>
 				)}
-				<p className="mt-1 text-xs text-gray-500">{formatGuidelines.length}/5000 characters</p>
+				<p className="mt-1 text-xs text-slate-500">{formatGuidelines.length}/5000 characters</p>
 			</div>
 
 			<div className="flex justify-end gap-3 pt-4">
@@ -132,7 +132,7 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 					type="button"
 					onClick={onCancel}
 					disabled={isLoading}
-					className="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+					className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-sm font-medium rounded-md text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					Cancel
 				</button>

@@ -365,10 +365,10 @@ function ContentEditorPage() {
 	if (contentPiece === null) {
 		return (
 			<div className="flex flex-col items-center justify-center h-full py-12">
-				<h2 className="text-xl font-semibold text-gray-900 mb-2">
+				<h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
 					Content Not Found
 				</h2>
-				<p className="text-gray-600 mb-6">
+				<p className="text-slate-600 dark:text-slate-400 mb-6">
 					The content piece you're looking for doesn't exist or has been deleted.
 				</p>
 				<Link
@@ -391,7 +391,7 @@ function ContentEditorPage() {
 		return (
 			<div className="flex flex-col items-center justify-center h-full py-12">
 				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 mb-4" />
-				<p className="text-gray-600">Content is being generated...</p>
+				<p className="text-slate-600 dark:text-slate-400">Content is being generated...</p>
 			</div>
 		);
 	}
@@ -402,13 +402,13 @@ function ContentEditorPage() {
 	return (
 		<div className="h-full flex flex-col">
 			{/* Page Header */}
-			<div className="bg-white border-b border-gray-200 px-6 py-4">
+			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-3">
 						<Link
 							to="/projects/$projectId"
 							params={{ projectId }}
-							className="text-gray-400 hover:text-gray-600"
+							className="text-slate-400 hover:text-slate-600"
 						>
 							<svg
 								className="w-5 h-5"
@@ -426,7 +426,7 @@ function ContentEditorPage() {
 							</svg>
 						</Link>
 						<svg
-							className="w-5 h-5 text-gray-400"
+							className="w-5 h-5 text-slate-400"
 							fill="none"
 							viewBox="0 0 24 24"
 							strokeWidth="1.5"
@@ -439,7 +439,7 @@ function ContentEditorPage() {
 								d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
 							/>
 						</svg>
-						<h1 className="text-xl font-bold text-gray-900 truncate">
+						<h1 className="text-xl font-bold text-slate-900 dark:text-white truncate">
 							{contentPiece.title}
 						</h1>
 					</div>
@@ -522,9 +522,9 @@ function ContentEditorPage() {
 							parentContent={
 								contentPiece.parentContent
 									? {
-											_id: contentPiece.parentContent._id,
-											title: contentPiece.parentContent.title,
-										}
+										_id: contentPiece.parentContent._id,
+										title: contentPiece.parentContent.title,
+									}
 									: null
 							}
 							derivedContent={derivedContent?.map((child) => ({
@@ -597,54 +597,54 @@ function ContentEditorPage() {
 				currentVersion={1}
 			/>
 
-		{/* Refine Dialog */}
-		<RefineDialog
-			isOpen={showRefineDialog}
-			onClose={() => setShowRefineDialog(false)}
-			currentContent={contentPiece.content}
-			contentPieceId={contentId as Id<"contentPieces">}
-			onAccept={handleAcceptRefine}
-		/>
+			{/* Refine Dialog */}
+			<RefineDialog
+				isOpen={showRefineDialog}
+				onClose={() => setShowRefineDialog(false)}
+				currentContent={contentPiece.content}
+				contentPieceId={contentId as Id<"contentPieces">}
+				onAccept={handleAcceptRefine}
+			/>
 
-		{/* Selection Refine Dialog */}
-		<SelectionRefineDialog
-			isOpen={showSelectionRefineDialog}
-			onClose={() => {
-				setShowSelectionRefineDialog(false);
-				resetSelectionStream();
-				setInlineRefineSelection(null);
-			}}
-			content={refinedSelectionContent}
-			isStreaming={isStreamingSelection}
-			error={selectionRefineError ?? undefined}
-			onAccept={handleAcceptRefinedSelection}
-		/>
+			{/* Selection Refine Dialog */}
+			<SelectionRefineDialog
+				isOpen={showSelectionRefineDialog}
+				onClose={() => {
+					setShowSelectionRefineDialog(false);
+					resetSelectionStream();
+					setInlineRefineSelection(null);
+				}}
+				content={refinedSelectionContent}
+				isStreaming={isStreamingSelection}
+				error={selectionRefineError ?? undefined}
+				onAccept={handleAcceptRefinedSelection}
+			/>
 
-		{/* Repurpose Dialog */}
-		<RepurposeDialog
-			isOpen={showRepurposeDialog}
-			onClose={() => setShowRepurposeDialog(false)}
-			contentPieceId={contentId as Id<"contentPieces">}
-			projectId={projectId as Id<"projects">}
-			currentCategoryId={contentPiece.categoryId}
-			currentPersonaId={contentPiece.personaId ?? undefined}
-			currentBrandVoiceId={contentPiece.brandVoiceId ?? undefined}
-			sourceTitle={contentPiece.title}
-			onAccept={handleAcceptRepurpose}
-		/>
-
-		{/* Images Modal */}
-		{workspace && (
-			<ImagesModal
-				isOpen={showImagesModal}
-				onClose={() => setShowImagesModal(false)}
+			{/* Repurpose Dialog */}
+			<RepurposeDialog
+				isOpen={showRepurposeDialog}
+				onClose={() => setShowRepurposeDialog(false)}
 				contentPieceId={contentId as Id<"contentPieces">}
 				projectId={projectId as Id<"projects">}
-				workspaceId={workspace._id}
-				contentText={contentPiece.content}
-				initialView={imagesModalInitialView}
+				currentCategoryId={contentPiece.categoryId}
+				currentPersonaId={contentPiece.personaId ?? undefined}
+				currentBrandVoiceId={contentPiece.brandVoiceId ?? undefined}
+				sourceTitle={contentPiece.title}
+				onAccept={handleAcceptRepurpose}
 			/>
-		)}
+
+			{/* Images Modal */}
+			{workspace && (
+				<ImagesModal
+					isOpen={showImagesModal}
+					onClose={() => setShowImagesModal(false)}
+					contentPieceId={contentId as Id<"contentPieces">}
+					projectId={projectId as Id<"projects">}
+					workspaceId={workspace._id}
+					contentText={contentPiece.content}
+					initialView={imagesModalInitialView}
+				/>
+			)}
 		</div>
 	);
 }

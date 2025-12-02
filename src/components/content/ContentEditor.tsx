@@ -433,7 +433,7 @@ function EditorRefSetter({ setEditor }: { setEditor: (editor: Editor | null) => 
  */
 function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 
-	if (!editor) return <div className="flex flex-wrap items-center gap-1 text-gray-400">Loading toolbar...</div>;
+	if (!editor) return <div className="flex flex-wrap items-center gap-1 text-slate-400">Loading toolbar...</div>;
 
 	return (
 		<div className="flex flex-wrap items-center gap-1">
@@ -441,7 +441,7 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().undo().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Undo"
 			>
 				<Undo className="h-4 w-4" />
@@ -449,19 +449,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().redo().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Redo"
 			>
 				<Redo className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
 
 			{/* Headings dropdown placeholder - will be simple buttons for now */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Heading 1"
 			>
 				<Heading1 className="h-4 w-4" />
@@ -469,19 +469,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Heading 2"
 			>
 				<Heading2 className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
 
 			{/* Lists */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleBulletList().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Bullet List"
 			>
 				<List className="h-4 w-4" />
@@ -489,19 +489,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Numbered List"
 			>
 				<ListOrdered className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
 
 			{/* Text formatting */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleBold().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold"
 				title="Bold"
 			>
 				<Bold className="h-4 w-4" />
@@ -509,7 +509,7 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleItalic().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 italic"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 italic"
 				title="Italic"
 			>
 				<Italic className="h-4 w-4" />
@@ -517,7 +517,7 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleStrike().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Strikethrough"
 			>
 				<Strikethrough className="h-4 w-4" />
@@ -525,19 +525,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleCode().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-mono"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-mono"
 				title="Code"
 			>
 				<Code className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
 
 			{/* Blockquote */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleBlockquote().run()}
-				className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
 				title="Quote"
 			>
 				<MessageSquareQuote className="h-4 w-4" />
@@ -705,7 +705,7 @@ export function ContentEditor({
 	return (
 		<div className="w-full">
 			{/* Save indicator */}
-			<div className="mb-2 text-sm text-gray-500 text-right">
+			<div className="mb-2 text-sm text-slate-500 dark:text-slate-400 text-right">
 				{isSaving && (
 					<span className="flex items-center justify-end gap-2">
 						<div className="animate-spin rounded-full h-3 w-3 border-b-2 border-cyan-600" />
@@ -721,8 +721,8 @@ export function ContentEditor({
 			</div>
 
 			{/* Novel Editor */}
-			<div className="border border-gray-200 rounded-lg overflow-hidden bg-white dark:bg-gray-800 dark:border-gray-700">
-				<div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-2">
+			<div className="border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-900">
+				<div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2">
 					<SimpleEditorToolbar editor={toolbarEditor} />
 				</div>
 				<EditorRoot>
@@ -763,8 +763,8 @@ export function ContentEditor({
 						<EditorRefSetter setEditor={setToolbarEditor} />
 
 						{/* Bubble menu for text selection */}
-						<EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-gray-200 bg-white px-1 py-2 shadow-md transition-all dark:border-gray-700 dark:bg-gray-800">
-							<EditorCommandEmpty className="px-2 text-gray-500 dark:text-gray-400">
+						<EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-slate-200 bg-white px-1 py-2 shadow-md transition-all dark:border-slate-700 dark:bg-slate-800">
+							<EditorCommandEmpty className="px-2 text-slate-500 dark:text-slate-400">
 								No results
 							</EditorCommandEmpty>
 							<EditorCommandList>
@@ -772,15 +772,15 @@ export function ContentEditor({
 									<EditorCommandItem
 										value={item.title}
 										onCommand={(val) => item.command?.(val)}
-										className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 aria-selected:bg-gray-100 dark:aria-selected:bg-gray-700"
+										className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 aria-selected:bg-slate-100 dark:aria-selected:bg-slate-700"
 										key={item.title}
 									>
-										<div className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+										<div className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800">
 											{item.icon}
 										</div>
 										<div>
 											<p className="font-medium">{item.title}</p>
-											<p className="text-xs text-gray-500 dark:text-gray-400">
+											<p className="text-xs text-slate-500 dark:text-slate-400">
 												{item.description}
 											</p>
 										</div>
@@ -794,29 +794,29 @@ export function ContentEditor({
 							tippyOptions={{
 								placement: "top",
 							}}
-							className="flex w-fit max-w-[90vw] overflow-hidden rounded-md border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+							className="flex w-fit max-w-[90vw] overflow-hidden rounded-md border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800"
 						>
 							<EditorBubbleItem
 								onSelect={(editor) => editor.chain().focus().toggleBold().run()}
-								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								className="p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
 							>
 								<Bold className="h-4 w-4" />
 							</EditorBubbleItem>
 							<EditorBubbleItem
 								onSelect={(editor) => editor.chain().focus().toggleItalic().run()}
-								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								className="p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
 							>
 								<Italic className="h-4 w-4" />
 							</EditorBubbleItem>
 							<EditorBubbleItem
 								onSelect={(editor) => editor.chain().focus().toggleStrike().run()}
-								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								className="p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
 							>
 								<Strikethrough className="h-4 w-4" />
 							</EditorBubbleItem>
 							<EditorBubbleItem
 								onSelect={(editor) => editor.chain().focus().toggleCode().run()}
-								className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+								className="p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
 							>
 								<Code className="h-4 w-4" />
 							</EditorBubbleItem>
@@ -824,10 +824,10 @@ export function ContentEditor({
 							{/* Refine button - only show if callback is provided */}
 							{onTriggerInlineRefine && (
 								<>
-									<div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+									<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
 									<EditorBubbleItem
 										onSelect={handleInlineRefineTrigger}
-										className="p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+										className="p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700"
 									>
 										<Sparkles className="h-4 w-4" />
 									</EditorBubbleItem>
@@ -841,7 +841,7 @@ export function ContentEditor({
 			</div>
 
 			{/* Keyboard shortcuts help text */}
-			<div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+			<div className="mt-3 text-xs text-slate-500 dark:text-slate-400">
 				<p className="mb-1">
 					<strong>Markdown shortcuts:</strong> Type # for headings, - for bullet lists, 1. for numbered lists, {">"} for quotes
 				</p>

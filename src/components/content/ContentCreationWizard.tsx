@@ -175,7 +175,7 @@ export function ContentCreationWizard({
 			<div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
 				{/* Background overlay */}
 				<div
-					className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+					className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity"
 					aria-hidden="true"
 					onClick={handleCloseRequest}
 				/>
@@ -186,7 +186,7 @@ export function ContentCreationWizard({
 					<button
 						type="button"
 						onClick={handleCloseRequest}
-						className="absolute right-4 top-4 text-gray-400 hover:text-gray-500"
+						className="absolute right-4 top-4 text-slate-400 hover:text-slate-500"
 						aria-label="Close wizard"
 					>
 						<svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -210,7 +210,7 @@ export function ContentCreationWizard({
 											{index !== 5 && (
 												<div className="absolute inset-0 flex items-center" aria-hidden="true">
 													<div
-														className={`h-0.5 w-full ${state.currentStep > step ? "bg-cyan-600" : "bg-gray-200"}`}
+														className={`h-0.5 w-full ${state.currentStep > step ? "bg-cyan-600" : "bg-slate-200"}`}
 													/>
 												</div>
 											)}
@@ -232,8 +232,8 @@ export function ContentCreationWizard({
 														<span className="text-cyan-600 font-semibold text-sm">{step}</span>
 													</div>
 												) : (
-													<div className="h-8 w-8 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center">
-														<span className="text-gray-400 font-semibold text-sm">{step}</span>
+													<div className="h-8 w-8 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center">
+														<span className="text-slate-400 font-semibold text-sm">{step}</span>
 													</div>
 												)}
 											</div>
@@ -322,17 +322,17 @@ export function ContentCreationWizard({
 			{showCloseConfirmation && (
 				<div className="fixed inset-0 z-[60] overflow-y-auto">
 					<div className="flex min-h-screen items-center justify-center p-4">
-						<div className="fixed inset-0 bg-gray-500 bg-opacity-75" aria-hidden="true" />
+						<div className="fixed inset-0 bg-slate-500 bg-opacity-75" aria-hidden="true" />
 						<div className="relative bg-white rounded-lg p-6 max-w-md">
-							<h3 className="text-lg font-semibold mb-2 text-gray-900">Close wizard?</h3>
-							<p className="text-gray-600 mb-4">
+							<h3 className="text-lg font-semibold mb-2 text-slate-900">Close wizard?</h3>
+							<p className="text-slate-600 mb-4">
 								Your progress will be lost. Are you sure you want to close this wizard?
 							</p>
 							<div className="flex gap-3 justify-end">
 								<button
 									type="button"
 									onClick={handleCloseCancel}
-									className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+									className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg"
 								>
 									Cancel
 								</button>

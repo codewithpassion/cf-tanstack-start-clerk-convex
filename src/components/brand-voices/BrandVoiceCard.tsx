@@ -30,16 +30,16 @@ export function BrandVoiceCard({ brandVoice, onEdit, onDelete }: BrandVoiceCardP
 
 	return (
 		<>
-			<div className="bg-white border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors">
+			<div className="bg-white border border-slate-200 rounded-lg p-6 hover:border-slate-300 transition-colors">
 				<div className="flex items-start justify-between gap-4">
 					<div className="flex-1 min-w-0">
-						<h3 className="text-lg font-semibold text-gray-900 mb-2">{brandVoice.name}</h3>
+						<h3 className="text-lg font-semibold text-slate-900 mb-2">{brandVoice.name}</h3>
 
 						{brandVoice.description && (
-							<p className="text-sm text-gray-600 mb-4 line-clamp-3">{brandVoice.description}</p>
+							<p className="text-sm text-slate-600 mb-4 line-clamp-3">{brandVoice.description}</p>
 						)}
 
-						<div className="flex items-center gap-4 text-xs text-gray-500">
+						<div className="flex items-center gap-4 text-xs text-slate-500">
 							<div className="flex items-center gap-1">
 								<svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<path
@@ -72,7 +72,7 @@ export function BrandVoiceCard({ brandVoice, onEdit, onDelete }: BrandVoiceCardP
 						<button
 							type="button"
 							onClick={onEdit}
-							className="p-2 text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors"
+							className="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors"
 							title="Edit brand voice"
 							aria-label={`Edit ${brandVoice.name}`}
 						>
@@ -89,7 +89,7 @@ export function BrandVoiceCard({ brandVoice, onEdit, onDelete }: BrandVoiceCardP
 						<button
 							type="button"
 							onClick={() => setShowDeleteConfirm(true)}
-							className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+							className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
 							title="Delete brand voice"
 							aria-label={`Delete ${brandVoice.name}`}
 						>

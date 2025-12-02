@@ -53,7 +53,7 @@ export function KnowledgeBaseItemForm({
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
 			<div>
-				<label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="title" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 					Title <span className="text-red-500">*</span>
 				</label>
 				<input
@@ -61,19 +61,18 @@ export function KnowledgeBaseItemForm({
 					id="title"
 					value={title}
 					onChange={(e) => setTitle(e.target.value)}
-					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 bg-white ${
-						errors.title ? "border-red-500" : "border-gray-300"
-					}`}
+					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-slate-900 dark:text-white bg-white dark:bg-slate-950 ${errors.title ? "border-red-500" : "border-slate-300 dark:border-slate-700"
+						}`}
 					placeholder="Enter item title"
 					maxLength={200}
 					disabled={isSubmitting}
 				/>
 				{errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
-				<p className="mt-1 text-xs text-gray-500">{title.length}/200 characters</p>
+				<p className="mt-1 text-xs text-slate-500">{title.length}/200 characters</p>
 			</div>
 
 			<div>
-				<label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="content" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
 					Content
 				</label>
 				<textarea
@@ -81,22 +80,21 @@ export function KnowledgeBaseItemForm({
 					value={content}
 					onChange={(e) => setContent(e.target.value)}
 					rows={10}
-					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900 bg-white ${
-						errors.content ? "border-red-500" : "border-gray-300"
-					}`}
+					className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-slate-900 dark:text-white bg-white dark:bg-slate-950 ${errors.content ? "border-red-500" : "border-slate-300 dark:border-slate-700"
+						}`}
 					placeholder="Enter reference content, documentation, or guidelines..."
 					disabled={isSubmitting}
 				/>
 				{errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
-				<p className="mt-1 text-xs text-gray-500">{content.length}/50,000 characters</p>
+				<p className="mt-1 text-xs text-slate-500">{content.length}/50,000 characters</p>
 			</div>
 
-			<div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+			<div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
 				<button
 					type="button"
 					onClick={onCancel}
 					disabled={isSubmitting}
-					className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+					className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-md hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 				>
 					Cancel
 				</button>

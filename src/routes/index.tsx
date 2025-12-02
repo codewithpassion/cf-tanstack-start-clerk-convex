@@ -62,16 +62,16 @@ function App() {
               className="w-24 h-24 md:w-32 md:h-32"
             />
             <h1 className="text-6xl md:text-7xl font-black text-white [letter-spacing:-0.08em]">
-              <span className="text-gray-300">TANSTACK</span>{' '}
+              <span className="text-slate-300">TANSTACK</span>{' '}
               <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
                 START
               </span>
             </h1>
           </div>
-          <p className="text-2xl md:text-3xl text-gray-300 mb-4 font-light">
+          <p className="text-2xl md:text-3xl text-slate-300 mb-4 font-light">
             The framework for next generation AI applications
           </p>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
+          <p className="text-lg text-slate-400 max-w-3xl mx-auto mb-8">
             Full-stack framework powered by TanStack Router for React and Solid.
             Build modern applications with server functions, streaming, and type
             safety.
@@ -85,7 +85,7 @@ function App() {
             >
               Documentation
             </a>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-slate-400 text-sm mt-2">
               Begin your TanStack Start journey by editing{' '}
               <code className="px-2 py-1 bg-slate-700 rounded text-cyan-400">
                 /src/routes/index.tsx
@@ -106,7 +106,7 @@ function App() {
               <h3 className="text-xl font-semibold text-white mb-3">
                 {feature.title}
               </h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-slate-400 leading-relaxed">
                 {feature.description}
               </p>
             </div>

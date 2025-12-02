@@ -64,7 +64,7 @@ export function CategoryList({ categories, onReorder, onEdit, onDelete }: Catego
 
 	if (categories.length === 0) {
 		return (
-			<div className="text-center py-12 text-gray-500">
+			<div className="text-center py-12 text-slate-500">
 				<p>No categories found. Default categories are created when you create a project.</p>
 			</div>
 		);

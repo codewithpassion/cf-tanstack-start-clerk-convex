@@ -51,10 +51,10 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 	return (
 		<div>
 			<div className="mb-6">
-				<h2 className="text-xl font-semibold text-gray-900 mb-2">
+				<h2 className="text-xl font-semibold text-slate-900 mb-2">
 					Create Your First Project
 				</h2>
-				<p className="text-sm text-gray-600">
+				<p className="text-sm text-slate-600">
 					Projects help you organize content for different brands, campaigns, or purposes.
 				</p>
 			</div>
@@ -67,7 +67,7 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
-					<label htmlFor="onboarding-project-name" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="onboarding-project-name" className="block text-sm font-medium text-slate-700 mb-1">
 						Project Name <span className="text-red-500">*</span>
 					</label>
 					<input
@@ -76,18 +76,18 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						maxLength={VALIDATION.project.nameMaxLength}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
+						className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
 						placeholder="e.g., Tech Blog, Marketing Campaign"
 						required
 						autoFocus
 					/>
-					<p className="mt-1 text-xs text-gray-500">
+					<p className="mt-1 text-xs text-slate-500">
 						{name.length} / {VALIDATION.project.nameMaxLength}
 					</p>
 				</div>
 
 				<div>
-					<label htmlFor="onboarding-project-description" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="onboarding-project-description" className="block text-sm font-medium text-slate-700 mb-1">
 						Description (optional)
 					</label>
 					<textarea
@@ -96,10 +96,10 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 						onChange={(e) => setDescription(e.target.value)}
 						maxLength={VALIDATION.project.descriptionMaxLength}
 						rows={4}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
+						className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
 						placeholder="Describe the purpose and goals of this project"
 					/>
-					<p className="mt-1 text-xs text-gray-500">
+					<p className="mt-1 text-xs text-slate-500">
 						{description.length} / {VALIDATION.project.descriptionMaxLength}
 					</p>
 				</div>

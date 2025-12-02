@@ -53,10 +53,10 @@ export function PersonaStep({ onNext, onSkip }: PersonaStepProps) {
 	return (
 		<div>
 			<div className="mb-6">
-				<h2 className="text-xl font-semibold text-gray-900 mb-2">
+				<h2 className="text-xl font-semibold text-slate-900 mb-2">
 					Define Your Target Persona
 				</h2>
-				<p className="text-sm text-gray-600">
+				<p className="text-sm text-slate-600">
 					Who are you writing for? Define your ideal reader or customer to create more targeted content.
 					You can skip this step and add it later.
 				</p>
@@ -70,7 +70,7 @@ export function PersonaStep({ onNext, onSkip }: PersonaStepProps) {
 
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
-					<label htmlFor="onboarding-persona-name" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="onboarding-persona-name" className="block text-sm font-medium text-slate-700 mb-1">
 						Persona Name <span className="text-red-500">*</span>
 					</label>
 					<input
@@ -79,17 +79,17 @@ export function PersonaStep({ onNext, onSkip }: PersonaStepProps) {
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						maxLength={VALIDATION.persona.nameMaxLength}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
+						className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
 						placeholder="e.g., Tech-Savvy Marketing Manager, Early-Career Developer"
 						autoFocus
 					/>
-					<p className="mt-1 text-xs text-gray-500">
+					<p className="mt-1 text-xs text-slate-500">
 						{name.length} / {VALIDATION.persona.nameMaxLength}
 					</p>
 				</div>
 
 				<div>
-					<label htmlFor="onboarding-persona-description" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="onboarding-persona-description" className="block text-sm font-medium text-slate-700 mb-1">
 						Description (optional)
 					</label>
 					<textarea
@@ -98,10 +98,10 @@ export function PersonaStep({ onNext, onSkip }: PersonaStepProps) {
 						onChange={(e) => setDescription(e.target.value)}
 						maxLength={VALIDATION.persona.descriptionMaxLength}
 						rows={4}
-						className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-gray-900 bg-white"
+						className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
 						placeholder="Describe their role, goals, challenges, and interests..."
 					/>
-					<p className="mt-1 text-xs text-gray-500">
+					<p className="mt-1 text-xs text-slate-500">
 						{description.length} / {VALIDATION.persona.descriptionMaxLength}
 					</p>
 				</div>
@@ -110,7 +110,7 @@ export function PersonaStep({ onNext, onSkip }: PersonaStepProps) {
 					<button
 						type="button"
 						onClick={onSkip}
-						className="inline-flex items-center px-6 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+						className="inline-flex items-center px-6 py-2 border border-slate-300 text-sm font-medium rounded-md shadow-sm text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 					>
 						Skip for Now
 					</button>

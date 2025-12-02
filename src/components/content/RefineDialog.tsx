@@ -168,12 +168,12 @@ export function RefineDialog({
 					onClick={(e) => e.stopPropagation()}
 				>
 					{/* Header */}
-					<div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+					<div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
 						<div className="flex items-center gap-2">
 							{state === "streaming" && (
 								<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600" />
 							)}
-							<h2 className="text-xl font-semibold text-gray-900">
+							<h2 className="text-xl font-semibold text-slate-900">
 								{state === "input" && "Refine Content"}
 								{state === "streaming" && "Refining..."}
 								{state === "complete" && "Refined Content"}
@@ -183,7 +183,7 @@ export function RefineDialog({
 						<button
 							type="button"
 							onClick={onClose}
-							className="text-gray-400 hover:text-gray-600 transition-colors"
+							className="text-slate-400 hover:text-slate-600 transition-colors"
 						>
 							<X className="w-5 h-5" />
 						</button>
@@ -197,7 +197,7 @@ export function RefineDialog({
 								<div>
 									<label
 										htmlFor="refine-instructions"
-										className="block text-sm font-medium text-gray-700 mb-2"
+										className="block text-sm font-medium text-slate-700 mb-2"
 									>
 										What would you like to refine?
 									</label>
@@ -207,26 +207,26 @@ export function RefineDialog({
 										onChange={(e) => setInstructions(e.target.value)}
 										onKeyDown={handleKeyDown}
 										placeholder="e.g., Make this more concise and add specific examples..."
-										className="w-full h-32 px-4 py-3 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none placeholder:text-gray-400"
+										className="w-full h-32 px-4 py-3 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none placeholder:text-slate-400"
 										autoFocus
 									/>
-									<p className="mt-2 text-xs text-gray-500">
-										Press <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded">Ctrl</kbd> +{" "}
-										<kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded">Enter</kbd> to submit
+									<p className="mt-2 text-xs text-slate-500">
+										Press <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded">Ctrl</kbd> +{" "}
+										<kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded">Enter</kbd> to submit
 									</p>
 								</div>
 
 								{/* Refine from Original Switch - only show in "refine again" mode */}
 								{isRefineAgain && (
-									<div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+									<div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
 										<div className="flex-1">
 											<label
 												htmlFor="refine-from-original"
-												className="text-sm font-medium text-gray-700 cursor-pointer"
+												className="text-sm font-medium text-slate-700 cursor-pointer"
 											>
 												Refine from original
 											</label>
-											<p className="text-xs text-gray-500 mt-0.5">
+											<p className="text-xs text-slate-500 mt-0.5">
 												{refineFromOriginal
 													? "Using original content as base"
 													: "Using refined content as base"}
@@ -239,7 +239,7 @@ export function RefineDialog({
 											aria-checked={refineFromOriginal}
 											onClick={() => setRefineFromOriginal(!refineFromOriginal)}
 											className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 ${
-												refineFromOriginal ? "bg-cyan-600" : "bg-gray-300"
+												refineFromOriginal ? "bg-cyan-600" : "bg-slate-300"
 											}`}
 										>
 											<span
@@ -290,10 +290,10 @@ export function RefineDialog({
 										/>
 									</svg>
 								</div>
-								<h3 className="text-lg font-semibold text-gray-900 mb-2">
+								<h3 className="text-lg font-semibold text-slate-900 mb-2">
 									Refinement Failed
 								</h3>
-								<p className="text-gray-600 mb-4 text-center">
+								<p className="text-slate-600 mb-4 text-center">
 									{error || "An error occurred while refining the content"}
 								</p>
 							</div>
@@ -301,14 +301,14 @@ export function RefineDialog({
 					</div>
 
 					{/* Footer */}
-					<div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+					<div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
 						{/* Input State Footer */}
 						{state === "input" && (
 							<>
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 								>
 									Cancel
 								</button>
@@ -329,7 +329,7 @@ export function RefineDialog({
 							<button
 								type="button"
 								disabled
-								className="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
+								className="px-4 py-2 bg-slate-300 text-slate-500 rounded-lg cursor-not-allowed"
 							>
 								Generating...
 							</button>
@@ -341,14 +341,14 @@ export function RefineDialog({
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-gray-700 bg-white border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
 								>
 									Reject
 								</button>
 								<button
 									type="button"
 									onClick={handleRefineAgain}
-									className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 								>
 									Refine Again
 								</button>
@@ -382,7 +382,7 @@ export function RefineDialog({
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 								>
 									Close
 								</button>

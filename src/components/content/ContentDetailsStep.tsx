@@ -63,8 +63,8 @@ export function ContentDetailsStep({
 	return (
 		<div className="space-y-6">
 			<div>
-				<h2 className="text-2xl font-bold text-gray-900">Content Details</h2>
-				<p className="mt-2 text-gray-600">
+				<h2 className="text-2xl font-bold text-slate-900">Content Details</h2>
+				<p className="mt-2 text-slate-600">
 					Provide details about the content you want to create.
 				</p>
 			</div>
@@ -72,7 +72,7 @@ export function ContentDetailsStep({
 			<div className="space-y-4">
 				{/* Title input */}
 				<div>
-					<label htmlFor="content-title" className="block text-sm font-medium text-gray-700">
+					<label htmlFor="content-title" className="block text-sm font-medium text-slate-700">
 						Title <span className="text-red-500">*</span>
 					</label>
 					<input
@@ -84,12 +84,12 @@ export function ContentDetailsStep({
 							setError(null);
 						}}
 						maxLength={200}
-						className="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-gray-900 bg-white"
+						className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-slate-900 bg-white"
 						placeholder="Enter a title for your content"
 						aria-required="true"
 						aria-describedby={error ? "title-error" : undefined}
 					/>
-					<p className="mt-1 text-sm text-gray-500">{title.length}/200 characters</p>
+					<p className="mt-1 text-sm text-slate-500">{title.length}/200 characters</p>
 					{error && (
 						<p id="title-error" className="mt-1 text-sm text-red-600" role="alert">
 							{error}
@@ -99,7 +99,7 @@ export function ContentDetailsStep({
 
 				{/* Topic textarea */}
 				<div>
-					<label htmlFor="content-topic" className="block text-sm font-medium text-gray-700">
+					<label htmlFor="content-topic" className="block text-sm font-medium text-slate-700">
 						Topic (Optional)
 					</label>
 					<textarea
@@ -107,17 +107,17 @@ export function ContentDetailsStep({
 						value={topic}
 						onChange={(e) => setTopic(e.target.value)}
 						rows={3}
-						className="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-gray-900 bg-white"
+						className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-slate-900 bg-white"
 						placeholder="What is this content about? Provide context to help the AI understand your needs."
 					/>
-					<p className="mt-1 text-sm text-gray-500">
+					<p className="mt-1 text-sm text-slate-500">
 						Describe the main topic or theme for the AI to understand
 					</p>
 				</div>
 
 				{/* Draft content textarea */}
 				<div>
-					<label htmlFor="draft-content" className="block text-sm font-medium text-gray-700">
+					<label htmlFor="draft-content" className="block text-sm font-medium text-slate-700">
 						Draft Content (Optional)
 					</label>
 					<textarea
@@ -125,17 +125,17 @@ export function ContentDetailsStep({
 						value={draftContent}
 						onChange={(e) => setDraftContent(e.target.value)}
 						rows={6}
-						className="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-gray-900 bg-white"
+						className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-slate-900 bg-white"
 						placeholder="Start with any draft content or notes you already have. The AI will build upon this."
 					/>
-					<p className="mt-1 text-sm text-gray-500">
+					<p className="mt-1 text-sm text-slate-500">
 						Provide any existing content or notes as a starting point
 					</p>
 				</div>
 
 				{/* Source material upload */}
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-2">
+					<label className="block text-sm font-medium text-slate-700 mb-2">
 						Source Material (Optional)
 					</label>
 					<FileUpload
@@ -148,12 +148,12 @@ export function ContentDetailsStep({
 					/>
 					{uploadedFileIds.length > 0 && (
 						<div className="mt-2">
-							<p className="text-sm text-gray-600">
+							<p className="text-sm text-slate-600">
 								{uploadedFileIds.length} file{uploadedFileIds.length !== 1 ? "s" : ""} uploaded
 							</p>
 						</div>
 					)}
-					<p className="mt-1 text-sm text-gray-500">
+					<p className="mt-1 text-sm text-slate-500">
 						Upload reference materials to inform the AI generation
 					</p>
 				</div>
@@ -163,7 +163,7 @@ export function ContentDetailsStep({
 				<button
 					type="button"
 					onClick={onBack}
-					className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+					className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg"
 				>
 					Back
 				</button>

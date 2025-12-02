@@ -65,7 +65,7 @@ export function StreamingMarkdown({
 	// Show empty state if no content and not streaming
 	if (!content && !isStreaming) {
 		return (
-			<div className="flex items-center justify-center h-full text-gray-400">
+			<div className="flex items-center justify-center h-full text-slate-400">
 				<div className="text-center">
 					<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 mx-auto mb-3" />
 					<p>{emptyMessage}</p>
@@ -76,7 +76,7 @@ export function StreamingMarkdown({
 
 	return (
 		<div className={className}>
-			<div className="prose prose-sm max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-li:text-gray-700">
+			<div className="prose prose-sm max-w-none prose-headings:text-slate-900 prose-p:text-slate-700 prose-strong:text-slate-900 prose-li:text-slate-700">
 				<Markdown>{content}</Markdown>
 				{isStreaming && (
 					<span className="inline-block w-2 h-4 bg-cyan-600 animate-pulse ml-1" />

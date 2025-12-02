@@ -86,15 +86,15 @@ function PersonasPage() {
 					<div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
 						{/* Background overlay */}
 						<div
-							className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+							className="fixed inset-0 bg-slate-500 dark:bg-slate-900 bg-opacity-75 dark:bg-opacity-85 transition-opacity"
 							aria-hidden="true"
 							onClick={handleFormCancel}
 						/>
 
 						{/* Modal panel */}
-						<div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
-							<div className="bg-white px-6 pb-6 pt-5">
-								<h3 className="text-lg font-semibold leading-6 text-gray-900 mb-4">
+						<div className="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+							<div className="bg-white dark:bg-slate-900 px-6 pb-6 pt-5">
+								<h3 className="text-lg font-semibold leading-6 text-slate-900 dark:text-white mb-4">
 									{editingPersona ? "Edit Persona" : "Create Persona"}
 								</h3>
 

@@ -149,12 +149,12 @@ function SettingsPage() {
 			<div className="bg-white shadow-md rounded-lg p-6 space-y-6">
 				<div>
 					<div className="flex items-center justify-between mb-4">
-						<h3 className="text-lg font-semibold text-gray-900">Project Information</h3>
+						<h3 className="text-lg font-semibold text-slate-900">Project Information</h3>
 						{!isEditing && (
 							<button
 								type="button"
 								onClick={handleEdit}
-								className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+								className="inline-flex items-center px-3 py-2 border border-slate-300 shadow-sm text-sm leading-4 font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 							>
 								<svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 									<title>Edit</title>
@@ -168,7 +168,7 @@ function SettingsPage() {
 					{isEditing ? (
 						<form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
 							<div>
-								<label htmlFor="project-name" className="block text-sm font-medium text-gray-700">
+								<label htmlFor="project-name" className="block text-sm font-medium text-slate-700">
 									Project Name <span className="text-red-500">*</span>
 								</label>
 								<input
@@ -178,7 +178,7 @@ function SettingsPage() {
 									onChange={(e) => setFormData({ ...formData, name: e.target.value })}
 									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${formErrors.name
 											? "border-red-300 focus:border-red-500 focus:ring-red-500"
-											: "border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+											: "border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
 										}`}
 									placeholder="Enter project name"
 									maxLength={100}
@@ -187,11 +187,11 @@ function SettingsPage() {
 								{formErrors.name && (
 									<p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
 								)}
-								<p className="mt-1 text-xs text-gray-500">{formData.name.length}/100 characters</p>
+								<p className="mt-1 text-xs text-slate-500">{formData.name.length}/100 characters</p>
 							</div>
 
 							<div>
-								<label htmlFor="project-description" className="block text-sm font-medium text-gray-700">
+								<label htmlFor="project-description" className="block text-sm font-medium text-slate-700">
 									Description
 								</label>
 								<textarea
@@ -201,7 +201,7 @@ function SettingsPage() {
 									rows={4}
 									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm ${formErrors.description
 											? "border-red-300 focus:border-red-500 focus:ring-red-500"
-											: "border-gray-300 focus:border-cyan-500 focus:ring-cyan-500"
+											: "border-slate-300 focus:border-cyan-500 focus:ring-cyan-500"
 										}`}
 									placeholder="Enter project description (optional)"
 									maxLength={2000}
@@ -210,7 +210,7 @@ function SettingsPage() {
 								{formErrors.description && (
 									<p className="mt-1 text-sm text-red-600">{formErrors.description}</p>
 								)}
-								<p className="mt-1 text-xs text-gray-500">{formData.description.length}/2000 characters</p>
+								<p className="mt-1 text-xs text-slate-500">{formData.description.length}/2000 characters</p>
 							</div>
 
 							<div className="flex items-center gap-3 pt-4">
@@ -225,7 +225,7 @@ function SettingsPage() {
 									type="button"
 									onClick={handleCancel}
 									disabled={isSaving}
-									className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+									className="inline-flex items-center px-4 py-2 border border-slate-300 text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 								>
 									Cancel
 								</button>
@@ -234,29 +234,29 @@ function SettingsPage() {
 					) : (
 						<dl className="space-y-4">
 							<div>
-								<dt className="text-sm font-medium text-gray-500">Project Name</dt>
-								<dd className="mt-1 text-sm text-gray-900">{project.name}</dd>
+								<dt className="text-sm font-medium text-slate-500">Project Name</dt>
+								<dd className="mt-1 text-sm text-slate-900">{project.name}</dd>
 							</div>
 							{project.description && (
 								<div>
-									<dt className="text-sm font-medium text-gray-500">Description</dt>
-									<dd className="mt-1 text-sm text-gray-900">{project.description}</dd>
+									<dt className="text-sm font-medium text-slate-500">Description</dt>
+									<dd className="mt-1 text-sm text-slate-900">{project.description}</dd>
 								</div>
 							)}
 							<div>
-								<dt className="text-sm font-medium text-gray-500">Created</dt>
-								<dd className="mt-1 text-sm text-gray-900">{formatDate(project.createdAt)}</dd>
+								<dt className="text-sm font-medium text-slate-500">Created</dt>
+								<dd className="mt-1 text-sm text-slate-900">{formatDate(project.createdAt)}</dd>
 							</div>
 							<div>
-								<dt className="text-sm font-medium text-gray-500">Last Updated</dt>
-								<dd className="mt-1 text-sm text-gray-900">{formatDate(project.updatedAt)}</dd>
+								<dt className="text-sm font-medium text-slate-500">Last Updated</dt>
+								<dd className="mt-1 text-sm text-slate-900">{formatDate(project.updatedAt)}</dd>
 							</div>
 						</dl>
 					)}
 				</div>
 
-				<div className="pt-6 border-t border-gray-200">
-					<h3 className="text-lg font-semibold text-gray-900 mb-4">Danger Zone</h3>
+				<div className="pt-6 border-t border-slate-200">
+					<h3 className="text-lg font-semibold text-slate-900 mb-4">Danger Zone</h3>
 					<div className="bg-red-50 border border-red-200 rounded-lg p-4">
 						<div className="flex items-start justify-between">
 							<div className="flex-1">
@@ -283,10 +283,10 @@ function SettingsPage() {
 				title="Delete Project"
 				message={
 					<div className="space-y-2">
-						<p className="text-sm text-gray-500">
+						<p className="text-sm text-slate-500">
 							Are you sure you want to delete <strong>{project.name}</strong>?
 						</p>
-						<p className="text-sm text-gray-500">
+						<p className="text-sm text-slate-500">
 							This action will archive the project and all its associated content. This cannot be undone.
 						</p>
 					</div>

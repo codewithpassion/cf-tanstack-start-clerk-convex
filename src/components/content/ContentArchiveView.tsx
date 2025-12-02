@@ -147,12 +147,12 @@ export function ContentArchiveView({
 								)}
 							</div>
 							{onCrossProjectSearchToggle && (
-								<label className="flex items-center gap-2 text-sm text-gray-700 whitespace-nowrap">
+								<label className="flex items-center gap-2 text-sm text-slate-700 whitespace-nowrap">
 									<input
 										type="checkbox"
 										checked={showCrossProjectSearch}
 										onChange={(e) => onCrossProjectSearchToggle(e.target.checked)}
-										className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
+										className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
 									/>
 									Search all projects
 								</label>
@@ -182,7 +182,7 @@ export function ContentArchiveView({
 							className={`px-4 py-2 text-sm font-medium rounded-l-md border ${
 								viewMode === "table"
 									? "bg-cyan-600 text-white border-cyan-600"
-									: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+									: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
 							}`}
 						>
 							Table
@@ -193,7 +193,7 @@ export function ContentArchiveView({
 							className={`px-4 py-2 text-sm font-medium rounded-r-md border-t border-r border-b ${
 								viewMode === "cards"
 									? "bg-cyan-600 text-white border-cyan-600"
-									: "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+									: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
 							}`}
 						>
 							Cards
@@ -202,14 +202,14 @@ export function ContentArchiveView({
 
 					{/* Page Size Selector */}
 					<div className="flex items-center gap-2">
-						<label htmlFor="page-size" className="text-sm text-gray-700">
+						<label htmlFor="page-size" className="text-sm text-slate-700">
 							Show:
 						</label>
 						<select
 							id="page-size"
 							value={pageSize}
 							onChange={(e) => onPageSizeChange(Number(e.target.value))}
-							className="rounded-md border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm text-gray-900 bg-white"
+							className="rounded-md border-slate-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm text-slate-900 bg-white"
 						>
 							<option value={10}>10</option>
 							<option value={25}>25</option>
@@ -221,7 +221,7 @@ export function ContentArchiveView({
 				{/* Bulk Actions */}
 				{selectedIds.length > 0 && (
 					<div className="flex items-center gap-4">
-						<span className="text-sm text-gray-700">
+						<span className="text-sm text-slate-700">
 							{selectedIds.length} selected
 						</span>
 						<button
@@ -268,13 +268,13 @@ export function ContentArchiveView({
 			)}
 
 			{/* Pagination */}
-			<div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mt-6">
+			<div className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6 mt-6">
 				<div className="flex flex-1 justify-between sm:hidden">
 					<button
 						type="button"
 						onClick={() => onPageChange(currentPage - 1)}
 						disabled={!canGoPrevious}
-						className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+						className="relative inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						Previous
 					</button>
@@ -282,14 +282,14 @@ export function ContentArchiveView({
 						type="button"
 						onClick={() => onPageChange(currentPage + 1)}
 						disabled={!canGoNext}
-						className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+						className="relative ml-3 inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						Next
 					</button>
 				</div>
 				<div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
 					<div>
-						<p className="text-sm text-gray-700">
+						<p className="text-sm text-slate-700">
 							Showing <span className="font-medium">{startIndex}</span> to{" "}
 							<span className="font-medium">{endIndex}</span> of{" "}
 							<span className="font-medium">{totalCount}</span> results
@@ -304,7 +304,7 @@ export function ContentArchiveView({
 								type="button"
 								onClick={() => onPageChange(currentPage - 1)}
 								disabled={!canGoPrevious}
-								className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+								className="relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								<span className="sr-only">Previous</span>
 								<svg
@@ -320,14 +320,14 @@ export function ContentArchiveView({
 									/>
 								</svg>
 							</button>
-							<span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
+							<span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-inset ring-slate-300 focus:outline-offset-0">
 								Page {currentPage} of {totalPages}
 							</span>
 							<button
 								type="button"
 								onClick={() => onPageChange(currentPage + 1)}
 								disabled={!canGoNext}
-								className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+								className="relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								<span className="sr-only">Next</span>
 								<svg

@@ -53,20 +53,20 @@ export function ThemeToggle() {
 		<div className="relative" ref={dropdownRef}>
 			<button
 				onClick={() => setIsOpen(!isOpen)}
-				className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+				className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
 				aria-label="Toggle theme"
 				type="button"
 			>
-				<ThemeIcon size={20} className="text-gray-900 dark:text-white" />
+				<ThemeIcon size={20} className="text-slate-900 dark:text-white" />
 			</button>
 
 			{isOpen && (
-				<div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+				<div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
 					<button
 						onClick={() => handleThemeChange("light")}
-						className={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${theme === "light"
-								? "bg-gray-100 dark:bg-gray-700 text-cyan-600 dark:text-cyan-400"
-								: "text-gray-900 dark:text-gray-100"
+						className={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${theme === "light"
+								? "bg-slate-100 dark:bg-slate-700 text-cyan-600 dark:text-cyan-400"
+								: "text-slate-900 dark:text-slate-100"
 							}`}
 						type="button"
 					>
@@ -76,9 +76,9 @@ export function ThemeToggle() {
 
 					<button
 						onClick={() => handleThemeChange("dark")}
-						className={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${theme === "dark"
-								? "bg-gray-100 dark:bg-gray-700 text-cyan-600 dark:text-cyan-400"
-								: "text-gray-900 dark:text-gray-100"
+						className={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${theme === "dark"
+								? "bg-slate-100 dark:bg-slate-700 text-cyan-600 dark:text-cyan-400"
+								: "text-slate-900 dark:text-slate-100"
 							}`}
 						type="button"
 					>
@@ -88,9 +88,9 @@ export function ThemeToggle() {
 
 					<button
 						onClick={() => handleThemeChange("system")}
-						className={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${theme === "system"
-								? "bg-gray-100 dark:bg-gray-700 text-cyan-600 dark:text-cyan-400"
-								: "text-gray-900 dark:text-gray-100"
+						className={`w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${theme === "system"
+								? "bg-slate-100 dark:bg-slate-700 text-cyan-600 dark:text-cyan-400"
+								: "text-slate-900 dark:text-slate-100"
 							}`}
 						type="button"
 					>

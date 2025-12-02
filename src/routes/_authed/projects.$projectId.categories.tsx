@@ -174,13 +174,13 @@ function CategoriesPage() {
 				>
 					<div className="flex min-h-screen items-center justify-center p-4">
 						<div
-							className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+							className="fixed inset-0 bg-slate-500 dark:bg-slate-900 bg-opacity-75 dark:bg-opacity-85 transition-opacity"
 							aria-hidden="true"
 							onClick={() => !isSubmitting && setIsCreateModalOpen(false)}
 						/>
-						<div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-							<div className="bg-white px-6 py-6">
-								<h3 className="text-lg font-semibold text-gray-900 mb-4">
+						<div className="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+							<div className="bg-white dark:bg-slate-900 px-6 py-6">
+								<h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
 									Create New Category
 								</h3>
 								<CategoryForm
@@ -205,13 +205,13 @@ function CategoriesPage() {
 				>
 					<div className="flex min-h-screen items-center justify-center p-4">
 						<div
-							className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+							className="fixed inset-0 bg-slate-500 dark:bg-slate-900 bg-opacity-75 dark:bg-opacity-85 transition-opacity"
 							aria-hidden="true"
 							onClick={() => !isSubmitting && setEditingCategory(null)}
 						/>
-						<div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-							<div className="bg-white px-6 py-6">
-								<h3 className="text-lg font-semibold text-gray-900 mb-4">
+						<div className="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+							<div className="bg-white dark:bg-slate-900 px-6 py-6">
+								<h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
 									Edit Category
 								</h3>
 								<CategoryForm
@@ -232,7 +232,7 @@ function CategoriesPage() {
 				isOpen={!!deletingCategory}
 				title="Delete Category"
 				message={
-					<p className="text-sm text-gray-500">
+					<p className="text-sm text-slate-500">
 						Are you sure you want to delete{" "}
 						<strong>{deletingCategory?.name}</strong>? This action cannot be undone.
 						{deletingCategory?.isDefault && (

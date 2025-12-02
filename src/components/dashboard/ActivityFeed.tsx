@@ -131,30 +131,30 @@ function getActionText(action: ActivityLogEntry["action"]): string {
 export function ActivityFeed({ activities }: ActivityFeedProps) {
 	if (activities.length === 0) {
 		return (
-			<div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-				<h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+			<div className="bg-white shadow-md rounded-lg p-6 border border-slate-200">
+				<h2 className="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h2>
 				<div className="text-center py-8">
-					<svg className="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<svg className="w-12 h-12 mx-auto mb-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<title>Empty activity</title>
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 					</svg>
-					<p className="text-sm text-gray-500">No recent activity yet</p>
-					<p className="text-xs text-gray-400 mt-1">Create your first content to see activity here</p>
+					<p className="text-sm text-slate-500">No recent activity yet</p>
+					<p className="text-xs text-slate-400 mt-1">Create your first content to see activity here</p>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-			<h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+		<div className="bg-white shadow-md rounded-lg p-6 border border-slate-200">
+			<h2 className="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h2>
 			<div className="space-y-3">
 				{activities.map((activity) => {
 					const isContentAction = activity.contentPieceId && activity.contentPiece;
 					const isProjectAction = activity.action === "project_created";
 
 					return (
-						<div key={activity._id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+						<div key={activity._id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors">
 							{/* Action icon */}
 							<div className="flex-shrink-0 mt-0.5">
 								{getActionIcon(activity.action)}
@@ -171,10 +171,10 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 										}}
 										className="group"
 									>
-										<p className="text-sm font-medium text-gray-900 group-hover:text-cyan-600 transition-colors line-clamp-1">
+										<p className="text-sm font-medium text-slate-900 group-hover:text-cyan-600 transition-colors line-clamp-1">
 											{activity.contentPiece!.title}
 										</p>
-										<p className="text-xs text-gray-600 mt-0.5">
+										<p className="text-xs text-slate-600 mt-0.5">
 											{getActionText(activity.action)} in {activity.project?.name || "Unknown Project"}
 										</p>
 									</Link>
@@ -184,26 +184,26 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 										params={{ projectId: activity.projectId }}
 										className="group"
 									>
-										<p className="text-sm font-medium text-gray-900 group-hover:text-cyan-600 transition-colors line-clamp-1">
+										<p className="text-sm font-medium text-slate-900 group-hover:text-cyan-600 transition-colors line-clamp-1">
 											{activity.project?.name || "Unknown Project"}
 										</p>
-										<p className="text-xs text-gray-600 mt-0.5">
+										<p className="text-xs text-slate-600 mt-0.5">
 											{getActionText(activity.action)}
 										</p>
 									</Link>
 								) : (
 									<div>
-										<p className="text-sm font-medium text-gray-900 line-clamp-1">
+										<p className="text-sm font-medium text-slate-900 line-clamp-1">
 											{activity.project?.name || "Unknown Project"}
 										</p>
-										<p className="text-xs text-gray-600 mt-0.5">
+										<p className="text-xs text-slate-600 mt-0.5">
 											{getActionText(activity.action)}
 										</p>
 									</div>
 								)}
 
 								{/* Relative timestamp */}
-								<p className="text-xs text-gray-400 mt-1">
+								<p className="text-xs text-slate-400 mt-1">
 									{formatRelativeTime(activity.createdAt)}
 								</p>
 							</div>

@@ -52,14 +52,14 @@ export function ContentCard({
 	};
 
 	const CategoryBadge = ({ name }: { name: string }) => (
-		<span className="inline-flex rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800">
+		<span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-800">
 			{name}
 		</span>
 	);
 
 	return (
 		<article
-			className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer relative"
+			className="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer relative"
 			onClick={handleCardClick}
 		>
 			{onSelect && (
@@ -69,7 +69,7 @@ export function ContentCard({
 						checked={isSelected}
 						onChange={handleCheckboxChange}
 						onClick={(e) => e.stopPropagation()}
-						className="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
+						className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
 						aria-label={`Select ${contentPiece.title}`}
 					/>
 				</div>
@@ -78,7 +78,7 @@ export function ContentCard({
 			<div className={onSelect ? "ml-8" : ""}>
 				{/* Title and Status */}
 				<div className="flex items-start justify-between gap-2 mb-2">
-					<h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+					<h3 className="text-lg font-semibold text-slate-900 line-clamp-2">
 						{contentPiece.title}
 					</h3>
 					<StatusBadge status={contentPiece.status} />
@@ -90,12 +90,12 @@ export function ContentCard({
 						<CategoryBadge name={contentPiece.category.name} />
 					)}
 					{contentPiece.persona && (
-						<span className="text-xs text-gray-500">
+						<span className="text-xs text-slate-500">
 							{contentPiece.persona.name}
 						</span>
 					)}
 					{contentPiece.brandVoice && (
-						<span className="text-xs text-gray-500">
+						<span className="text-xs text-slate-500">
 							{contentPiece.brandVoice.name}
 						</span>
 					)}
@@ -134,7 +134,7 @@ export function ContentCard({
 				)}
 
 				{/* Timestamps */}
-				<div className="text-xs text-gray-500 space-y-1">
+				<div className="text-xs text-slate-500 space-y-1">
 					<div>
 						<span className="font-medium">Created:</span>{" "}
 						{formatDistanceToNow(new Date(contentPiece.createdAt), {
@@ -152,8 +152,8 @@ export function ContentCard({
 				{/* Finalized Version Info */}
 				{contentPiece.status === "finalized" &&
 					contentPiece.currentFinalizedVersion && (
-						<div className="mt-3 pt-3 border-t border-gray-100">
-							<span className="text-xs font-medium text-gray-700">
+						<div className="mt-3 pt-3 border-t border-slate-100">
+							<span className="text-xs font-medium text-slate-700">
 								Version: v{contentPiece.currentFinalizedVersion}
 							</span>
 						</div>

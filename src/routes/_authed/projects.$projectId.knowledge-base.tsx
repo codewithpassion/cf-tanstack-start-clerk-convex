@@ -126,14 +126,14 @@ function KnowledgeBasePage() {
 			{/* Category Filter */}
 			<div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
 				<div className="flex-1">
-					<label htmlFor="category-select" className="block text-sm font-medium text-gray-700 mb-2">
+					<label htmlFor="category-select" className="block text-sm font-medium text-slate-700 mb-2">
 						Select Category
 					</label>
 					<select
 						id="category-select"
 						value={selectedCategoryId || ""}
 						onChange={(e) => setSelectedCategoryId(e.target.value as Id<"categories">)}
-						className="w-full sm:w-auto px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+						className="w-full sm:w-auto px-4 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
 					>
 						{categories.map((category) => (
 							<option key={category._id} value={category._id}>
@@ -173,12 +173,12 @@ function KnowledgeBasePage() {
 				<div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
 					<div className="flex min-h-screen items-center justify-center p-4">
 						<div
-							className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+							className="fixed inset-0 bg-slate-500 dark:bg-slate-900 bg-opacity-75 dark:bg-opacity-85 transition-opacity"
 							onClick={() => setIsFormOpen(false)}
 						/>
-						<div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
-							<div className="bg-white px-4 pb-4 pt-5 sm:p-6">
-								<h3 className="text-lg font-semibold text-gray-900 mb-4">
+						<div className="relative transform overflow-hidden rounded-lg bg-white dark:bg-slate-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+							<div className="bg-white dark:bg-slate-900 px-6 py-6">
+								<h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
 									{editingItem ? "Edit Knowledge Base Item" : "Add Knowledge Base Item"}
 								</h3>
 								<KnowledgeBaseItemForm

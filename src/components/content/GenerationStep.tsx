@@ -141,10 +141,10 @@ export function GenerationStep({
 						/>
 					</svg>
 				</div>
-				<h3 className="text-lg font-semibold text-gray-900 mb-2">
+				<h3 className="text-lg font-semibold text-slate-900 mb-2">
 					Generation Failed
 				</h3>
-				<p className="text-gray-600 mb-4">{error}</p>
+				<p className="text-slate-600 mb-4">{error}</p>
 				<button
 					type="button"
 					onClick={() => window.location.reload()}
@@ -159,10 +159,10 @@ export function GenerationStep({
 	return (
 		<div className="flex flex-col h-[500px] p-6">
 			<div className="mb-4 flex-shrink-0">
-				<h2 className="text-2xl font-bold text-gray-900 mb-2">
+				<h2 className="text-2xl font-bold text-slate-900 mb-2">
 					Generating Your Content
 				</h2>
-				<p className="text-gray-600">
+				<p className="text-slate-600">
 					{state === "creating"
 						? "Creating content piece..."
 						: state === "streaming"
@@ -183,7 +183,7 @@ export function GenerationStep({
 					>
 						{state !== "creating" ? "✓" : "1"}
 					</div>
-					<div className="flex-1 h-1 bg-gray-200 mx-2">
+					<div className="flex-1 h-1 bg-slate-200 mx-2">
 						<div
 							className={`h-full bg-cyan-500 transition-all duration-500 ${
 								state !== "creating" ? "w-full" : "w-0"
@@ -196,13 +196,13 @@ export function GenerationStep({
 								? "bg-green-500 text-white"
 								: state === "streaming"
 									? "bg-cyan-500 text-white animate-pulse"
-									: "bg-gray-300 text-gray-600"
+									: "bg-slate-300 text-slate-600"
 						}`}
 					>
 						{state === "complete" ? "✓" : "2"}
 					</div>
 				</div>
-				<div className="flex justify-between text-sm text-gray-600 mt-2">
+				<div className="flex justify-between text-sm text-slate-600 mt-2">
 					<span>Content piece created</span>
 					<span>AI generation</span>
 				</div>
@@ -212,7 +212,7 @@ export function GenerationStep({
 		<StreamingMarkdown
 			content={content}
 			isStreaming={isStreaming}
-			className="flex-1 min-h-0 overflow-y-auto bg-white border border-gray-200 rounded-lg p-6"
+			className="flex-1 min-h-0 overflow-y-auto bg-white border border-slate-200 rounded-lg p-6"
 			emptyMessage="Waiting for content..."
 		/>
 		</div>

@@ -209,7 +209,7 @@ export function AIChatPanel({
 					className={`inline-block max-w-[85%] rounded-lg px-4 py-2 ${
 						msg.role === "user"
 							? "bg-cyan-600 text-white"
-							: "bg-gray-100 text-gray-900"
+							: "bg-slate-100 text-slate-900"
 					}`}
 				>
 					<div className="whitespace-pre-wrap break-words text-sm">
@@ -226,7 +226,7 @@ export function AIChatPanel({
 						<button
 							type="button"
 							onClick={() => handleCopyToClipboard(msg.content)}
-							className="text-gray-500 hover:text-gray-700"
+							className="text-slate-500 hover:text-slate-700"
 							title="Copy to clipboard"
 						>
 							Copy
@@ -251,18 +251,18 @@ export function AIChatPanel({
 		<div
 			data-testid="ai-chat-panel"
 			className={`
-				flex flex-col h-full bg-white border border-gray-300 rounded-lg shadow-sm
+				flex flex-col h-full bg-white border border-slate-300 rounded-lg shadow-sm
 				${isOpen ? "" : "hidden"}
 			`}
 			style={{ minWidth: "250px", maxWidth: "500px" }}
 		>
 			{/* Panel Header */}
-			<div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-				<h3 className="font-semibold text-gray-900">AI Assistant</h3>
+			<div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+				<h3 className="font-semibold text-slate-900">AI Assistant</h3>
 				<button
 					type="button"
 					onClick={onToggle}
-					className="text-gray-500 hover:text-gray-700"
+					className="text-slate-500 hover:text-slate-700"
 					title="Close panel"
 				>
 					<svg
@@ -282,14 +282,14 @@ export function AIChatPanel({
 			</div>
 
 			{/* Quick Action Buttons */}
-			<div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-				<p className="text-xs text-gray-600 mb-2">Quick Actions</p>
+			<div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+				<p className="text-xs text-slate-600 mb-2">Quick Actions</p>
 				<div className="flex flex-wrap gap-2">
 					<button
 						type="button"
 						onClick={() => handleQuickAction("improve")}
 						disabled={isGenerating}
-						className="px-3 py-1.5 text-xs bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+						className="px-3 py-1.5 text-xs bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50"
 					>
 						Improve this paragraph
 					</button>
@@ -297,7 +297,7 @@ export function AIChatPanel({
 						type="button"
 						onClick={() => handleQuickAction("shorten")}
 						disabled={isGenerating}
-						className="px-3 py-1.5 text-xs bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+						className="px-3 py-1.5 text-xs bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50"
 					>
 						Make it shorter
 					</button>
@@ -306,7 +306,7 @@ export function AIChatPanel({
 							value={selectedTone}
 							onChange={(e) => setSelectedTone(e.target.value)}
 							disabled={isGenerating}
-							className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50 text-gray-900 bg-white"
+							className="px-2 py-1 text-xs border border-slate-300 rounded disabled:opacity-50 text-slate-900 bg-white"
 						>
 							<option value="professional">Professional</option>
 							<option value="casual">Casual</option>
@@ -318,7 +318,7 @@ export function AIChatPanel({
 							type="button"
 							onClick={() => handleQuickAction("changeTone", selectedTone)}
 							disabled={isGenerating}
-							className="px-3 py-1.5 text-xs bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+							className="px-3 py-1.5 text-xs bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50"
 						>
 							Change tone
 						</button>
@@ -329,7 +329,7 @@ export function AIChatPanel({
 			{/* Chat Messages */}
 			<div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">
 				{(!chatMessages || chatMessages.length === 0) && !streamingMessage && (
-					<div className="text-center text-gray-500 text-sm py-8">
+					<div className="text-center text-slate-500 text-sm py-8">
 						<p>No messages yet.</p>
 						<p className="mt-1">Ask the AI assistant for help with your content.</p>
 					</div>
@@ -339,7 +339,7 @@ export function AIChatPanel({
 			</div>
 
 			{/* Message Input Form */}
-			<form onSubmit={handleSubmit} className="border-t border-gray-200 p-4">
+			<form onSubmit={handleSubmit} className="border-t border-slate-200 p-4">
 				<div className="flex flex-col gap-2">
 					<textarea
 						ref={textareaRef}
@@ -348,11 +348,11 @@ export function AIChatPanel({
 						onKeyDown={handleKeyDown}
 						disabled={isGenerating}
 						placeholder="Ask AI to help with your content... (Enter to send, Shift+Enter for newline)"
-						className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50 disabled:bg-gray-100"
+						className="w-full px-3 py-2 border border-slate-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:opacity-50 disabled:bg-slate-100"
 						rows={3}
 					/>
 					<div className="flex justify-between items-center">
-						<span className="text-xs text-gray-500">
+						<span className="text-xs text-slate-500">
 							{isGenerating ? "AI is thinking..." : "Press Enter to send"}
 						</span>
 						<button

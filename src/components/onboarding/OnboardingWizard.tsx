@@ -160,7 +160,7 @@ export function OnboardingWizard({ isOpen, onComplete }: OnboardingWizardProps) 
 			<div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
 				{/* Background overlay - non-dismissible during onboarding */}
 				<div
-					className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+					className="fixed inset-0 bg-slate-500 bg-opacity-75 transition-opacity"
 					aria-hidden="true"
 				/>
 
@@ -176,7 +176,7 @@ export function OnboardingWizard({ isOpen, onComplete }: OnboardingWizardProps) 
 											{/* Connector line */}
 											{index !== 3 && (
 												<div className="absolute inset-0 flex items-center" aria-hidden="true">
-													<div className={`h-0.5 w-full ${state.currentStep > step ? "bg-cyan-600" : "bg-gray-200"}`} />
+													<div className={`h-0.5 w-full ${state.currentStep > step ? "bg-cyan-600" : "bg-slate-200"}`} />
 												</div>
 											)}
 											{/* Step circle */}
@@ -197,8 +197,8 @@ export function OnboardingWizard({ isOpen, onComplete }: OnboardingWizardProps) 
 														<span className="text-cyan-600 font-semibold text-sm">{step}</span>
 													</div>
 												) : (
-													<div className="h-8 w-8 rounded-full border-2 border-gray-300 bg-white flex items-center justify-center">
-														<span className="text-gray-400 font-semibold text-sm">{step}</span>
+													<div className="h-8 w-8 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center">
+														<span className="text-slate-400 font-semibold text-sm">{step}</span>
 													</div>
 												)}
 											</div>

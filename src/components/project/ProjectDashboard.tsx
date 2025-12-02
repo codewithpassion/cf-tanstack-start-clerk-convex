@@ -78,12 +78,12 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 		<div className="p-6 space-y-6">
 			{/* Stats Row */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				<div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
 					<div className="p-5">
 						<div className="flex items-center">
 							<div className="flex-shrink-0">
 								<svg
-									className="h-6 w-6 text-gray-400"
+									className="h-6 w-6 text-slate-400"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -99,15 +99,15 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 							</div>
 							<div className="ml-5 w-0 flex-1">
 								<dl>
-									<dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Content</dt>
-									<dd className="text-2xl font-semibold text-gray-900 dark:text-white">{totalCount}</dd>
+									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Total Content</dt>
+									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{totalCount}</dd>
 								</dl>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
 					<div className="p-5">
 						<div className="flex items-center">
 							<div className="flex-shrink-0">
@@ -128,15 +128,15 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 							</div>
 							<div className="ml-5 w-0 flex-1">
 								<dl>
-									<dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Drafts</dt>
-									<dd className="text-2xl font-semibold text-gray-900 dark:text-white">{draftCount}</dd>
+									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Drafts</dt>
+									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{draftCount}</dd>
 								</dl>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
 					<div className="p-5">
 						<div className="flex items-center">
 							<div className="flex-shrink-0">
@@ -157,15 +157,15 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 							</div>
 							<div className="ml-5 w-0 flex-1">
 								<dl>
-									<dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Finalized</dt>
-									<dd className="text-2xl font-semibold text-gray-900 dark:text-white">{finalizedCount}</dd>
+									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Finalized</dt>
+									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{finalizedCount}</dd>
 								</dl>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+				<div className="bg-white dark:bg-slate-900 overflow-hidden shadow rounded-lg border border-slate-200 dark:border-slate-800">
 					<div className="p-5">
 						<div className="flex items-center">
 							<div className="flex-shrink-0">
@@ -186,8 +186,8 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 							</div>
 							<div className="ml-5 w-0 flex-1">
 								<dl>
-									<dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Categories</dt>
-									<dd className="text-2xl font-semibold text-gray-900 dark:text-white">{categories.length}</dd>
+									<dt className="text-sm font-medium text-slate-500 dark:text-slate-400 truncate">Categories</dt>
+									<dd className="text-2xl font-semibold text-slate-900 dark:text-white">{categories.length}</dd>
 								</dl>
 							</div>
 						</div>
@@ -195,142 +195,11 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 				</div>
 			</div>
 
-			{/* Overview Cards */}
-			<div>
-				<h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Configuration Overview</h2>
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-					<Link
-						to="/projects/$projectId/categories"
-						params={{ projectId }}
-						className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow"
-					>
-						<div className="p-5">
-							<div className="flex items-center justify-between">
-								<div>
-									<p className="text-sm font-medium text-gray-500 dark:text-gray-400">Categories</p>
-									<p className="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{categories.length}</p>
-								</div>
-								<div className="flex-shrink-0">
-									<svg
-										className="h-8 w-8 text-gray-400"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<title>Categories</title>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-										/>
-									</svg>
-								</div>
-							</div>
-						</div>
-					</Link>
-
-					<Link
-						to="/projects/$projectId/brand-voices"
-						params={{ projectId }}
-						className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow"
-					>
-						<div className="p-5">
-							<div className="flex items-center justify-between">
-								<div>
-									<p className="text-sm font-medium text-gray-500 dark:text-gray-400">Brand Voices</p>
-									<p className="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{brandVoices.length}</p>
-								</div>
-								<div className="flex-shrink-0">
-									<svg
-										className="h-8 w-8 text-gray-400"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<title>Brand Voices</title>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-										/>
-									</svg>
-								</div>
-							</div>
-						</div>
-					</Link>
-
-					<Link
-						to="/projects/$projectId/personas"
-						params={{ projectId }}
-						className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow"
-					>
-						<div className="p-5">
-							<div className="flex items-center justify-between">
-								<div>
-									<p className="text-sm font-medium text-gray-500 dark:text-gray-400">Personas</p>
-									<p className="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">{personas.length}</p>
-								</div>
-								<div className="flex-shrink-0">
-									<svg
-										className="h-8 w-8 text-gray-400"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<title>Personas</title>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-										/>
-									</svg>
-								</div>
-							</div>
-						</div>
-					</Link>
-
-					<Link
-						to="/projects/$projectId/knowledge-base"
-						params={{ projectId }}
-						className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow"
-					>
-						<div className="p-5">
-							<div className="flex items-center justify-between">
-								<div>
-									<p className="text-sm font-medium text-gray-500 dark:text-gray-400">Knowledge Base</p>
-									<p className="mt-1 text-3xl font-semibold text-gray-900 dark:text-white">
-										{knowledgeBaseItems.length}
-									</p>
-								</div>
-								<div className="flex-shrink-0">
-									<svg
-										className="h-8 w-8 text-gray-400"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<title>Knowledge Base</title>
-										<path
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											strokeWidth={2}
-											d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-										/>
-									</svg>
-								</div>
-							</div>
-						</div>
-					</Link>
-				</div>
-			</div>
 
 			{/* Recent Content */}
-			<div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+			<div className="bg-white dark:bg-slate-900 shadow rounded-lg border border-slate-200 dark:border-slate-800">
 				<div className="px-4 py-5 sm:px-6 flex items-center justify-between">
-					<h2 className="text-lg font-medium text-gray-900 dark:text-white">Recent Content</h2>
+					<h2 className="text-lg font-medium text-slate-900 dark:text-white">Recent Content</h2>
 					<Link
 						to="/projects/$projectId/content"
 						params={{ projectId }}
@@ -340,10 +209,10 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 						View All →
 					</Link>
 				</div>
-				<div className="border-t border-gray-200 dark:border-gray-700">
+				<div className="border-t border-slate-200 dark:border-slate-700">
 					{contentPieces.length === 0 ? (
 						<div className="px-4 py-12 text-center">
-							<p className="text-sm text-gray-500 dark:text-gray-400">No content yet</p>
+							<p className="text-sm text-slate-500 dark:text-slate-400">No content yet</p>
 							<Link
 								to="/projects/$projectId/content/new"
 								params={{ projectId }}
@@ -353,7 +222,7 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 							</Link>
 						</div>
 					) : (
-						<ul className="divide-y divide-gray-200 dark:divide-gray-700">
+						<ul className="divide-y divide-slate-200 dark:divide-slate-700">
 							{contentPieces.map((contentPiece) => {
 								const category = categories.find((c) => c._id === contentPiece.categoryId);
 								return (
@@ -361,28 +230,28 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 										<Link
 											to="/projects/$projectId/content/$contentId"
 											params={{ projectId, contentId: contentPiece._id }}
-											className="block hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+											className="block hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
 										>
 											<div className="px-4 py-4 sm:px-6">
 												<div className="flex items-center justify-between">
 													<div className="flex-1 min-w-0">
-														<p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+														<p className="text-sm font-medium text-slate-900 dark:text-white truncate">
 															{contentPiece.title}
 														</p>
 														{category && (
-															<p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{category.name}</p>
+															<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{category.name}</p>
 														)}
 													</div>
 													<div className="ml-4 flex items-center gap-4">
 														<span
 															className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${contentPiece.status === "draft"
-																	? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-																	: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+																? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+																: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
 																}`}
 														>
 															{contentPiece.status === "draft" ? "Draft" : "Finalized"}
 														</span>
-														<span className="text-sm text-gray-500 dark:text-gray-400">
+														<span className="text-sm text-slate-500 dark:text-slate-400">
 															{formatTimeAgo(contentPiece._creationTime)}
 														</span>
 													</div>

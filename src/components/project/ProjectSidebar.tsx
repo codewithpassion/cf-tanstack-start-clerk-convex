@@ -82,17 +82,16 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 	];
 
 	return (
-		<aside className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
+		<aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 flex-shrink-0">
 			<nav className="p-4 space-y-1" aria-label="Project navigation">
 				{/* Dashboard */}
 				<Link
 					to="/projects/$projectId"
 					params={{ projectId }}
-					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-						isActive("/projects/$projectId/")
-							? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-2"
-							: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-					}`}
+					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/projects/$projectId/")
+							? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
+							: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+						}`}
 					aria-current={isActive("/projects/$projectId/") ? "page" : undefined}
 				>
 					<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,11 +106,10 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 					to="/projects/$projectId/content"
 					params={{ projectId }}
 					search={{ page: 1, pageSize: 25 }}
-					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-						isContentActive()
-							? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-2"
-							: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-					}`}
+					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isContentActive()
+							? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
+							: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+						}`}
 					aria-current={isContentActive() ? "page" : undefined}
 				>
 					<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -123,7 +121,7 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 
 				{/* Configuration Section */}
 				<div className="pt-4 mt-4">
-					<h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+					<h3 className="px-3 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
 						Configuration
 					</h3>
 					<div className="mt-2 space-y-1">
@@ -134,11 +132,10 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 									key={item.name}
 									to={item.to}
 									params={{ projectId }}
-									className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors pl-6 ${
-										active
-											? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-5"
-											: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-									}`}
+									className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors pl-6 ${active
+											? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-5"
+											: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+										}`}
 									aria-current={active ? "page" : undefined}
 								>
 									{item.icon}
@@ -150,15 +147,14 @@ export function ProjectSidebar({ projectId }: ProjectSidebarProps) {
 				</div>
 
 				{/* Settings */}
-				<div className="pt-4 mt-4 border-t border-gray-200">
+				<div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
 					<Link
 						to="/projects/$projectId/settings"
 						params={{ projectId }}
-						className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-							isActive("/projects/$projectId/settings")
-								? "bg-cyan-50 text-cyan-700 border-l-4 border-cyan-700 -ml-px pl-2"
-								: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-						}`}
+						className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive("/projects/$projectId/settings")
+								? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
+								: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
+							}`}
 					>
 						<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<title>Settings</title>

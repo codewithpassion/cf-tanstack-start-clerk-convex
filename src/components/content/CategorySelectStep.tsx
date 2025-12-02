@@ -37,7 +37,7 @@ export function CategorySelectStep({
 		return (
 			<div className="text-center py-8">
 				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 mx-auto" />
-				<p className="mt-2 text-gray-500">Loading categories...</p>
+				<p className="mt-2 text-slate-500">Loading categories...</p>
 			</div>
 		);
 	}
@@ -45,8 +45,8 @@ export function CategorySelectStep({
 	if (categories === null || categories.length === 0) {
 		return (
 			<div className="text-center py-8">
-				<p className="text-gray-600 mb-4">No categories available for this project.</p>
-				<p className="text-sm text-gray-500">
+				<p className="text-slate-600 mb-4">No categories available for this project.</p>
+				<p className="text-sm text-slate-500">
 					Please create a category first in your project settings.
 				</p>
 			</div>
@@ -56,16 +56,16 @@ export function CategorySelectStep({
 	return (
 		<div className="space-y-6">
 			<div>
-				<h2 id="wizard-title" className="text-2xl font-bold text-gray-900">
+				<h2 id="wizard-title" className="text-2xl font-bold text-slate-900">
 					Select Content Category
 				</h2>
-				<p className="mt-2 text-gray-600">
+				<p className="mt-2 text-slate-600">
 					Choose the type of content you want to create.
 				</p>
 			</div>
 
 			<div className="space-y-3">
-				<label htmlFor="category-select" className="block text-sm font-medium text-gray-700">
+				<label htmlFor="category-select" className="block text-sm font-medium text-slate-700">
 					Content Category <span className="text-red-500">*</span>
 				</label>
 				<select
@@ -75,7 +75,7 @@ export function CategorySelectStep({
 						setSelected(e.target.value as Id<"categories">);
 						setError(null);
 					}}
-					className="w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-gray-900 bg-white"
+					className="w-full rounded-lg border-slate-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 text-slate-900 bg-white"
 					aria-required="true"
 					aria-describedby={error ? "category-error" : undefined}
 				>
@@ -113,7 +113,7 @@ export function CategorySelectStep({
 					<button
 						type="button"
 						onClick={onBack}
-						className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+						className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg"
 					>
 						Back
 					</button>
