@@ -29,11 +29,11 @@ export default function Header() {
 
 	return (
 		<>
-			<header className="p-4 flex items-center justify-between bg-gray-800 dark:bg-gray-900 text-white shadow-lg transition-colors">
+			<header className="p-4 flex items-center justify-between bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-800 shadow-sm transition-colors">
 				<div className="flex items-center">
 					<button
 						onClick={() => setIsOpen(true)}
-						className="p-2 hover:bg-gray-700 dark:hover:bg-gray-800 rounded-lg transition-colors"
+						className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
 						aria-label="Open menu"
 						type="button"
 					>
@@ -41,11 +41,8 @@ export default function Header() {
 					</button>
 					<h1 className="ml-4 text-xl font-semibold">
 						<Link to="/">
-							<img
-								src="/tanstack-word-logo-white.svg"
-								alt="TanStack Logo"
-								className="h-10"
-							/>
+							{/* TODO: Switch logo based on theme or use a neutral one */}
+							<span className="font-bold text-2xl tracking-tight">Postmate</span>
 						</Link>
 					</h1>
 				</div>
@@ -54,7 +51,7 @@ export default function Header() {
 					<SignedOut>
 						<SignInButton mode="modal">
 							<button
-								className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 rounded-lg transition-colors font-medium"
+								className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors font-medium"
 								type="button"
 							>
 								Sign In
@@ -69,15 +66,14 @@ export default function Header() {
 			</header>
 
 			<aside
-				className={`fixed top-0 left-0 h-full w-80 bg-gray-900 dark:bg-gray-950 text-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
-					isOpen ? "translate-x-0" : "-translate-x-full"
-				}`}
+				className={`fixed top-0 left-0 h-full w-80 bg-white dark:bg-gray-950 text-gray-900 dark:text-white border-r border-gray-200 dark:border-gray-800 shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? "translate-x-0" : "-translate-x-full"
+					}`}
 			>
-				<div className="flex items-center justify-between p-4 border-b border-gray-700 dark:border-gray-800">
+				<div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
 					<h2 className="text-xl font-bold">Navigation</h2>
 					<button
 						onClick={() => setIsOpen(false)}
-						className="p-2 hover:bg-gray-800 dark:hover:bg-gray-900 rounded-lg transition-colors"
+						className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
 						aria-label="Close menu"
 						type="button"
 					>
@@ -89,10 +85,10 @@ export default function Header() {
 					<Link
 						to="/"
 						onClick={() => setIsOpen(false)}
-						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+								"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 						}}
 					>
 						<Home size={20} />
@@ -104,10 +100,10 @@ export default function Header() {
 						<Link
 							to="/dashboard"
 							onClick={() => setIsOpen(false)}
-							className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+							className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 							activeProps={{
 								className:
-									"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+									"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 							}}
 						>
 							<LayoutDashboard size={20} />
@@ -117,10 +113,10 @@ export default function Header() {
 						<Link
 							to="/profile"
 							onClick={() => setIsOpen(false)}
-							className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+							className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 							activeProps={{
 								className:
-									"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+									"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 							}}
 						>
 							<User size={20} />
@@ -133,10 +129,10 @@ export default function Header() {
 					<Link
 						to="/demo/start/server-funcs"
 						onClick={() => setIsOpen(false)}
-						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+								"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 						}}
 					>
 						<SquareFunction size={20} />
@@ -146,10 +142,10 @@ export default function Header() {
 					<Link
 						to="/demo/start/api-request"
 						onClick={() => setIsOpen(false)}
-						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+								"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 						}}
 					>
 						<Network size={20} />
@@ -160,17 +156,17 @@ export default function Header() {
 						<Link
 							to="/demo/start/ssr"
 							onClick={() => setIsOpen(false)}
-							className="flex-1 flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+							className="flex-1 flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 							activeProps={{
 								className:
-									"flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+									"flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 							}}
 						>
 							<StickyNote size={20} />
 							<span className="font-medium">Start - SSR Demos</span>
 						</Link>
 						<button
-							className="p-2 hover:bg-gray-800 dark:hover:bg-gray-900 rounded-lg transition-colors"
+							className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
 							onClick={() =>
 								setGroupedExpanded((prev) => ({
 									...prev,
@@ -191,10 +187,10 @@ export default function Header() {
 							<Link
 								to="/demo/start/ssr/spa-mode"
 								onClick={() => setIsOpen(false)}
-								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+										"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 								}}
 							>
 								<StickyNote size={20} />
@@ -204,10 +200,10 @@ export default function Header() {
 							<Link
 								to="/demo/start/ssr/full-ssr"
 								onClick={() => setIsOpen(false)}
-								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+										"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 								}}
 							>
 								<StickyNote size={20} />
@@ -217,10 +213,10 @@ export default function Header() {
 							<Link
 								to="/demo/start/ssr/data-only"
 								onClick={() => setIsOpen(false)}
-								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-900 transition-colors mb-2"
+								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors mb-2",
+										"flex items-center gap-3 p-3 rounded-lg bg-cyan-100 text-cyan-900 dark:bg-cyan-900/30 dark:text-cyan-100 transition-colors mb-2",
 								}}
 							>
 								<StickyNote size={20} />
