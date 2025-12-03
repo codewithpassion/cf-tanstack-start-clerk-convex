@@ -402,7 +402,7 @@ function ContentEditorPage() {
 	return (
 		<div className="h-full flex flex-col">
 			{/* Page Header */}
-			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 md:px-6 py-3 md:py-4">
+			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 					<div className="flex items-center gap-2 md:gap-3 min-w-0">
 						<Link
@@ -496,7 +496,7 @@ function ContentEditorPage() {
 			</div>
 
 			{/* Editor Layout with Tools Panel */}
-			<div className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-6">
+			<div className="flex-1 overflow-y-auto sm:px-4 md:px-6 sm:py-4 md:py-6">
 				<ContentEditorLayout
 					editor={
 						<ContentEditor

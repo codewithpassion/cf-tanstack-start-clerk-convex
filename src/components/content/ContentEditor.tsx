@@ -721,8 +721,8 @@ export function ContentEditor({
 			</div>
 
 			{/* Novel Editor */}
-			<div className="border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-900">
-				<div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2">
+			<div className="sm:border sm:border-slate-200 sm:dark:border-slate-800 sm:rounded-lg overflow-hidden bg-white dark:bg-slate-900">
+				<div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2 px-3 sm:px-2">
 					<SimpleEditorToolbar editor={toolbarEditor} />
 				</div>
 				<EditorRoot>
@@ -749,10 +749,10 @@ export function ContentEditor({
 						initialContent={parsedInitialContent}
 						onUpdate={handleUpdate}
 						editable={!disabled}
-						className="min-h-[500px] p-6"
+						className="min-h-[500px] p-3 sm:p-6"
 						editorProps={{
 							attributes: {
-								class: "prose prose-lg dark:prose-invert focus:outline-none max-w-none",
+								class: "prose prose-sm sm:prose dark:prose-invert focus:outline-none max-w-none",
 							},
 							handleDOMEvents: {
 								keydown: (_view, event) => handleCommandNavigation(event),
