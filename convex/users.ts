@@ -1,5 +1,10 @@
 import { ConvexError, v } from "convex/values";
-import { internalMutation, mutation, query } from "./_generated/server";
+import {
+	internalMutation,
+	internalQuery,
+	mutation,
+	query,
+} from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 
@@ -398,6 +403,36 @@ export const getUserById = query({
 			image: user.imageUrl,
 			roles: user.roles || ["user"],
 			createdAt: new Date(user.createdAt || 0).toISOString(),
+		};
+	},
+});
+
+/**
+ * Internal query to get user by Convex ID.
+ *
+ * This is used internally by Stripe actions to retrieve user information.
+ *
+ * @param userId - The user's Convex ID
+ * @returns User object with email and name, or null if not found
+ *
+ * @internal This is an internal query not meant to be called directly
+ */
+export const getById = internalQuery({
+	args: {
+		userId: v.id("users"),
+	},
+	handler: async (
+		ctx: QueryCtx,
+		{ userId },
+	): Promise<{ email: string; name?: string } | null> => {
+		const user = await ctx.db.get(userId);
+		if (!user) {
+			return null;
+		}
+
+		return {
+			email: user.email,
+			name: user.name,
 		};
 	},
 });

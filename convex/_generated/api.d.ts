@@ -10,6 +10,12 @@
 
 import type * as activityLog from "../activityLog.js";
 import type * as auth from "../auth.js";
+import type * as billing_accounts from "../billing/accounts.js";
+import type * as billing_admin from "../billing/admin.js";
+import type * as billing_pricing from "../billing/pricing.js";
+import type * as billing_settings from "../billing/settings.js";
+import type * as billing_stripe from "../billing/stripe.js";
+import type * as billing_usage from "../billing/usage.js";
 import type * as brandVoices from "../brandVoices.js";
 import type * as categories from "../categories.js";
 import type * as contentChatMessages from "../contentChatMessages.js";
@@ -37,6 +43,12 @@ import type {
 declare const fullApi: ApiFromModules<{
   activityLog: typeof activityLog;
   auth: typeof auth;
+  "billing/accounts": typeof billing_accounts;
+  "billing/admin": typeof billing_admin;
+  "billing/pricing": typeof billing_pricing;
+  "billing/settings": typeof billing_settings;
+  "billing/stripe": typeof billing_stripe;
+  "billing/usage": typeof billing_usage;
   brandVoices: typeof brandVoices;
   categories: typeof categories;
   contentChatMessages: typeof contentChatMessages;

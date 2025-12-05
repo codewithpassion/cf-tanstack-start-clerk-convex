@@ -6,15 +6,17 @@ import type { ImageGenerationStrategy } from "./types";
  * Image Generation Factory
  */
 export class ImageGenerationFactory {
-    static createStrategy(env: Record<string, string | undefined>): ImageGenerationStrategy {
-        const model = env.IMAGE_GENERATION_MODEL || "openai";
+	static createStrategy(
+		env: Record<string, string | undefined>,
+	): ImageGenerationStrategy {
+		const model = env.IMAGE_GENERATION_MODEL || "openai";
 
-        switch (model) {
-            case "google":
-                return new GoogleImageGenerationStrategy();
-            case "openai":
-            default:
-                return new OpenAIImageGenerationStrategy();
-        }
-    }
+		switch (model) {
+			case "google":
+				return new GoogleImageGenerationStrategy(env);
+			case "openai":
+			default:
+				return new OpenAIImageGenerationStrategy(env);
+		}
+	}
 }

@@ -17,6 +17,7 @@ import {
 	resolveAIConfig,
 } from "@/lib/ai/providers";
 import { estimateTokenCount, TOKEN_LIMITS } from "@/lib/ai/models";
+import { calculateLLMBillableTokens } from "@/lib/billing/pricing";
 
 /**
  * Context assembled from various sources for AI generation
@@ -354,6 +355,17 @@ export const generateDraft = createServerFn({ method: "POST" })
 
 			const convex = await getAuthenticatedConvexClient();
 
+			// Get current user and workspace
+			const user = await convex.query(api.users.getMe);
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			const workspace = await convex.query(api.workspaces.getMyWorkspace);
+			if (!workspace) {
+				throw new Error("Workspace not found");
+			}
+
 			// Get content piece to retrieve projectId
 			const contentPiece = await convex.query(
 				api.contentPieces.getContentPiece,
@@ -393,12 +405,27 @@ export const generateDraft = createServerFn({ method: "POST" })
 				data,
 			);
 
-			// Estimate token count for logging
+			// Estimate token count and required tokens for balance check
 			const estimatedPromptTokens = countPromptTokens(
 				systemPrompt,
 				userPrompt,
 			);
 			console.log("Estimated prompt tokens:", estimatedPromptTokens);
+
+			// Pre-flight balance check
+			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
+			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
+
+			const balanceCheck = await convex.query(api.billing.accounts.checkBalance, {
+				userId: user._id,
+				requiredTokens: estimatedTokens,
+			});
+
+			if (!balanceCheck.sufficient) {
+				throw new Error(
+					`Insufficient token balance. You have ${balanceCheck.balance} tokens but need approximately ${estimatedTokens} tokens for this generation.`,
+				);
+			}
 
 			// Stream text generation
 			const result = streamText({
@@ -414,18 +441,36 @@ export const generateDraft = createServerFn({ method: "POST" })
 				try {
 					const usage = await result.usage;
 					if (usage) {
-						const tokenUsage: TokenUsage = {
-							promptTokens: usage.inputTokens || 0,
-							completionTokens: usage.outputTokens || 0,
-							totalTokens:
-								(usage.inputTokens || 0) + (usage.outputTokens || 0),
-						};
+						const billing = calculateLLMBillableTokens(
+							usage.inputTokens || 0,
+							usage.outputTokens || 0,
+						);
 
-						// TODO: Store token usage in database for billing
-						console.log("Token usage:", tokenUsage);
+						await convex.mutation(api.billing.usage.recordUsage, {
+							secret: process.env.BILLING_SECRET!,
+							userId: user._id,
+							workspaceId: workspace._id,
+							projectId: contentPiece.projectId,
+							contentPieceId: data.contentPieceId,
+							operationType: "content_generation",
+							provider: aiConfig.provider,
+							model: aiConfig.model,
+							inputTokens: usage.inputTokens || 0,
+							outputTokens: usage.outputTokens || 0,
+							totalTokens: billing.actualTokens,
+							billableTokens: billing.billableTokens,
+							chargeType: "multiplier",
+							multiplier: billing.multiplier,
+							requestMetadata: JSON.stringify({
+								category: data.categoryId,
+								title: data.title,
+								topic: data.topic,
+							}),
+							success: true,
+						});
 					}
 				} catch (error) {
-					console.error("Error tracking token usage:", error);
+					console.error("Failed to record token usage:", error);
 				}
 			})();
 
@@ -554,6 +599,17 @@ export const generateChatResponse = createServerFn({ method: "POST" })
 			const convex = await getAuthenticatedConvexClient();
 			const { contentPieceId, message, currentContent } = data;
 
+			// Get current user and workspace
+			const user = await convex.query(api.users.getMe);
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			const workspace = await convex.query(api.workspaces.getMyWorkspace);
+			if (!workspace) {
+				throw new Error("Workspace not found");
+			}
+
 			// Get content piece to retrieve project and verify access
 			const contentPiece = await convex.query(
 				api.contentPieces.getContentPiece,
@@ -604,6 +660,27 @@ export const generateChatResponse = createServerFn({ method: "POST" })
 			// Construct messages array with history
 			const messages = constructChatMessages(context, message);
 
+			// Estimate token count for balance check
+			const estimatedPromptTokens = estimateTokenCount(
+				systemPrompt + JSON.stringify(messages),
+			);
+			console.log("Chat estimated prompt tokens:", estimatedPromptTokens);
+
+			// Pre-flight balance check
+			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
+			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
+
+			const balanceCheck = await convex.query(api.billing.accounts.checkBalance, {
+				userId: user._id,
+				requiredTokens: estimatedTokens,
+			});
+
+			if (!balanceCheck.sufficient) {
+				throw new Error(
+					`Insufficient token balance. You have ${balanceCheck.balance} tokens but need approximately ${estimatedTokens} tokens for this chat response.`,
+				);
+			}
+
 			// Stream text generation
 			const result = streamText({
 				model,
@@ -628,15 +705,35 @@ export const generateChatResponse = createServerFn({ method: "POST" })
 					// Track token usage
 					const usage = await result.usage;
 					if (usage) {
-						console.log("Chat token usage:", {
-							promptTokens: usage.inputTokens || 0,
-							completionTokens: usage.outputTokens || 0,
-							totalTokens:
-								(usage.inputTokens || 0) + (usage.outputTokens || 0),
+						const billing = calculateLLMBillableTokens(
+							usage.inputTokens || 0,
+							usage.outputTokens || 0,
+						);
+
+						await convex.mutation(api.billing.usage.recordUsage, {
+							secret: process.env.BILLING_SECRET!,
+							userId: user._id,
+							workspaceId: workspace._id,
+							projectId: contentPiece.projectId,
+							contentPieceId,
+							operationType: "chat_response",
+							provider: aiConfig.provider,
+							model: aiConfig.model,
+							inputTokens: usage.inputTokens || 0,
+							outputTokens: usage.outputTokens || 0,
+							totalTokens: billing.actualTokens,
+							billableTokens: billing.billableTokens,
+							chargeType: "multiplier",
+							multiplier: billing.multiplier,
+							requestMetadata: JSON.stringify({
+								message,
+								historyLength: chatHistory.length,
+							}),
+							success: true,
 						});
 					}
 				} catch (error) {
-					console.error("Error saving chat message:", error);
+					console.error("Error saving chat message or recording usage:", error);
 				}
 			})();
 
@@ -704,6 +801,17 @@ export const refineContent = createServerFn({ method: "POST" })
 			const convex = await getAuthenticatedConvexClient();
 			const { contentPieceId, currentContent, instructions } = data;
 
+			// Get current user and workspace
+			const user = await convex.query(api.users.getMe);
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			const workspace = await convex.query(api.workspaces.getMyWorkspace);
+			if (!workspace) {
+				throw new Error("Workspace not found");
+			}
+
 			// Get content piece to retrieve project context
 			const contentPiece = await convex.query(
 				api.contentPieces.getContentPiece,
@@ -748,6 +856,21 @@ export const refineContent = createServerFn({ method: "POST" })
 			);
 			console.log("Refine estimated prompt tokens:", estimatedPromptTokens);
 
+			// Pre-flight balance check
+			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
+			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
+
+			const balanceCheck = await convex.query(api.billing.accounts.checkBalance, {
+				userId: user._id,
+				requiredTokens: estimatedTokens,
+			});
+
+			if (!balanceCheck.sufficient) {
+				throw new Error(
+					`Insufficient token balance. You have ${balanceCheck.balance} tokens but need approximately ${estimatedTokens} tokens for this content refinement.`,
+				);
+			}
+
 			// Stream text generation
 			const result = streamText({
 				model,
@@ -762,18 +885,35 @@ export const refineContent = createServerFn({ method: "POST" })
 				try {
 					const usage = await result.usage;
 					if (usage) {
-						const tokenUsage: TokenUsage = {
-							promptTokens: usage.inputTokens || 0,
-							completionTokens: usage.outputTokens || 0,
-							totalTokens:
-								(usage.inputTokens || 0) + (usage.outputTokens || 0),
-						};
+						const billing = calculateLLMBillableTokens(
+							usage.inputTokens || 0,
+							usage.outputTokens || 0,
+						);
 
-						// TODO: Store token usage in database for billing
-						console.log("Refine token usage:", tokenUsage);
+						await convex.mutation(api.billing.usage.recordUsage, {
+							secret: process.env.BILLING_SECRET!,
+							userId: user._id,
+							workspaceId: workspace._id,
+							projectId: contentPiece.projectId,
+							contentPieceId,
+							operationType: "content_refinement",
+							provider: aiConfig.provider,
+							model: aiConfig.model,
+							inputTokens: usage.inputTokens || 0,
+							outputTokens: usage.outputTokens || 0,
+							totalTokens: billing.actualTokens,
+							billableTokens: billing.billableTokens,
+							chargeType: "multiplier",
+							multiplier: billing.multiplier,
+							requestMetadata: JSON.stringify({
+								instructions,
+								contentLength: currentContent.length,
+							}),
+							success: true,
+						});
 					}
 				} catch (error) {
-					console.error("Error tracking refine token usage:", error);
+					console.error("Failed to record token usage:", error);
 				}
 			})();
 
@@ -862,6 +1002,17 @@ export const refineSelection = createServerFn({ method: "POST" })
 			const convex = await getAuthenticatedConvexClient();
 			const { contentPieceId, selectedText, instructions } = data;
 
+			// Get current user and workspace
+			const user = await convex.query(api.users.getMe);
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			const workspace = await convex.query(api.workspaces.getMyWorkspace);
+			if (!workspace) {
+				throw new Error("Workspace not found");
+			}
+
 			// Get content piece to retrieve project context
 			const contentPiece = await convex.query(
 				api.contentPieces.getContentPiece,
@@ -912,6 +1063,21 @@ export const refineSelection = createServerFn({ method: "POST" })
 				estimatedPromptTokens
 			);
 
+			// Pre-flight balance check
+			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
+			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
+
+			const balanceCheck = await convex.query(api.billing.accounts.checkBalance, {
+				userId: user._id,
+				requiredTokens: estimatedTokens,
+			});
+
+			if (!balanceCheck.sufficient) {
+				throw new Error(
+					`Insufficient token balance. You have ${balanceCheck.balance} tokens but need approximately ${estimatedTokens} tokens for this selection refinement.`,
+				);
+			}
+
 			// Stream text generation
 			const result = streamText({
 				model,
@@ -926,18 +1092,35 @@ export const refineSelection = createServerFn({ method: "POST" })
 				try {
 					const usage = await result.usage;
 					if (usage) {
-						const tokenUsage: TokenUsage = {
-							promptTokens: usage.inputTokens || 0,
-							completionTokens: usage.outputTokens || 0,
-							totalTokens:
-								(usage.inputTokens || 0) + (usage.outputTokens || 0),
-						};
+						const billing = calculateLLMBillableTokens(
+							usage.inputTokens || 0,
+							usage.outputTokens || 0,
+						);
 
-						// TODO: Store token usage in database for billing
-						console.log("Refine selection token usage:", tokenUsage);
+						await convex.mutation(api.billing.usage.recordUsage, {
+							secret: process.env.BILLING_SECRET!,
+							userId: user._id,
+							workspaceId: workspace._id,
+							projectId: contentPiece.projectId,
+							contentPieceId,
+							operationType: "content_refinement",
+							provider: aiConfig.provider,
+							model: aiConfig.model,
+							inputTokens: usage.inputTokens || 0,
+							outputTokens: usage.outputTokens || 0,
+							totalTokens: billing.actualTokens,
+							billableTokens: billing.billableTokens,
+							chargeType: "multiplier",
+							multiplier: billing.multiplier,
+							requestMetadata: JSON.stringify({
+								instructions,
+								selectionLength: selectedText.length,
+							}),
+							success: true,
+						});
 					}
 				} catch (error) {
-					console.error("Error tracking refine selection token usage:", error);
+					console.error("Failed to record token usage:", error);
 				}
 			})();
 
@@ -966,10 +1149,17 @@ export const generateImagePrompt = createServerFn({ method: "POST" })
 	.inputValidator((input: GenerateImagePromptInput) => input)
 	.handler(async ({ data }): Promise<{ prompt: string }> => {
 		try {
-			// Verify authentication
-			const { userId } = await auth();
-			if (!userId) {
-				throw new Error("Authentication required");
+			const convex = await getAuthenticatedConvexClient();
+
+			// Get current user and workspace
+			const user = await convex.query(api.users.getMe);
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			const workspace = await convex.query(api.workspaces.getMyWorkspace);
+			if (!workspace) {
+				throw new Error("Workspace not found");
 			}
 
 			// Get AI environment and use default OpenAI configuration
@@ -1008,6 +1198,25 @@ Keep the prompt under 400 words and make it clear and specific.`;
 
 			const userPrompt = `Create a detailed DALL-E 3 image generation prompt based on these specifications:\n\n${inputParts.join("\n")}\n\nGenerate only the prompt text, without any additional explanation or formatting.`;
 
+			// Estimate token count for balance check
+			const estimatedPromptTokens = countPromptTokens(systemPrompt, userPrompt);
+			console.log("Image prompt estimated tokens:", estimatedPromptTokens);
+
+			// Pre-flight balance check
+			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
+			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
+
+			const balanceCheck = await convex.query(api.billing.accounts.checkBalance, {
+				userId: user._id,
+				requiredTokens: estimatedTokens,
+			});
+
+			if (!balanceCheck.sufficient) {
+				throw new Error(
+					`Insufficient token balance. You have ${balanceCheck.balance} tokens but need approximately ${estimatedTokens} tokens for this image prompt generation.`,
+				);
+			}
+
 			// Generate prompt using LLM
 			const result = await generateText({
 				model,
@@ -1016,6 +1225,40 @@ Keep the prompt under 400 words and make it clear and specific.`;
 				temperature: 0.8, // Higher temperature for creative prompts
 				maxOutputTokens: 500,
 			});
+
+			// Record usage (synchronously for generateText)
+			(async () => {
+				try {
+					if (result.usage) {
+						const billing = calculateLLMBillableTokens(
+							result.usage.inputTokens || 0,
+							result.usage.outputTokens || 0,
+						);
+
+						await convex.mutation(api.billing.usage.recordUsage, {
+							secret: process.env.BILLING_SECRET!,
+							userId: user._id,
+							workspaceId: workspace._id,
+							operationType: "image_prompt_generation",
+							provider: aiConfig.provider,
+							model: aiConfig.model,
+							inputTokens: result.usage.inputTokens || 0,
+							outputTokens: result.usage.outputTokens || 0,
+							totalTokens: billing.actualTokens,
+							billableTokens: billing.billableTokens,
+							chargeType: "multiplier",
+							multiplier: billing.multiplier,
+							requestMetadata: JSON.stringify({
+								imageType: data.imageType,
+								subject: data.subject,
+							}),
+							success: true,
+						});
+					}
+				} catch (error) {
+					console.error("Failed to record token usage:", error);
+				}
+			})();
 
 			const generatedPrompt = result.text.trim();
 
@@ -1223,6 +1466,17 @@ export const repurposeContent = createServerFn({ method: "POST" })
 				additionalInstructions,
 			} = data;
 
+			// Get current user and workspace
+			const user = await convex.query(api.users.getMe);
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			const workspace = await convex.query(api.workspaces.getMyWorkspace);
+			if (!workspace) {
+				throw new Error("Workspace not found");
+			}
+
 			// Get source content piece
 			const sourceContentPiece = await convex.query(
 				api.contentPieces.getContentPiece,
@@ -1297,6 +1551,21 @@ export const repurposeContent = createServerFn({ method: "POST" })
 			const estimatedPromptTokens = countPromptTokens(systemPrompt, userPrompt);
 			console.log("Repurpose estimated prompt tokens:", estimatedPromptTokens);
 
+			// Pre-flight balance check
+			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
+			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
+
+			const balanceCheck = await convex.query(api.billing.accounts.checkBalance, {
+				userId: user._id,
+				requiredTokens: estimatedTokens,
+			});
+
+			if (!balanceCheck.sufficient) {
+				throw new Error(
+					`Insufficient token balance. You have ${balanceCheck.balance} tokens but need approximately ${estimatedTokens} tokens for this content repurpose.`,
+				);
+			}
+
 			// Stream text generation
 			const result = streamText({
 				model,
@@ -1311,17 +1580,36 @@ export const repurposeContent = createServerFn({ method: "POST" })
 				try {
 					const usage = await result.usage;
 					if (usage) {
-						const tokenUsage: TokenUsage = {
-							promptTokens: usage.inputTokens || 0,
-							completionTokens: usage.outputTokens || 0,
-							totalTokens: (usage.inputTokens || 0) + (usage.outputTokens || 0),
-						};
+						const billing = calculateLLMBillableTokens(
+							usage.inputTokens || 0,
+							usage.outputTokens || 0,
+						);
 
-						// TODO: Store token usage in database for billing
-						console.log("Repurpose token usage:", tokenUsage);
+						await convex.mutation(api.billing.usage.recordUsage, {
+							secret: process.env.BILLING_SECRET!,
+							userId: user._id,
+							workspaceId: workspace._id,
+							projectId: sourceContentPiece.projectId,
+							contentPieceId: sourceContentPieceId,
+							operationType: "content_repurpose",
+							provider: aiConfig.provider,
+							model: aiConfig.model,
+							inputTokens: usage.inputTokens || 0,
+							outputTokens: usage.outputTokens || 0,
+							totalTokens: billing.actualTokens,
+							billableTokens: billing.billableTokens,
+							chargeType: "multiplier",
+							multiplier: billing.multiplier,
+							requestMetadata: JSON.stringify({
+								sourceCategory: sourceCategory?.name,
+								targetCategory: targetCategory.name,
+								title,
+							}),
+							success: true,
+						});
 					}
 				} catch (error) {
-					console.error("Error tracking repurpose token usage:", error);
+					console.error("Failed to record token usage:", error);
 				}
 			})();
 
@@ -1334,7 +1622,7 @@ export const repurposeContent = createServerFn({ method: "POST" })
 				error instanceof Error ? error.message : "Unknown error occurred";
 
 			throw new Error(
-				`Failed to repurpose content: ${errorMessage}. Please check your AI provider configuration and try again.`
+				`Failed to repurpose content: ${errorMessage}. Please check your AI provider configuration and try again.`,
 			);
 		}
 	});

@@ -19,6 +19,13 @@ export const PERMISSIONS = {
 	"admin.manage_settings": "Manage system settings",
 	"admin.view_logs": "View system logs",
 
+	// Token management permissions
+	"tokens.view_all": "View all token usage and accounts",
+	"tokens.grant": "Grant tokens to users",
+	"tokens.deduct": "Deduct tokens from users",
+	"tokens.manage_pricing": "Manage token pricing packages",
+	"tokens.manage_settings": "Update system settings",
+
 	// System permissions
 	"system.manage_api": "Manage API keys and webhooks",
 	"system.manage_database": "Manage database operations",
@@ -40,6 +47,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
 		"users.view",
 		"users.create",
 		"users.edit",
+		// Token permissions for admins
+		"tokens.view_all",
 	],
 
 	superadmin: [
@@ -65,6 +74,13 @@ export const PERMISSION_GROUPS = {
 		"todos.view_all",
 		"todos.edit_all",
 		"todos.delete_all",
+	],
+	"Token Management": [
+		"tokens.view_all",
+		"tokens.grant",
+		"tokens.deduct",
+		"tokens.manage_pricing",
+		"tokens.manage_settings",
 	],
 	Administration: [
 		"admin.access",

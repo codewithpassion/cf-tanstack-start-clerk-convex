@@ -19,7 +19,9 @@ import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
+import { Route as AuthedSettingsBillingRouteImport } from './routes/_authed/settings/billing'
 import { Route as AuthedProjectsProjectIdRouteImport } from './routes/_authed/projects.$projectId'
+import { Route as AuthedAdminBillingRouteImport } from './routes/_authed/admin/billing'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
 import { Route as AuthedProjectsProjectIdIndexRouteImport } from './routes/_authed/projects.$projectId.index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
@@ -84,9 +86,19 @@ const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
   path: '/demo/api/names',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthedSettingsBillingRoute = AuthedSettingsBillingRouteImport.update({
+  id: '/settings/billing',
+  path: '/settings/billing',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedProjectsProjectIdRoute = AuthedProjectsProjectIdRouteImport.update({
   id: '/projects/$projectId',
   path: '/projects/$projectId',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedAdminBillingRoute = AuthedAdminBillingRouteImport.update({
+  id: '/admin/billing',
+  path: '/admin/billing',
   getParentRoute: () => AuthedRoute,
 } as any)
 const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
@@ -177,7 +189,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthedDashboardRoute
   '/onboarding': typeof AuthedOnboardingRoute
   '/profile': typeof AuthedProfileRoute
+  '/admin/billing': typeof AuthedAdminBillingRoute
   '/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
+  '/settings/billing': typeof AuthedSettingsBillingRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -203,6 +217,8 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthedDashboardRoute
   '/onboarding': typeof AuthedOnboardingRoute
   '/profile': typeof AuthedProfileRoute
+  '/admin/billing': typeof AuthedAdminBillingRoute
+  '/settings/billing': typeof AuthedSettingsBillingRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -230,7 +246,9 @@ export interface FileRoutesById {
   '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_authed/onboarding': typeof AuthedOnboardingRoute
   '/_authed/profile': typeof AuthedProfileRoute
+  '/_authed/admin/billing': typeof AuthedAdminBillingRoute
   '/_authed/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
+  '/_authed/settings/billing': typeof AuthedSettingsBillingRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
@@ -258,7 +276,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/profile'
+    | '/admin/billing'
     | '/projects/$projectId'
+    | '/settings/billing'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -284,6 +304,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/profile'
+    | '/admin/billing'
+    | '/settings/billing'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -310,7 +332,9 @@ export interface FileRouteTypes {
     | '/_authed/dashboard'
     | '/_authed/onboarding'
     | '/_authed/profile'
+    | '/_authed/admin/billing'
     | '/_authed/projects/$projectId'
+    | '/_authed/settings/billing'
     | '/demo/api/names'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
@@ -416,11 +440,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoApiNamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authed/settings/billing': {
+      id: '/_authed/settings/billing'
+      path: '/settings/billing'
+      fullPath: '/settings/billing'
+      preLoaderRoute: typeof AuthedSettingsBillingRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/projects/$projectId': {
       id: '/_authed/projects/$projectId'
       path: '/projects/$projectId'
       fullPath: '/projects/$projectId'
       preLoaderRoute: typeof AuthedProjectsProjectIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/admin/billing': {
+      id: '/_authed/admin/billing'
+      path: '/admin/billing'
+      fullPath: '/admin/billing'
+      preLoaderRoute: typeof AuthedAdminBillingRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/demo/start/ssr/': {
@@ -566,14 +604,18 @@ interface AuthedRouteChildren {
   AuthedDashboardRoute: typeof AuthedDashboardRoute
   AuthedOnboardingRoute: typeof AuthedOnboardingRoute
   AuthedProfileRoute: typeof AuthedProfileRoute
+  AuthedAdminBillingRoute: typeof AuthedAdminBillingRoute
   AuthedProjectsProjectIdRoute: typeof AuthedProjectsProjectIdRouteWithChildren
+  AuthedSettingsBillingRoute: typeof AuthedSettingsBillingRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedDashboardRoute: AuthedDashboardRoute,
   AuthedOnboardingRoute: AuthedOnboardingRoute,
   AuthedProfileRoute: AuthedProfileRoute,
+  AuthedAdminBillingRoute: AuthedAdminBillingRoute,
   AuthedProjectsProjectIdRoute: AuthedProjectsProjectIdRouteWithChildren,
+  AuthedSettingsBillingRoute: AuthedSettingsBillingRoute,
 }
 
 const AuthedRouteWithChildren =

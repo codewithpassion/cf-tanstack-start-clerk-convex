@@ -9,6 +9,7 @@ export default defineSchema({
 		clerkId: v.string(),
 		imageUrl: v.optional(v.string()),
 		roles: v.optional(v.array(v.string())),
+		onboardingTokensGranted: v.optional(v.boolean()),
 		createdAt: v.number(),
 		updatedAt: v.number(),
 	})
@@ -224,4 +225,184 @@ export default defineSchema({
 		.index("by_workspaceId", ["workspaceId"])
 		.index("by_projectId", ["projectId"])
 		.index("by_workspaceId_createdAt", ["workspaceId", "createdAt"]),
+
+	// ===== TOKEN BILLING SYSTEM TABLES =====
+
+	// Token Accounts - User token balance and settings
+	tokenAccounts: defineTable({
+		userId: v.id("users"),
+		workspaceId: v.id("workspaces"),
+
+		// Balance
+		balance: v.number(),
+		lifetimeTokensPurchased: v.number(),
+		lifetimeTokensUsed: v.number(),
+		lifetimeActualTokensUsed: v.number(),
+		lifetimeSpentCents: v.number(),
+
+		// Auto-Recharge
+		autoRechargeEnabled: v.boolean(),
+		autoRechargeThreshold: v.optional(v.number()),
+		autoRechargeAmount: v.optional(v.number()),
+
+		// Stripe
+		stripeCustomerId: v.optional(v.string()),
+		defaultPaymentMethodId: v.optional(v.string()),
+
+		// International
+		currency: v.string(), // "usd", "eur", "gbp"
+
+		// Status
+		status: v.union(
+			v.literal("active"),
+			v.literal("suspended"),
+			v.literal("blocked")
+		),
+
+		lastPurchaseAt: v.optional(v.number()),
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index("by_userId", ["userId"])
+		.index("by_workspaceId", ["workspaceId"])
+		.index("by_status", ["status"]),
+
+	// Token Usage - Detailed usage logs
+	tokenUsage: defineTable({
+		userId: v.id("users"),
+		workspaceId: v.id("workspaces"),
+		projectId: v.optional(v.id("projects")),
+		contentPieceId: v.optional(v.id("contentPieces")),
+
+		// Operation
+		operationType: v.union(
+			v.literal("content_generation"),
+			v.literal("content_refinement"),
+			v.literal("content_repurpose"),
+			v.literal("chat_response"),
+			v.literal("image_generation"),
+			v.literal("image_prompt_generation")
+		),
+
+		// AI Service
+		provider: v.union(
+			v.literal("openai"),
+			v.literal("anthropic"),
+			v.literal("google")
+		),
+		model: v.string(),
+
+		// LLM Tokens (optional for fixed-cost)
+		inputTokens: v.optional(v.number()),
+		outputTokens: v.optional(v.number()),
+		totalTokens: v.optional(v.number()),
+
+		// Image Details
+		imageCount: v.optional(v.number()),
+		imageSize: v.optional(v.string()),
+
+		// Billing
+		billableTokens: v.number(),
+		chargeType: v.union(v.literal("multiplier"), v.literal("fixed")),
+		multiplier: v.optional(v.number()),
+		fixedCost: v.optional(v.number()),
+
+		// Metadata
+		requestMetadata: v.optional(v.string()),
+		success: v.boolean(),
+		errorMessage: v.optional(v.string()),
+
+		createdAt: v.number(),
+	})
+		.index("by_userId", ["userId"])
+		.index("by_userId_createdAt", ["userId", "createdAt"])
+		.index("by_workspaceId", ["workspaceId"])
+		.index("by_projectId", ["projectId"])
+		.index("by_createdAt", ["createdAt"]),
+
+	// Token Transactions - Financial ledger
+	tokenTransactions: defineTable({
+		userId: v.id("users"),
+		workspaceId: v.id("workspaces"),
+
+		transactionType: v.union(
+			v.literal("purchase"),
+			v.literal("usage"),
+			v.literal("admin_grant"),
+			v.literal("admin_deduction"),
+			v.literal("refund"),
+			v.literal("bonus"),
+			v.literal("auto_recharge")
+		),
+
+		tokenAmount: v.number(),
+		balanceBefore: v.number(),
+		balanceAfter: v.number(),
+		amountCents: v.optional(v.number()),
+
+		// References
+		tokenUsageId: v.optional(v.id("tokenUsage")),
+		stripePaymentIntentId: v.optional(v.string()),
+		adminUserId: v.optional(v.id("users")),
+
+		description: v.string(),
+		metadata: v.optional(v.string()),
+
+		createdAt: v.number(),
+	})
+		.index("by_userId", ["userId"])
+		.index("by_userId_createdAt", ["userId", "createdAt"])
+		.index("by_workspaceId", ["workspaceId"])
+		.index("by_transactionType", ["transactionType"])
+		.index("by_stripePaymentIntentId", ["stripePaymentIntentId"]),
+
+	// Token Pricing - Token packages
+	tokenPricing: defineTable({
+		packageName: v.string(),
+		tokenAmount: v.number(),
+		priceCents: v.number(),
+
+		description: v.optional(v.string()),
+		isPopular: v.boolean(),
+		sortOrder: v.number(),
+
+		stripePriceId: v.string(),
+
+		// Multi-currency (future)
+		priceEUR: v.optional(v.number()),
+		priceGBP: v.optional(v.number()),
+
+		active: v.boolean(),
+		createdAt: v.number(),
+		updatedAt: v.number(),
+	})
+		.index("by_active", ["active"])
+		.index("by_sortOrder", ["sortOrder"]),
+
+	// System Settings - Global configuration
+	systemSettings: defineTable({
+		key: v.string(), // "global_settings"
+
+		// Token Multiplier
+		defaultTokenMultiplier: v.number(), // 1.5
+
+		// Fixed Costs
+		imageGenerationCostDallE3: v.number(), // 6000 tokens
+		imageGenerationCostDallE2: v.number(), // 3000 tokens
+		imageGenerationCostGoogle: v.number(), // 4500 tokens
+
+		// Purchase Config
+		tokensPerUSD: v.number(), // 10000
+		minPurchaseAmountCents: v.number(), // 500
+
+		// Welcome Bonus
+		newUserBonusTokens: v.number(), // 10000
+
+		// Alerts
+		lowBalanceThreshold: v.number(), // 1000
+		criticalBalanceThreshold: v.number(), // 100
+
+		updatedAt: v.number(),
+		updatedBy: v.optional(v.id("users")),
+	}).index("by_key", ["key"]),
 });
