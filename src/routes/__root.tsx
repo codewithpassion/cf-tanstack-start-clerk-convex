@@ -32,6 +32,28 @@ export const Route = createRootRoute({
 				href: appCss,
 			},
 		],
+		scripts: [
+			{
+				children: `
+					(function() {
+						try {
+							var storageKey = 'theme';
+							var className = 'dark';
+							var element = document.documentElement;
+							var stored = localStorage.getItem(storageKey);
+							var isDark = stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches);
+							
+							if (isDark) {
+								element.classList.add(className);
+							}
+							
+							// Disable transitions until hydration is complete to prevent flashing
+							element.classList.add('theme-transition-disabled');
+						} catch (e) {}
+					})();
+				`,
+			},
+		],
 	}),
 
 	shellComponent: RootDocument,
