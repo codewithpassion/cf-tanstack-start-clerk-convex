@@ -15,16 +15,17 @@ export interface ProjectHeaderProps {
  */
 export function ProjectHeader({ project, onToggleSidebar, sidebarOpen }: ProjectHeaderProps) {
 	return (
-		<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 md:px-6 py-4">
+		<div className="bg-white dark:bg-slate-900 border-b-2 border-slate-200 dark:border-b-amber-400/20 px-4 md:px-6 py-4">
 			{/* Breadcrumb navigation */}
 			<nav className="flex mb-2" aria-label="Breadcrumb">
 				<ol className="flex items-center space-x-2 text-sm">
 					<li>
 						<Link
 							to="/dashboard"
-							className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+							className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-amber-400 transition-colors relative group"
 						>
 							Dashboard
+							<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-amber-400 transition-all duration-300 group-hover:w-full" />
 						</Link>
 					</li>
 					<li>
@@ -56,7 +57,7 @@ export function ProjectHeader({ project, onToggleSidebar, sidebarOpen }: Project
 						</button>
 					)}
 					<div className="min-w-0">
-						<h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white truncate">
+						<h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-amber-50 truncate font-['Lexend']">
 							{project.name}
 						</h1>
 						{project.description && (

@@ -58,7 +58,7 @@ export function ContentCard({
 
 	return (
 		<article
-			className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md transition-shadow cursor-pointer relative"
+			className="bg-gradient-to-br from-white via-slate-50/50 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-800 border-l-2 dark:border-l-slate-800 p-4 hover:shadow-lg hover:border-l-amber-400 dark:hover:border-l-amber-400 dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.1)] transition-all duration-300 cursor-pointer relative"
 			onClick={handleCardClick}
 		>
 			{onSelect && (
@@ -77,7 +77,7 @@ export function ContentCard({
 			<div className={onSelect ? "ml-8" : ""}>
 				{/* Title and Status */}
 				<div className="flex items-start justify-between gap-2 mb-2">
-					<h3 className="text-lg font-semibold text-slate-900 dark:text-white line-clamp-2">
+					<h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
 						{contentPiece.title}
 					</h3>
 					<StatusBadge status={contentPiece.status} />

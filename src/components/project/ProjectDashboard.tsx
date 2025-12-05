@@ -5,9 +5,10 @@ import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
 import type { ProjectId, ContentFilters } from "@/types/entities";
 import { LoadingState } from "@/components/shared/LoadingState";
-import { FileText, Layers } from "lucide-react";
+import { FileText, Layers, Plus } from "lucide-react";
 import { ContentArchiveView } from "@/components/content/ContentArchiveView";
 import type { SearchResult } from "@/components/content/SearchResults";
+import { Link } from "@tanstack/react-router";
 
 export interface ProjectDashboardProps {
 	projectId: ProjectId;
@@ -124,55 +125,67 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 		<div className="space-y-8">
 			{/* Stats Row */}
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+				{/* Total Content Card */}
+				<div className="animate-fade-up-delay-1 bg-gradient-to-br from-white via-slate-50 to-slate-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 rounded-xl p-5 border border-slate-200 dark:border-slate-800 dark:border-t-2 dark:border-t-amber-400/30 flex items-center justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.15)]">
 					<div>
 						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Content</p>
-						<p className="text-2xl font-semibold text-slate-900 dark:text-white mt-1">{totalCount}</p>
+						<p className="text-2xl font-bold text-slate-900 dark:text-amber-400 mt-1 font-['Lexend']">{totalCount}</p>
 					</div>
-					<div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
-						<FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" />
+					<div className="p-3 bg-slate-200 dark:bg-amber-500/10 rounded-lg dark:shadow-[0_0_20px_rgba(251,191,36,0.15)]">
+						<FileText className="w-5 h-5 text-slate-600 dark:text-amber-400" />
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+				{/* Drafts Card */}
+				<div className="animate-fade-up-delay-2 bg-gradient-to-br from-white via-amber-50/30 to-amber-100/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 rounded-xl p-5 border border-slate-200 dark:border-slate-800 dark:border-t-2 dark:border-t-amber-400/30 flex items-center justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.15)]">
 					<div>
 						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Drafts</p>
-						<p className="text-2xl font-semibold text-slate-900 dark:text-white mt-1">{draftCount}</p>
+						<p className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1 font-['Lexend']">{draftCount}</p>
 					</div>
-					<div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-						<FileText className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+					<div className="p-3 bg-amber-100 dark:bg-amber-500/10 rounded-lg dark:shadow-[0_0_20px_rgba(251,191,36,0.15)]">
+						<FileText className="w-5 h-5 text-amber-600 dark:text-amber-400" />
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+				{/* Finalized Card */}
+				<div className="animate-fade-up-delay-3 bg-gradient-to-br from-white via-green-50/30 to-green-100/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 rounded-xl p-5 border border-slate-200 dark:border-slate-800 dark:border-t-2 dark:border-t-amber-400/30 flex items-center justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.15)]">
 					<div>
 						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Finalized</p>
-						<p className="text-2xl font-semibold text-slate-900 dark:text-white mt-1">{finalizedCount}</p>
+						<p className="text-2xl font-bold text-green-600 dark:text-amber-400 mt-1 font-['Lexend']">{finalizedCount}</p>
 					</div>
-					<div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+					<div className="p-3 bg-green-100 dark:bg-amber-500/10 rounded-lg dark:shadow-[0_0_20px_rgba(251,191,36,0.15)]">
 						<FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
 					</div>
 				</div>
 
-				<div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+				{/* Assets Card */}
+				<div className="animate-fade-up-delay-4 bg-gradient-to-br from-white via-cyan-50/30 to-cyan-100/50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 rounded-xl p-5 border border-slate-200 dark:border-slate-800 dark:border-t-2 dark:border-t-amber-400/30 flex items-center justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.15)]">
 					<div>
 						<p className="text-sm font-medium text-slate-500 dark:text-slate-400">Assets</p>
 						<div className="flex gap-3 mt-1 text-sm">
-							<span className="font-medium text-slate-900 dark:text-white">{categories.length} Cats</span>
+							<span className="font-medium text-slate-900 dark:text-amber-400 font-['Lexend']">{categories.length} Cats</span>
 							<span className="text-slate-300 dark:text-slate-600">|</span>
-							<span className="font-medium text-slate-900 dark:text-white">{personas.length} Personas</span>
+							<span className="font-medium text-slate-900 dark:text-amber-400 font-['Lexend']">{personas.length} Personas</span>
 						</div>
 					</div>
-					<div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
-						<Layers className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+					<div className="p-3 bg-cyan-100 dark:bg-amber-500/10 rounded-lg dark:shadow-[0_0_20px_rgba(251,191,36,0.15)]">
+						<Layers className="w-5 h-5 text-cyan-600 dark:text-amber-400" />
 					</div>
 				</div>
 			</div>
 
 			{/* Main Content - Content List */}
-			<div className="space-y-6">
+			<div className="animate-content-fade space-y-6">
 				<div className="flex items-center justify-between">
-					<h2 className="text-lg font-medium text-slate-900 dark:text-white">Content</h2>
+					<h2 className="text-lg font-medium text-slate-900 dark:text-white font-['Lexend']">Content</h2>
+					<Link
+						to="/projects/$projectId/content/new"
+						params={{ projectId }}
+						className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-400 text-white font-medium rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 dark:hover:shadow-amber-400/30"
+					>
+						<Plus className="w-4 h-4" />
+						New Content
+					</Link>
 				</div>
 
 				<ContentArchiveView
