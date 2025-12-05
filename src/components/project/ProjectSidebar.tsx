@@ -26,10 +26,6 @@ export function ProjectSidebar({ projectId, onClose }: ProjectSidebarProps) {
 		return matchRoute({ to: path, params: { projectId } });
 	};
 
-	// Check if any content route is active
-	const isContentActive = () => {
-		return matchRoute({ to: "/projects/$projectId/content", params: { projectId } });
-	};
 
 	const configurationItems: NavItem[] = [
 		{
@@ -108,7 +104,7 @@ export function ProjectSidebar({ projectId, onClose }: ProjectSidebarProps) {
 				</div>
 			)}
 			<nav className="p-4 space-y-1 flex-1 overflow-y-auto" aria-label="Project navigation">
-				{/* Dashboard */}
+				{/* Content */}
 				<Link
 					to="/projects/$projectId"
 					params={{ projectId }}
@@ -120,27 +116,8 @@ export function ProjectSidebar({ projectId, onClose }: ProjectSidebarProps) {
 					aria-current={isActive("/projects/$projectId/") ? "page" : undefined}
 				>
 					<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<title>Dashboard</title>
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-					</svg>
-					Dashboard
-				</Link>
-
-				{/* Content */}
-				<Link
-					to="/projects/$projectId/content"
-					params={{ projectId }}
-					search={{}}
-					onClick={handleLinkClick}
-					className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isContentActive()
-						? "bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-100 border-l-4 border-cyan-700 dark:border-cyan-500 -ml-px pl-2"
-						: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white"
-						}`}
-					aria-current={isContentActive() ? "page" : undefined}
-				>
-					<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<title>Content</title>
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
 					</svg>
 					Content
 				</Link>

@@ -33,7 +33,6 @@ import { Route as AuthedProjectsProjectIdKnowledgeBaseRouteImport } from './rout
 import { Route as AuthedProjectsProjectIdExamplesRouteImport } from './routes/_authed/projects.$projectId.examples'
 import { Route as AuthedProjectsProjectIdCategoriesRouteImport } from './routes/_authed/projects.$projectId.categories'
 import { Route as AuthedProjectsProjectIdBrandVoicesRouteImport } from './routes/_authed/projects.$projectId.brand-voices'
-import { Route as AuthedProjectsProjectIdContentIndexRouteImport } from './routes/_authed/projects.$projectId/content.index'
 import { Route as AuthedProjectsProjectIdContentNewRouteImport } from './routes/_authed/projects.$projectId/content.new'
 import { Route as AuthedProjectsProjectIdContentContentIdRouteImport } from './routes/_authed/projects.$projectId/content.$contentId'
 
@@ -163,12 +162,6 @@ const AuthedProjectsProjectIdBrandVoicesRoute =
     path: '/brand-voices',
     getParentRoute: () => AuthedProjectsProjectIdRoute,
   } as any)
-const AuthedProjectsProjectIdContentIndexRoute =
-  AuthedProjectsProjectIdContentIndexRouteImport.update({
-    id: '/content/',
-    path: '/content/',
-    getParentRoute: () => AuthedProjectsProjectIdRoute,
-  } as any)
 const AuthedProjectsProjectIdContentNewRoute =
   AuthedProjectsProjectIdContentNewRouteImport.update({
     id: '/content/new',
@@ -208,7 +201,6 @@ export interface FileRoutesByFullPath {
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
   '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
-  '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -235,7 +227,6 @@ export interface FileRoutesByTo {
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
   '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
-  '/projects/$projectId/content': typeof AuthedProjectsProjectIdContentIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -265,7 +256,6 @@ export interface FileRoutesById {
   '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
   '/_authed/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
   '/_authed/projects/$projectId/content/new': typeof AuthedProjectsProjectIdContentNewRoute
-  '/_authed/projects/$projectId/content/': typeof AuthedProjectsProjectIdContentIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -295,7 +285,6 @@ export interface FileRouteTypes {
     | '/demo/start/ssr'
     | '/projects/$projectId/content/$contentId'
     | '/projects/$projectId/content/new'
-    | '/projects/$projectId/content'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -322,7 +311,6 @@ export interface FileRouteTypes {
     | '/demo/start/ssr'
     | '/projects/$projectId/content/$contentId'
     | '/projects/$projectId/content/new'
-    | '/projects/$projectId/content'
   id:
     | '__root__'
     | '/'
@@ -351,7 +339,6 @@ export interface FileRouteTypes {
     | '/demo/start/ssr/'
     | '/_authed/projects/$projectId/content/$contentId'
     | '/_authed/projects/$projectId/content/new'
-    | '/_authed/projects/$projectId/content/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -538,13 +525,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProjectsProjectIdBrandVoicesRouteImport
       parentRoute: typeof AuthedProjectsProjectIdRoute
     }
-    '/_authed/projects/$projectId/content/': {
-      id: '/_authed/projects/$projectId/content/'
-      path: '/content'
-      fullPath: '/projects/$projectId/content'
-      preLoaderRoute: typeof AuthedProjectsProjectIdContentIndexRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdRoute
-    }
     '/_authed/projects/$projectId/content/new': {
       id: '/_authed/projects/$projectId/content/new'
       path: '/content/new'
@@ -572,7 +552,6 @@ interface AuthedProjectsProjectIdRouteChildren {
   AuthedProjectsProjectIdIndexRoute: typeof AuthedProjectsProjectIdIndexRoute
   AuthedProjectsProjectIdContentContentIdRoute: typeof AuthedProjectsProjectIdContentContentIdRoute
   AuthedProjectsProjectIdContentNewRoute: typeof AuthedProjectsProjectIdContentNewRoute
-  AuthedProjectsProjectIdContentIndexRoute: typeof AuthedProjectsProjectIdContentIndexRoute
 }
 
 const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren =
@@ -591,8 +570,6 @@ const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren
       AuthedProjectsProjectIdContentContentIdRoute,
     AuthedProjectsProjectIdContentNewRoute:
       AuthedProjectsProjectIdContentNewRoute,
-    AuthedProjectsProjectIdContentIndexRoute:
-      AuthedProjectsProjectIdContentIndexRoute,
   }
 
 const AuthedProjectsProjectIdRouteWithChildren =

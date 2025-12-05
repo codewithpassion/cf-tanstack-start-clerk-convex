@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
 import type { ProjectId, ContentFilters } from "@/types/entities";
 import { LoadingState } from "@/components/shared/LoadingState";
-import { FileText, Users, MessageSquare, Layers, Plus, Settings } from "lucide-react";
+import { FileText, Layers } from "lucide-react";
 import { ContentArchiveView } from "@/components/content/ContentArchiveView";
 import type { SearchResult } from "@/components/content/SearchResults";
 
@@ -169,96 +169,30 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-				{/* Main Content - Content List */}
-				<div className="lg:col-span-2 space-y-6">
-					<div className="flex items-center justify-between">
-						<h2 className="text-lg font-medium text-slate-900 dark:text-white">Content</h2>
-					</div>
-
-					<ContentArchiveView
-						contentPieces={contentPiecesWithRelations}
-						totalCount={totalCount}
-						categories={categories}
-						personas={personas}
-						brandVoices={brandVoices}
-						filters={filters}
-						onFiltersChange={setFilters}
-						onLoadMore={handleLoadMore}
-						hasMore={contentPieces.length < totalCount}
-						onNavigateToContent={handleNavigateToContent}
-						onBulkDelete={handleBulkDelete}
-						searchQuery={searchQuery}
-						onSearchQueryChange={setSearchQuery}
-						searchResults={mappedSearchResults}
-						isSearching={searchQuery.length > 0 && searchResults === undefined}
-						defaultViewMode="cards"
-					/>
+			{/* Main Content - Content List */}
+			<div className="space-y-6">
+				<div className="flex items-center justify-between">
+					<h2 className="text-lg font-medium text-slate-900 dark:text-white">Content</h2>
 				</div>
 
-				{/* Sidebar - Quick Actions */}
-				<div className="space-y-6">
-					<h2 className="text-lg font-medium text-slate-900 dark:text-white">Quick Actions</h2>
-					<div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
-						<Link
-							to="/projects/$projectId/content/new"
-							params={{ projectId }}
-							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
-						>
-							<div className="p-2 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg group-hover:bg-cyan-100 dark:group-hover:bg-cyan-900/30 transition-colors">
-								<Plus className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-							</div>
-							<div>
-								<p className="text-sm font-medium text-slate-900 dark:text-white">New Content</p>
-								<p className="text-xs text-slate-500 dark:text-slate-400">Create a new post or article</p>
-							</div>
-						</Link>
-
-						<Link
-							to="/projects/$projectId/personas"
-							params={{ projectId }}
-							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
-						>
-							<div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
-								<Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-							</div>
-							<div>
-								<p className="text-sm font-medium text-slate-900 dark:text-white">Manage Personas</p>
-								<p className="text-xs text-slate-500 dark:text-slate-400">Add or edit audience personas</p>
-							</div>
-						</Link>
-
-						<Link
-							to="/projects/$projectId/brand-voices"
-							params={{ projectId }}
-							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
-						>
-							<div className="p-2 bg-pink-50 dark:bg-pink-900/20 rounded-lg group-hover:bg-pink-100 dark:group-hover:bg-pink-900/30 transition-colors">
-								<MessageSquare className="w-5 h-5 text-pink-600 dark:text-pink-400" />
-							</div>
-							<div>
-								<p className="text-sm font-medium text-slate-900 dark:text-white">Brand Voices</p>
-								<p className="text-xs text-slate-500 dark:text-slate-400">Configure tone and style</p>
-							</div>
-						</Link>
-
-						<div className="h-px bg-slate-100 dark:bg-slate-800 my-2" />
-
-						<Link
-							to="/projects/$projectId/settings"
-							params={{ projectId }}
-							className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
-						>
-							<div className="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg group-hover:bg-slate-100 dark:group-hover:bg-slate-700 transition-colors">
-								<Settings className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-							</div>
-							<div>
-								<p className="text-sm font-medium text-slate-900 dark:text-white">Project Settings</p>
-								<p className="text-xs text-slate-500 dark:text-slate-400">General configuration</p>
-							</div>
-						</Link>
-					</div>
-				</div>
+				<ContentArchiveView
+					contentPieces={contentPiecesWithRelations}
+					totalCount={totalCount}
+					categories={categories}
+					personas={personas}
+					brandVoices={brandVoices}
+					filters={filters}
+					onFiltersChange={setFilters}
+					onLoadMore={handleLoadMore}
+					hasMore={contentPieces.length < totalCount}
+					onNavigateToContent={handleNavigateToContent}
+					onBulkDelete={handleBulkDelete}
+					searchQuery={searchQuery}
+					onSearchQueryChange={setSearchQuery}
+					searchResults={mappedSearchResults}
+					isSearching={searchQuery.length > 0 && searchResults === undefined}
+					defaultViewMode="cards"
+				/>
 			</div>
 		</div>
 	);
