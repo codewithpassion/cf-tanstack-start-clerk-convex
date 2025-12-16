@@ -126,14 +126,14 @@ function KnowledgeBasePage() {
 			{/* Category Filter */}
 			<div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
 				<div className="flex-1">
-					<label htmlFor="category-select" className="block text-sm font-medium text-slate-700 mb-2">
+					<label htmlFor="category-select" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
 						Select Category
 					</label>
 					<select
 						id="category-select"
 						value={selectedCategoryId || ""}
 						onChange={(e) => setSelectedCategoryId(e.target.value as Id<"categories">)}
-						className="w-full sm:w-auto px-4 py-2 text-slate-900 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+						className="w-full sm:w-auto px-4 py-2 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
 					>
 						{categories.map((category) => (
 							<option key={category._id} value={category._id}>

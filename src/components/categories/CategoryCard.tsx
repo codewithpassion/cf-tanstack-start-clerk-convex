@@ -14,15 +14,15 @@ export interface CategoryCardProps {
 export function CategoryCard({ category, onEdit, onDelete, isDragging = false }: CategoryCardProps) {
 	return (
 		<div
-			className={`bg-white shadow-md rounded-lg p-6 border border-slate-200 transition-all ${
-				isDragging ? "opacity-50 rotate-2 scale-105" : "hover:border-cyan-500"
+			className={`bg-white dark:bg-slate-800 shadow-md rounded-lg p-6 border border-slate-200 dark:border-slate-700 transition-all ${
+				isDragging ? "opacity-50 rotate-2 scale-105" : "hover:border-cyan-500 dark:hover:border-cyan-400"
 			}`}
 		>
 			<div className="flex items-start justify-between mb-2">
-				<h3 className="text-lg font-semibold text-slate-900">{category.name}</h3>
+				<h3 className="text-lg font-semibold text-slate-900 dark:text-white">{category.name}</h3>
 				<div className="flex items-center gap-2">
 					{category.isDefault && (
-						<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
+						<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 dark:bg-cyan-900/50 text-cyan-800 dark:text-cyan-300">
 							Default
 						</span>
 					)}
@@ -30,23 +30,23 @@ export function CategoryCard({ category, onEdit, onDelete, isDragging = false }:
 			</div>
 
 			{category.description && (
-				<p className="text-sm text-slate-600 mb-3">{category.description}</p>
+				<p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{category.description}</p>
 			)}
 
 			{category.formatGuidelines && (
-				<div className="mt-4 pt-4 border-t border-slate-200">
-					<p className="text-xs font-medium text-slate-700 mb-2">Format Guidelines:</p>
-					<p className="text-xs text-slate-600 whitespace-pre-line line-clamp-3">
+				<div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+					<p className="text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">Format Guidelines:</p>
+					<p className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-line line-clamp-3">
 						{category.formatGuidelines}
 					</p>
 				</div>
 			)}
 
-			<div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+			<div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-end gap-2">
 				<button
 					type="button"
 					onClick={() => onEdit(category)}
-					className="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+					className="inline-flex items-center px-3 py-1.5 border border-slate-300 dark:border-slate-600 text-xs font-medium rounded-md text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 					aria-label={`Edit ${category.name}`}
 				>
 					<svg
@@ -68,7 +68,7 @@ export function CategoryCard({ category, onEdit, onDelete, isDragging = false }:
 				<button
 					type="button"
 					onClick={() => onDelete(category)}
-					className="inline-flex items-center px-3 py-1.5 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+					className="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-800 text-xs font-medium rounded-md text-red-700 dark:text-red-400 bg-white dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-950/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
 					aria-label={`Delete ${category.name}`}
 				>
 					<svg
