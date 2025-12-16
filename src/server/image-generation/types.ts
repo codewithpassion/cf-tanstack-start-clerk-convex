@@ -16,12 +16,19 @@ export interface GenerateImageInput {
 }
 
 /**
- * Result from image generation
+ * Result from a single generated image
  */
 export interface GenerateImageResult {
 	fileId: Id<"files">;
 	r2Key: string;
 	previewUrl: string;
+}
+
+/**
+ * Result from image generation (supports multiple images)
+ */
+export interface GenerateImagesResult {
+	images: GenerateImageResult[];
 }
 
 /**
@@ -31,5 +38,5 @@ export interface ImageGenerationStrategy {
 	generate(
 		input: GenerateImageInput,
 		userId: string,
-	): Promise<GenerateImageResult>;
+	): Promise<GenerateImagesResult>;
 }

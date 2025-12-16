@@ -33,9 +33,28 @@ fi
 echo "Setting CLERK_JWT_ISSUER_DOMAIN in Convex to: $CLERK_JWT_ISSUER_DOMAIN"
 # Set the environment variable in Convex
 export CLERK_JWT_ISSUER_DOMAIN
+
 if bunx convex env set CLERK_JWT_ISSUER_DOMAIN="$CLERK_JWT_ISSUER_DOMAIN" 2>&1; then
 	echo "✓ Successfully set CLERK_JWT_ISSUER_DOMAIN in Convex"
 else
 	echo "Error setting CLERK_JWT_ISSUER_DOMAIN in Convex"
+	exit 1
+fi
+
+
+# Check if BILLING_SECRET is set
+if [ -z "$BILLING_SECRET" ]; then
+	echo "Error: BILLING_SECRET not found in .env"
+	exit 1
+fi
+
+echo "Setting BILLING_SECRET in Convex to: $BILLING_SECRET"
+# Set the environment variable in Convex
+export BILLING_SECRET
+
+if bunx convex env set BILLING_SECRET="$BILLING_SECRET" 2>&1; then
+	echo "✓ Successfully set BILLING_SECRET in Convex"
+else
+	echo "Error setting BILLING_SECRET in Convex"
 	exit 1
 fi

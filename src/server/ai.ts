@@ -1288,12 +1288,14 @@ Keep the prompt under 400 words and make it clear and specific.`;
 import type {
 	GenerateImageInput,
 	GenerateImageResult,
+	GenerateImagesResult,
 	ImageAspectRatio,
 } from "./image-generation/types";
 
 export type {
 	GenerateImageInput,
 	GenerateImageResult,
+	GenerateImagesResult,
 	ImageAspectRatio,
 };
 
@@ -1303,12 +1305,13 @@ import { getAuthenticatedConvexClient, getAIEnvironment } from "./utils";
 /**
  * Generate image using configured strategy
  *
- * Server function that generates an image using the selected strategy (OpenAI or Google),
- * uploads to R2, and creates a file record in Convex.
+ * Server function that generates images using the selected strategy (OpenAI or Google),
+ * uploads to R2, and creates file records in Convex.
+ * Returns an array of generated images (may be 1 or more depending on the model/prompt).
  */
 export const generateImage = createServerFn({ method: "POST" })
 	.inputValidator((input: GenerateImageInput) => input)
-	.handler(async ({ data }): Promise<GenerateImageResult> => {
+	.handler(async ({ data }): Promise<GenerateImagesResult> => {
 		try {
 			// Verify authentication
 			const { userId } = await auth();

@@ -13,7 +13,7 @@ import type {
 
 /**
  * Google Image Generation Strategy
- * Uses native Google Gen AI SDK for image generation
+ * Uses 'google nano bannana' model via Vercel AI SDK (experimental)
  */
 export class GoogleImageGenerationStrategy implements ImageGenerationStrategy {
 	private env: Record<string, string | undefined>;
@@ -55,66 +55,46 @@ export class GoogleImageGenerationStrategy implements ImageGenerationStrategy {
 			);
 		}
 
-		const { GoogleGenAI } = await import("@google/genai");
+		const { experimental_generateImage } = await import("ai");
+		const { createGoogleGenerativeAI } = await import("@ai-sdk/google");
 
-		const ai = new GoogleGenAI({
-			apiKey: this.env.GOOGLE_GENERATIVE_AI_API_KEY,
+		const google = createGoogleGenerativeAI({
+			apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 		});
 
 		try {
-			const response = await ai.models.generateContent({
-				model: "nano-banana-pro-preview",
-				contents: input.prompt,
-				config: {
-					responseModalities: ["image", "text"],
-					imageConfig: {
-						aspectRatio: this.mapAspectRatio(input.aspectRatio),
-					},
-				},
+
+			// The AI SDK returns an `images` array (may contain 1 or more images)
+			const { images } = await experimental_generateImage({
+				model: google.image("nano-banana-pro-preview"),
+				prompt: input.prompt,
+				aspectRatio: this.mapAspectRatio(input.aspectRatio),
 			});
 
-			// Process all returned images from the response
+			// Process all returned images
 			const results: GenerateImageResult[] = [];
-			const candidates = response.candidates ?? [];
-
-			for (const candidate of candidates) {
-				const parts = candidate.content?.parts ?? [];
-				for (const part of parts) {
-					if (part.inlineData?.mimeType?.startsWith("image/")) {
-						const imageBytes = part.inlineData.data;
-						if (!imageBytes) {
-							console.warn("Generated image missing data, skipping");
-							continue;
-						}
-
-						// Extract extension from mimeType (e.g., "image/png" -> "png", "image/jpeg" -> "jpeg")
-						const mimeType = part.inlineData.mimeType;
-						let extension = mimeType.split("/")[1] ?? "png";
-						// Normalize "jpeg" to "jpg" for consistency
-						if (extension === "jpeg") {
-							extension = "jpg";
-						}
-
-						// Convert base64 to ArrayBuffer
-						const binaryString = atob(imageBytes);
-						const bytes = new Uint8Array(binaryString.length);
-						for (let i = 0; i < binaryString.length; i++) {
-							bytes[i] = binaryString.charCodeAt(i);
-						}
-						const imageBuffer = bytes.buffer;
-
-						const result = await processAndSaveImage(
-							imageBuffer,
-							input.workspaceId,
-							extension,
-						);
-						results.push(result);
+			for (const image of images) {
+				// Use uint8Array directly if available, otherwise decode base64
+				let imageBuffer: ArrayBuffer;
+				if (image.uint8Array) {
+					// Create a new ArrayBuffer from the Uint8Array to ensure proper type
+					imageBuffer = image.uint8Array.slice().buffer;
+				} else {
+					const base64Data = image.base64;
+					const binaryString = atob(base64Data);
+					const bytes = new Uint8Array(binaryString.length);
+					for (let i = 0; i < binaryString.length; i++) {
+						bytes[i] = binaryString.charCodeAt(i);
 					}
+					imageBuffer = bytes.buffer;
 				}
-			}
 
-			if (results.length === 0) {
-				throw new Error("No images were generated");
+				const result = await processAndSaveImage(
+					imageBuffer,
+					input.workspaceId,
+					"png",
+				);
+				results.push(result);
 			}
 
 			// Calculate billing based on actual number of images returned
@@ -129,7 +109,7 @@ export class GoogleImageGenerationStrategy implements ImageGenerationStrategy {
 				projectId: input.projectId,
 				operationType: "image_generation",
 				provider: "google",
-				model: "nano-banana-pro-preview",
+				model: "google",
 				imageCount,
 				imageSize: size,
 				billableTokens: billing.billableTokens,
@@ -152,7 +132,7 @@ export class GoogleImageGenerationStrategy implements ImageGenerationStrategy {
 
 	private mapAspectRatio(
 		ratio?: ImageAspectRatio,
-	): "1:1" | "16:9" | "9:16" | "3:4" | "4:3" | undefined {
+	): "1:1" | "16:9" | "9:16" | undefined {
 		switch (ratio) {
 			case "landscape":
 				return "16:9";

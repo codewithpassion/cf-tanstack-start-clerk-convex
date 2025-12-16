@@ -400,15 +400,15 @@ function ContentEditorPage() {
 	const nextVersion = (contentPiece.currentFinalizedVersion ?? 0) + 1;
 
 	return (
-		<div className="h-full flex flex-col">
+		<div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 dark:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] dark:from-amber-950/20 dark:via-slate-950 dark:to-slate-950">
 			{/* Page Header */}
-			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
+			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-b-2 dark:border-b-amber-400/20 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 					<div className="flex items-center gap-2 md:gap-3 min-w-0">
 						<Link
 							to="/projects/$projectId"
 							params={{ projectId }}
-							className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex-shrink-0"
+							className="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 flex-shrink-0 transition-colors"
 						>
 							<svg
 								className="w-5 h-5"
@@ -426,7 +426,7 @@ function ContentEditorPage() {
 							</svg>
 						</Link>
 						<svg
-							className="w-5 h-5 text-slate-400 flex-shrink-0 hidden sm:block"
+							className="w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0 hidden sm:block"
 							fill="none"
 							viewBox="0 0 24 24"
 							strokeWidth="1.5"
@@ -439,7 +439,7 @@ function ContentEditorPage() {
 								d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
 							/>
 						</svg>
-						<h1 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-white truncate">
+						<h1 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-amber-50 truncate font-['Lexend']">
 							{contentPiece.title}
 						</h1>
 					</div>

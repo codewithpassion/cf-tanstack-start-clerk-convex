@@ -1,19 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/api";
 import { LoadingState } from "@/components/shared/LoadingState";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { useState } from "react";
+import { useState, useCallback, useContext } from "react";
 import {
 	DollarSign,
 	TrendingUp,
 	Users,
 	BarChart3,
-	Eye,
 	Coins,
 	Percent,
+	Plus,
+	Minus,
+	Search,
+	X,
+	AlertCircle,
+	CheckCircle2,
 } from "lucide-react";
 import type { Id } from "@/convex/dataModel";
+import { AuthContext } from "@/contexts/auth-context";
 
 export const Route = createFileRoute("/_authed/admin/billing")({
 	component: AdminBillingPage,
@@ -61,6 +67,13 @@ type UserAccount = {
 };
 
 function AdminBillingPage() {
+	const authContext = useContext(AuthContext);
+	const isSuperAdmin = authContext?.isSuperAdmin() ?? false;
+
+	// Token management modal state
+	const [showTokenModal, setShowTokenModal] = useState(false);
+	const [tokenModalMode, setTokenModalMode] = useState<"grant" | "deduct">("grant");
+
 	// Note: The api.billing.admin module will be available once the Convex dev server
 	// regenerates the API types. The module exists at convex/billing/admin.ts
 	const tokenStats = useQuery(api.billing.admin.getTokenStats) as TokenStats | undefined;
@@ -69,6 +82,16 @@ function AdminBillingPage() {
 	const userAccounts = useQuery(api.billing.admin.getUserAccounts, {
 		limit: 20,
 	}) as UserAccount[] | undefined;
+
+	const openGrantModal = useCallback(() => {
+		setTokenModalMode("grant");
+		setShowTokenModal(true);
+	}, []);
+
+	const openDeductModal = useCallback(() => {
+		setTokenModalMode("deduct");
+		setShowTokenModal(true);
+	}, []);
 
 	// Show loading state while data is being fetched
 	if (
@@ -88,6 +111,48 @@ function AdminBillingPage() {
 				title="Token Billing Administration"
 				description="System-wide token usage and billing statistics"
 			/>
+
+			{/* Token Management Actions (Superadmin Only) */}
+			{isSuperAdmin && (
+				<div className="bg-white dark:bg-slate-900 shadow-sm rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8">
+					<div className="flex items-center justify-between">
+						<div>
+							<h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+								Token Management
+							</h2>
+							<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+								Grant or deduct tokens from user accounts
+							</p>
+						</div>
+						<div className="flex items-center gap-3">
+							<button
+								type="button"
+								onClick={openGrantModal}
+								className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors"
+							>
+								<Plus className="w-4 h-4" />
+								Grant Tokens
+							</button>
+							<button
+								type="button"
+								onClick={openDeductModal}
+								className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-red-600 text-white hover:bg-red-700 transition-colors"
+							>
+								<Minus className="w-4 h-4" />
+								Deduct Tokens
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Token Modal */}
+			{showTokenModal && (
+				<TokenManagementModal
+					mode={tokenModalMode}
+					onClose={() => setShowTokenModal(false)}
+				/>
+			)}
 
 			{/* Stats Cards */}
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -298,7 +363,7 @@ function AdminBillingPage() {
 									Lifetime Used
 								</th>
 								<th className="px-6 py-3 text-center text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-									Actions
+									Roles
 								</th>
 							</tr>
 						</thead>
@@ -373,8 +438,6 @@ interface UserAccountRowProps {
 }
 
 function UserAccountRow({ account }: UserAccountRowProps) {
-	const [showGrantModal, setShowGrantModal] = useState(false);
-
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "active":
@@ -442,36 +505,357 @@ function UserAccountRow({ account }: UserAccountRowProps) {
 					</span>
 				</td>
 				<td className="px-6 py-4 whitespace-nowrap text-center">
-					<button
-						type="button"
-						onClick={() => setShowGrantModal(true)}
-						className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-					>
-						<Eye className="w-3.5 h-3.5" />
-						View Details
-					</button>
+					<span className="text-xs text-slate-500 dark:text-slate-400">
+						{account.user?.roles?.join(", ") || "user"}
+					</span>
 				</td>
 			</tr>
+		</>
+	);
+}
 
-			{/* Grant Tokens Modal - Placeholder */}
-			{showGrantModal && (
-				<tr>
-					<td colSpan={5} className="px-6 py-4 bg-slate-50 dark:bg-slate-950">
-						<div className="text-center">
-							<p className="text-sm text-slate-600 dark:text-slate-400">
-								Token grant functionality will be implemented in a future update.
-							</p>
+// Type for search results
+type SearchUserResult = {
+	_id: Id<"users">;
+	email?: string;
+	name?: string;
+	imageUrl?: string;
+	roles?: string[];
+	tokenAccount: {
+		_id: Id<"tokenAccounts">;
+		balance: number;
+		status: string;
+		lifetimeTokensUsed: number;
+	} | null;
+};
+
+// Token Management Modal Component
+interface TokenManagementModalProps {
+	mode: "grant" | "deduct";
+	onClose: () => void;
+}
+
+function TokenManagementModal({ mode, onClose }: TokenManagementModalProps) {
+	const [searchQuery, setSearchQuery] = useState("");
+	const [selectedUser, setSelectedUser] = useState<SearchUserResult | null>(null);
+	const [tokenAmount, setTokenAmount] = useState("");
+	const [reason, setReason] = useState("");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [success, setSuccess] = useState<string | null>(null);
+
+	// Search users query
+	const searchResults = useQuery(
+		api.billing.admin.searchUsers,
+		searchQuery.length >= 2 ? { query: searchQuery, limit: 5 } : "skip"
+	) as SearchUserResult[] | undefined;
+
+	// Mutations
+	const grantTokens = useMutation(api.billing.admin.grantTokens);
+	const deductTokens = useMutation(api.billing.admin.deductTokens);
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!selectedUser || !tokenAmount || !reason) return;
+
+		const amount = Number.parseInt(tokenAmount, 10);
+		if (Number.isNaN(amount) || amount <= 0) {
+			setError("Please enter a valid positive number");
+			return;
+		}
+
+		setIsSubmitting(true);
+		setError(null);
+		setSuccess(null);
+
+		try {
+			if (mode === "grant") {
+				const result = await grantTokens({
+					targetUserId: selectedUser._id,
+					tokenAmount: amount,
+					reason,
+				});
+				setSuccess(`Successfully granted ${amount.toLocaleString()} tokens. New balance: ${result.newBalance.toLocaleString()}`);
+			} else {
+				const result = await deductTokens({
+					targetUserId: selectedUser._id,
+					tokenAmount: amount,
+					reason,
+				});
+				setSuccess(`Successfully deducted ${amount.toLocaleString()} tokens. New balance: ${result.newBalance.toLocaleString()}`);
+			}
+			// Reset form after success
+			setSelectedUser(null);
+			setTokenAmount("");
+			setReason("");
+			setSearchQuery("");
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "An error occurred");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	const isGrant = mode === "grant";
+
+	return (
+		<div className="fixed inset-0 z-50 overflow-y-auto">
+			{/* Backdrop */}
+			<div
+				className="fixed inset-0 bg-black/50 transition-opacity"
+				onClick={onClose}
+			/>
+
+			{/* Modal */}
+			<div className="flex min-h-full items-center justify-center p-4">
+				<div className="relative w-full max-w-lg transform rounded-xl bg-white dark:bg-slate-900 shadow-xl transition-all">
+					{/* Header */}
+					<div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 py-4">
+						<div className="flex items-center gap-3">
+							<div className={`p-2 rounded-lg ${isGrant ? "bg-green-100 dark:bg-green-900/20" : "bg-red-100 dark:bg-red-900/20"}`}>
+								{isGrant ? (
+									<Plus className={`w-5 h-5 ${isGrant ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`} />
+								) : (
+									<Minus className="w-5 h-5 text-red-600 dark:text-red-400" />
+								)}
+							</div>
+							<h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+								{isGrant ? "Grant Tokens" : "Deduct Tokens"}
+							</h2>
+						</div>
+						<button
+							type="button"
+							onClick={onClose}
+							className="p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+						>
+							<X className="w-5 h-5" />
+						</button>
+					</div>
+
+					{/* Content */}
+					<form onSubmit={handleSubmit} className="p-6 space-y-6">
+						{/* Error/Success Messages */}
+						{error && (
+							<div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400">
+								<AlertCircle className="w-5 h-5 flex-shrink-0" />
+								<p className="text-sm">{error}</p>
+							</div>
+						)}
+						{success && (
+							<div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400">
+								<CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+								<p className="text-sm">{success}</p>
+							</div>
+						)}
+
+						{/* User Search */}
+						<div>
+							<label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+								Search User
+							</label>
+							<div className="relative">
+								<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+								<input
+									type="text"
+									value={searchQuery}
+									onChange={(e) => {
+										setSearchQuery(e.target.value);
+										setSelectedUser(null);
+									}}
+									placeholder="Search by email or name..."
+									className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+								/>
+							</div>
+
+							{/* Search Results */}
+							{searchResults && searchResults.length > 0 && !selectedUser && (
+								<div className="mt-2 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+									{searchResults.map((user) => (
+										<button
+											key={user._id}
+											type="button"
+											onClick={() => {
+												setSelectedUser(user);
+												setSearchQuery(user.email || user.name || "");
+											}}
+											className="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left"
+										>
+											{user.imageUrl ? (
+												<img
+													src={user.imageUrl}
+													alt={user.name || "User"}
+													className="w-8 h-8 rounded-full"
+												/>
+											) : (
+												<div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+													<span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+														{user.name?.charAt(0) || "?"}
+													</span>
+												</div>
+											)}
+											<div className="flex-1 min-w-0">
+												<p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+													{user.name || "Unknown"}
+												</p>
+												<p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+													{user.email}
+												</p>
+											</div>
+											{user.tokenAccount && (
+												<div className="text-right">
+													<p className="text-sm font-semibold text-cyan-600 dark:text-cyan-400">
+														{user.tokenAccount.balance.toLocaleString()}
+													</p>
+													<p className="text-xs text-slate-500 dark:text-slate-400">
+														tokens
+													</p>
+												</div>
+											)}
+										</button>
+									))}
+								</div>
+							)}
+
+							{searchQuery.length >= 2 && searchResults?.length === 0 && (
+								<p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+									No users found matching "{searchQuery}"
+								</p>
+							)}
+						</div>
+
+						{/* Selected User Display */}
+						{selectedUser && (
+							<div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+								{selectedUser.imageUrl ? (
+									<img
+										src={selectedUser.imageUrl}
+										alt={selectedUser.name || "User"}
+										className="w-10 h-10 rounded-full"
+									/>
+								) : (
+									<div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+										<span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+											{selectedUser.name?.charAt(0) || "?"}
+										</span>
+									</div>
+								)}
+								<div className="flex-1">
+									<p className="text-sm font-medium text-slate-900 dark:text-white">
+										{selectedUser.name || "Unknown User"}
+									</p>
+									<p className="text-xs text-slate-500 dark:text-slate-400">
+										{selectedUser.email}
+									</p>
+								</div>
+								<div className="text-right">
+									<p className="text-sm font-semibold text-cyan-600 dark:text-cyan-400">
+										{selectedUser.tokenAccount?.balance.toLocaleString() ?? 0}
+									</p>
+									<p className="text-xs text-slate-500 dark:text-slate-400">
+										current balance
+									</p>
+								</div>
+								<button
+									type="button"
+									onClick={() => {
+										setSelectedUser(null);
+										setSearchQuery("");
+									}}
+									className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+								>
+									<X className="w-4 h-4 text-slate-400" />
+								</button>
+							</div>
+						)}
+
+						{/* Token Amount */}
+						<div>
+							<label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+								Token Amount
+							</label>
+							<input
+								type="number"
+								value={tokenAmount}
+								onChange={(e) => setTokenAmount(e.target.value)}
+								placeholder="Enter amount..."
+								min="1"
+								className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+							/>
+							{tokenAmount && selectedUser?.tokenAccount && (
+								<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+									New balance will be:{" "}
+									<span className={isGrant ? "text-green-600" : "text-red-600"}>
+										{isGrant
+											? (selectedUser.tokenAccount.balance + Number.parseInt(tokenAmount, 10) || 0).toLocaleString()
+											: (selectedUser.tokenAccount.balance - Number.parseInt(tokenAmount, 10) || 0).toLocaleString()
+										}
+									</span>
+								</p>
+							)}
+						</div>
+
+						{/* Reason */}
+						<div>
+							<label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+								Reason
+							</label>
+							<textarea
+								value={reason}
+								onChange={(e) => setReason(e.target.value)}
+								placeholder="Enter reason for this action..."
+								rows={3}
+								className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
+							/>
+						</div>
+
+						{/* Actions */}
+						<div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
 							<button
 								type="button"
-								onClick={() => setShowGrantModal(false)}
-								className="mt-2 text-xs text-cyan-600 dark:text-cyan-400 hover:underline"
+								onClick={onClose}
+								className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
 							>
-								Close
+								Cancel
+							</button>
+							<button
+								type="submit"
+								disabled={!selectedUser || !tokenAmount || !reason || isSubmitting}
+								className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+									isGrant
+										? "bg-green-600 hover:bg-green-700"
+										: "bg-red-600 hover:bg-red-700"
+								}`}
+							>
+								{isSubmitting ? (
+									<span className="flex items-center gap-2">
+										<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+											<circle
+												className="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												strokeWidth="4"
+												fill="none"
+											/>
+											<path
+												className="opacity-75"
+												fill="currentColor"
+												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+											/>
+										</svg>
+										Processing...
+									</span>
+								) : isGrant ? (
+									"Grant Tokens"
+								) : (
+									"Deduct Tokens"
+								)}
 							</button>
 						</div>
-					</td>
-				</tr>
-			)}
-		</>
+					</form>
+				</div>
+			</div>
+		</div>
 	);
 }

@@ -6,7 +6,7 @@ import { checkImageGenerationRateLimit } from "../utils";
 import { processAndSaveImage } from "./storage";
 import type {
 	GenerateImageInput,
-	GenerateImageResult,
+	GenerateImagesResult,
 	ImageAspectRatio,
 	ImageGenerationStrategy,
 } from "./types";
@@ -38,7 +38,7 @@ export class OpenAIImageGenerationStrategy implements ImageGenerationStrategy {
 	async generate(
 		input: GenerateImageInput,
 		userId: string,
-	): Promise<GenerateImageResult> {
+	): Promise<GenerateImagesResult> {
 		// Check rate limit
 		checkImageGenerationRateLimit(userId);
 
@@ -93,8 +93,6 @@ export class OpenAIImageGenerationStrategy implements ImageGenerationStrategy {
 			size,
 		});
 
-		let result: GenerateImageResult;
-
 		try {
 			// Generate image with DALL-E 3
 			const response = await openai.images.generate({
@@ -136,7 +134,7 @@ export class OpenAIImageGenerationStrategy implements ImageGenerationStrategy {
 				throw new Error("No image URL or base64 data returned from DALL-E");
 			}
 
-			result = await processAndSaveImage(
+			const result = await processAndSaveImage(
 				imageBuffer,
 				input.workspaceId,
 				"png",
@@ -162,7 +160,8 @@ export class OpenAIImageGenerationStrategy implements ImageGenerationStrategy {
 				success: true,
 			});
 
-			return result;
+			// Return as array with single image for interface compatibility
+			return { images: [result] };
 		} catch (error) {
 			// If image generation failed, don't record usage
 			console.error("Image generation failed:", error);

@@ -36,7 +36,6 @@ export async function getAuthenticatedConvexClient(): Promise<ConvexHttpClient> 
         throw new Error("Authentication token is required to create Convex client");
     } else {
         const client = new ConvexHttpClient(convexUrl);
-        console.log("Setting Convex auth for user:", userId, token);
         client.setAuth(token);
         return client;
     }

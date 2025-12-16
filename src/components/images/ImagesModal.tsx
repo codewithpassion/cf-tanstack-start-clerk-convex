@@ -274,6 +274,8 @@ interface GeneratedImageState {
 	prompt: string;
 }
 
+type GeneratedImagesState = GeneratedImageState[];
+
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const ALLOWED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
@@ -310,8 +312,8 @@ export function ImagesModal({
 	const [generatedPrompt, setGeneratedPrompt] = useState("");
 	const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false);
 
-	// Generated image state
-	const [generatedImage, setGeneratedImage] = useState<GeneratedImageState | null>(null);
+	// Generated images state (supports multiple images)
+	const [generatedImages, setGeneratedImages] = useState<GeneratedImagesState>([]);
 
 	// Error state
 	const [error, setError] = useState<string | null>(null);
@@ -341,7 +343,7 @@ export function ImagesModal({
 			});
 			setShowAdvancedOptions(false);
 			setGeneratedPrompt("");
-			setGeneratedImage(null);
+			setGeneratedImages([]);
 			setError(null);
 		}
 	}, [isOpen, initialView]);
@@ -424,7 +426,7 @@ export function ImagesModal({
 				finalPrompt += `\n\nContent context: ${contentText}`;
 			}
 
-			// Then generate the image
+			// Then generate the image(s)
 			const imageResult = await generateImage({
 				data: {
 					prompt: finalPrompt,
@@ -434,11 +436,13 @@ export function ImagesModal({
 				},
 			});
 
-			setGeneratedImage({
-				fileId: imageResult.fileId,
-				previewUrl: imageResult.previewUrl,
+			// Map all returned images to state
+			const images = imageResult.images.map((img) => ({
+				fileId: img.fileId,
+				previewUrl: img.previewUrl,
 				prompt: finalPrompt,
-			});
+			}));
+			setGeneratedImages(images);
 			setView("preview");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to generate image");
@@ -474,11 +478,13 @@ export function ImagesModal({
 				},
 			});
 
-			setGeneratedImage({
-				fileId: imageResult.fileId,
-				previewUrl: imageResult.previewUrl,
+			// Map all returned images to state
+			const images = imageResult.images.map((img) => ({
+				fileId: img.fileId,
+				previewUrl: img.previewUrl,
 				prompt: finalPrompt,
-			});
+			}));
+			setGeneratedImages(images);
 			setView("preview");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to generate image");
@@ -486,19 +492,22 @@ export function ImagesModal({
 		}
 	};
 
-	// Attach generated image to content
-	const handleAttachGeneratedImage = async () => {
-		if (!generatedImage) return;
+	// Attach all generated images to content
+	const handleAttachGeneratedImages = async () => {
+		if (generatedImages.length === 0) return;
 
 		try {
-			await attachImage({
-				contentPieceId,
-				fileId: generatedImage.fileId,
-				generatedPrompt: generatedImage.prompt,
-			});
+			// Attach all images in sequence
+			for (const image of generatedImages) {
+				await attachImage({
+					contentPieceId,
+					fileId: image.fileId,
+					generatedPrompt: image.prompt,
+				});
+			}
 
 			// Reset and go back to gallery
-			setGeneratedImage(null);
+			setGeneratedImages([]);
 			setGeneratedPrompt("");
 			setFormState({
 				imageType: "illustration",
@@ -512,19 +521,19 @@ export function ImagesModal({
 			});
 			setView("gallery");
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to attach image");
+			setError(err instanceof Error ? err.message : "Failed to attach images");
 		}
 	};
 
-	// Discard generated image
-	const handleDiscardGeneratedImage = () => {
-		setGeneratedImage(null);
+	// Discard generated images
+	const handleDiscardGeneratedImages = () => {
+		setGeneratedImages([]);
 		setView("generate");
 	};
 
 	// Retry with same form values
 	const handleRetry = () => {
-		setGeneratedImage(null);
+		setGeneratedImages([]);
 		setView("generate");
 	};
 
@@ -906,16 +915,40 @@ export function ImagesModal({
 						)}
 
 						{/* Preview View */}
-						{view === "preview" && generatedImage && (
+						{view === "preview" && generatedImages.length > 0 && (
 							<div className="space-y-6">
-								{/* Image Preview */}
-								<div className="bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden">
-									<img
-										src={generatedImage.previewUrl}
-										alt="Generated image"
-										className="max-w-full max-h-96 object-contain"
-									/>
-								</div>
+								{/* Image count indicator */}
+								{generatedImages.length > 1 && (
+									<div className="text-sm text-slate-600 text-center">
+										Generated {generatedImages.length} images
+									</div>
+								)}
+
+								{/* Image Preview Grid */}
+								{generatedImages.length === 1 ? (
+									<div className="bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden">
+										<img
+											src={generatedImages[0].previewUrl}
+											alt="Generated image"
+											className="max-w-full max-h-96 object-contain"
+										/>
+									</div>
+								) : (
+									<div className="grid grid-cols-2 gap-4">
+										{generatedImages.map((image, index) => (
+											<div
+												key={image.fileId}
+												className="bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden aspect-square"
+											>
+												<img
+													src={image.previewUrl}
+													alt={`Generated image ${index + 1}`}
+													className="max-w-full max-h-full object-contain"
+												/>
+											</div>
+										))}
+									</div>
+								)}
 
 								{/* Prompt Used (Collapsible) */}
 								<details className="text-sm">
@@ -923,7 +956,7 @@ export function ImagesModal({
 										View prompt used
 									</summary>
 									<div className="mt-2 p-3 bg-slate-50 rounded-lg text-slate-700 whitespace-pre-wrap">
-										{generatedImage.prompt}
+										{generatedImages[0]?.prompt}
 									</div>
 								</details>
 							</div>
@@ -1046,7 +1079,7 @@ export function ImagesModal({
 							<>
 								<button
 									type="button"
-									onClick={handleDiscardGeneratedImage}
+									onClick={handleDiscardGeneratedImages}
 									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
 								>
 									Discard
@@ -1061,10 +1094,12 @@ export function ImagesModal({
 									</button>
 									<button
 										type="button"
-										onClick={handleAttachGeneratedImage}
+										onClick={handleAttachGeneratedImages}
 										className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
 									>
-										Attach Image
+										{generatedImages.length > 1
+											? `Attach All ${generatedImages.length} Images`
+											: "Attach Image"}
 									</button>
 								</div>
 							</>

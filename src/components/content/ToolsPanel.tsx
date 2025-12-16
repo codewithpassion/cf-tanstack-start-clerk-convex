@@ -151,20 +151,20 @@ export function ToolsPanel({
 	return (
 		<div
 			data-testid="tools-panel"
-			className="flex flex-col h-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm"
+			className="flex flex-col h-full bg-gradient-to-br from-white via-slate-50 to-slate-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 border border-slate-200 dark:border-slate-800 dark:border-t-2 dark:border-t-amber-400/30 rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.15)]"
 		>
 			{/* Panel Header */}
 			<div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800">
-				<h3 className="font-semibold text-slate-900 dark:text-white">Content Actions</h3>
+				<h3 className="font-semibold text-slate-900 dark:text-amber-50 font-['Lexend']">Content Actions</h3>
 			</div>
 
 			{/* AI Action Buttons */}
-			<div className="px-4 py-4 space-y-2 border-b border-slate-200">
-				{/* Refine Button - Primary CTA */}
+			<div className="px-4 py-4 space-y-2 border-b border-slate-200 dark:border-slate-800">
+				{/* Refine Button - Primary CTA with Amber */}
 				<button
 					type="button"
 					onClick={onRefine}
-					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-600 text-white text-sm font-medium rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-400 text-white text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/30 dark:hover:shadow-amber-400/30"
 				>
 					<Sparkles className="w-4 h-4" />
 					Refine
@@ -175,7 +175,7 @@ export function ToolsPanel({
 					<button
 						type="button"
 						onClick={onFinalize}
-						className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+						className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-300"
 					>
 						<Unlock className="w-4 h-4" />
 						Unlock
@@ -184,7 +184,7 @@ export function ToolsPanel({
 					<button
 						type="button"
 						onClick={onFinalize}
-						className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+						className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-300"
 					>
 						<Lock className="w-4 h-4" />
 						Finalize
@@ -195,7 +195,7 @@ export function ToolsPanel({
 				<button
 					type="button"
 					onClick={onRepurpose}
-					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-300"
 				>
 					<GitFork className="w-4 h-4" />
 					Repurpose
@@ -203,12 +203,12 @@ export function ToolsPanel({
 			</div>
 
 			{/* Content Actions */}
-			<div className="px-4 py-4 space-y-2 border-b border-slate-200">
+			<div className="px-4 py-4 space-y-2 border-b border-slate-200 dark:border-slate-800">
 				{/* Version History Button */}
 				<button
 					type="button"
 					onClick={onShowVersions}
-					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-300"
 				>
 					<Clock className="w-4 h-4" />
 					Versions
@@ -218,7 +218,7 @@ export function ToolsPanel({
 				<button
 					type="button"
 					onClick={onDelete}
-					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-red-600 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium rounded-lg hover:bg-red-600 hover:text-white dark:hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+					className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-red-600 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium rounded-lg hover:bg-red-600 hover:text-white dark:hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-300"
 				>
 					<Trash2 className="w-4 h-4" />
 					Delete
@@ -228,7 +228,7 @@ export function ToolsPanel({
 			{/* Relationships Section */}
 			{hasRelationships && (
 				<div className="px-4 py-4 border-b border-slate-200 dark:border-slate-800">
-					<h4 className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">
+					<h4 className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wide mb-3">
 						Relationships
 					</h4>
 
@@ -308,14 +308,14 @@ export function ToolsPanel({
 			{/* Images Gallery */}
 			<div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">
 				<div className="flex items-center justify-between mb-3">
-					<h4 className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">
+					<h4 className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wide">
 						Images
 					</h4>
 					<div className="flex items-center gap-1">
 						<button
 							type="button"
 							onClick={onOpenImagesGenerate}
-							className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded hover:bg-purple-100 dark:hover:bg-purple-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-purple-500 transition-colors"
+							className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded hover:bg-amber-100 dark:hover:bg-amber-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500 transition-colors"
 							title="Generate AI image"
 						>
 							<Sparkles className="w-3 h-3" />
@@ -323,7 +323,7 @@ export function ToolsPanel({
 						<button
 							type="button"
 							onClick={onOpenImagesModal}
-							className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 rounded hover:bg-cyan-100 dark:hover:bg-cyan-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 transition-colors"
+							className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500 transition-colors"
 						>
 							<Image className="w-3 h-3" />
 							Manage
@@ -333,7 +333,7 @@ export function ToolsPanel({
 
 				{contentImages === undefined ? (
 					<div className="flex items-center justify-center py-8">
-						<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-cyan-600" />
+						<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-500" />
 					</div>
 				) : contentImages.length === 0 ? (
 					<div className="text-center text-slate-500 dark:text-slate-400 text-sm py-8">
@@ -370,7 +370,7 @@ export function ToolsPanel({
 										});
 									}
 								}}
-								className="relative group border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md transition-all"
+								className="relative group border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md dark:hover:shadow-[0_4px_15px_rgba(0,0,0,0.3),0_0_15px_rgba(251,191,36,0.1)] hover:border-amber-400/50 dark:hover:border-amber-400/50 transition-all duration-300"
 							>
 								<div className="aspect-square bg-slate-100 dark:bg-slate-950 flex items-center justify-center overflow-hidden">
 									{image.file ? (

@@ -14,13 +14,13 @@ import resizeImage, { initResize } from "@jsquash/resize";
 
 // Import WASM modules as raw binary data
 // @ts-ignore: Ignore type issues for WASM imports
-import jpegDecWasm from "../../node_modules/@jsquash/jpeg/codec/dec/mozjpeg_dec.wasm?url";
+import jpegDecWasm from "../../node_modules/@jsquash/jpeg/codec/dec/mozjpeg_dec.wasm";
 // @ts-ignore: Ignore type issues for WASM imports
-import jpegEncWasm from "../../node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm?url";
+import jpegEncWasm from "../../node_modules/@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm";
 // @ts-ignore: Ignore type issues for WASM imports
-import pngDecWasm from "../../node_modules/@jsquash/png/codec/pkg/squoosh_png_bg.wasm?url";
+import pngDecWasm from "../../node_modules/@jsquash/png/codec/pkg/squoosh_png_bg.wasm";
 // @ts-ignore: Ignore type issues for WASM imports
-import resizeWasm from "../../node_modules/@jsquash/resize/lib/resize/pkg/squoosh_resize_bg.wasm?url";
+import resizeWasm from "../../node_modules/@jsquash/resize/lib/resize/pkg/squoosh_resize_bg.wasm";
 
 // WASM initialization state tracking
 let jpegDecodeInitialized = false;

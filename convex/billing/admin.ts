@@ -437,14 +437,52 @@ export const grantTokens = mutation({
 			throw new ConvexError("Insufficient permissions: tokens.grant required");
 		}
 
-		// Get the target user account
-		const targetAccount = await ctx.db
+		// Get the target user
+		const targetUser = await ctx.db.get(targetUserId);
+		if (!targetUser) {
+			throw new ConvexError("Target user not found");
+		}
+
+		// Get the target user's workspace
+		const targetWorkspace = await ctx.db
+			.query("workspaces")
+			.withIndex("by_userId", (q) => q.eq("userId", targetUserId))
+			.unique();
+
+		if (!targetWorkspace) {
+			throw new ConvexError("Target user has no workspace");
+		}
+
+		// Get or create the target user's token account
+		let targetAccount = await ctx.db
 			.query("tokenAccounts")
 			.withIndex("by_userId", (q) => q.eq("userId", targetUserId))
 			.unique();
 
 		if (!targetAccount) {
-			throw new ConvexError("Target user account not found");
+			// Create a new token account for the user (without welcome bonus since this is admin action)
+			const now = Date.now();
+			const accountId = await ctx.db.insert("tokenAccounts", {
+				userId: targetUserId,
+				workspaceId: targetWorkspace._id,
+				balance: 0,
+				lifetimeTokensPurchased: 0,
+				lifetimeTokensUsed: 0,
+				lifetimeActualTokensUsed: 0,
+				lifetimeSpentCents: 0,
+				autoRechargeEnabled: false,
+				stripeCustomerId: undefined,
+				defaultPaymentMethodId: undefined,
+				currency: "usd",
+				status: "active",
+				createdAt: now,
+				updatedAt: now,
+			});
+
+			targetAccount = await ctx.db.get(accountId);
+			if (!targetAccount) {
+				throw new ConvexError("Failed to create token account");
+			}
 		}
 
 		// Add tokens using the addTokens mutation
@@ -461,6 +499,198 @@ export const grantTokens = mutation({
 			success: true,
 			newBalance,
 		};
+	},
+});
+
+/**
+ * Deduct tokens from a user (superadmin only).
+ *
+ * Allows superadmins to manually remove tokens from a user's account.
+ * Requires superadmin role. Creates a transaction record
+ * with type "admin_deduction" and updates the user's balance.
+ *
+ * @param targetUserId - The user ID to deduct tokens from
+ * @param tokenAmount - The number of tokens to deduct (positive number)
+ * @param reason - Reason for deducting tokens (for audit trail)
+ * @returns Success status with new balance
+ *
+ * @throws {ConvexError} If user is not authenticated
+ * @throws {ConvexError} If user lacks sufficient permissions
+ * @throws {ConvexError} If target user or account is not found
+ * @throws {ConvexError} If token amount exceeds current balance
+ *
+ * @example
+ * ```ts
+ * const result = await ctx.runMutation(api.billing.admin.deductTokens, {
+ *   targetUserId: userId,
+ *   tokenAmount: 10000,
+ *   reason: "Refund adjustment"
+ * });
+ * console.log(`New balance: ${result.newBalance} tokens`);
+ * ```
+ */
+export const deductTokens = mutation({
+	args: {
+		targetUserId: v.id("users"),
+		tokenAmount: v.number(),
+		reason: v.string(),
+	},
+	handler: async (
+		ctx: MutationCtx,
+		{ targetUserId, tokenAmount, reason },
+	): Promise<{ success: boolean; newBalance: number }> => {
+		// Verify authentication
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new ConvexError("Not authenticated");
+		}
+
+		// Get the admin user
+		const admin = await ctx.db
+			.query("users")
+			.withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+			.unique();
+
+		if (!admin) {
+			throw new ConvexError("Admin user not found");
+		}
+
+		// Verify superadmin permissions (tokens.deduct)
+		const roles = admin.roles || [];
+		const hasPermission = roles.includes("superadmin");
+
+		if (!hasPermission) {
+			throw new ConvexError("Insufficient permissions: tokens.deduct required (superadmin only)");
+		}
+
+		// Validate token amount is positive
+		if (tokenAmount <= 0) {
+			throw new ConvexError("Token amount must be a positive number");
+		}
+
+		// Get the target user account
+		const targetAccount = await ctx.db
+			.query("tokenAccounts")
+			.withIndex("by_userId", (q) => q.eq("userId", targetUserId))
+			.unique();
+
+		if (!targetAccount) {
+			throw new ConvexError("Target user has no token account. Cannot deduct tokens from a user without an account.");
+		}
+
+		// Calculate new balance
+		const newBalance = targetAccount.balance - tokenAmount;
+
+		// Update account balance directly
+		await ctx.db.patch(targetAccount._id, {
+			balance: newBalance,
+			status: newBalance < 0 ? "suspended" : targetAccount.status,
+			updatedAt: Date.now(),
+		});
+
+		// Record the transaction
+		await ctx.db.insert("tokenTransactions", {
+			userId: targetUserId,
+			workspaceId: targetAccount.workspaceId,
+			transactionType: "admin_deduction",
+			tokenAmount: -tokenAmount,
+			balanceBefore: targetAccount.balance,
+			balanceAfter: newBalance,
+			adminUserId: admin._id,
+			description: `Admin deduction: ${reason}`,
+			createdAt: Date.now(),
+		});
+
+		return {
+			success: true,
+			newBalance,
+		};
+	},
+});
+
+/**
+ * Search users by email or name (admin only).
+ *
+ * Allows admins to search for users to grant/deduct tokens.
+ * Returns matching users with their token account information.
+ *
+ * @param query - Search string to match against email or name
+ * @param limit - Maximum number of results (default: 10)
+ * @returns Array of users with their token account info
+ *
+ * @throws {ConvexError} If user is not authenticated
+ * @throws {ConvexError} If user lacks sufficient permissions
+ */
+export const searchUsers = query({
+	args: {
+		query: v.string(),
+		limit: v.optional(v.number()),
+	},
+	handler: async (ctx: QueryCtx, { query: searchQuery, limit = 10 }) => {
+		// Verify authentication
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new ConvexError("Not authenticated");
+		}
+
+		// Get the admin user
+		const admin = await ctx.db
+			.query("users")
+			.withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+			.unique();
+
+		if (!admin) {
+			throw new ConvexError("User not found");
+		}
+
+		// Verify superadmin permissions
+		const roles = admin.roles || [];
+		const isSuperAdmin = roles.includes("superadmin");
+
+		if (!isSuperAdmin) {
+			throw new ConvexError("Insufficient permissions: superadmin required");
+		}
+
+		// Search for users by email or name
+		// Note: Convex doesn't have full-text search, so we fetch and filter
+		const allUsers = await ctx.db.query("users").collect();
+
+		const lowerQuery = searchQuery.toLowerCase();
+		const matchingUsers = allUsers
+			.filter((user) => {
+				const emailMatch = user.email?.toLowerCase().includes(lowerQuery);
+				const nameMatch = user.name?.toLowerCase().includes(lowerQuery);
+				return emailMatch || nameMatch;
+			})
+			.slice(0, limit);
+
+		// Enrich with token account data
+		const enrichedUsers = await Promise.all(
+			matchingUsers.map(async (user) => {
+				const tokenAccount = await ctx.db
+					.query("tokenAccounts")
+					.withIndex("by_userId", (q) => q.eq("userId", user._id))
+					.unique();
+
+				return {
+					_id: user._id,
+					email: user.email,
+					name: user.name,
+					imageUrl: user.imageUrl,
+					roles: user.roles,
+					tokenAccount: tokenAccount
+						? {
+								_id: tokenAccount._id,
+								balance: tokenAccount.balance,
+								status: tokenAccount.status,
+								lifetimeTokensUsed: tokenAccount.lifetimeTokensUsed,
+							}
+						: null,
+				};
+			}),
+		);
+
+		return enrichedUsers;
 	},
 });
 

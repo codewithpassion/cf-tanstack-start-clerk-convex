@@ -441,7 +441,7 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().undo().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Undo"
 			>
 				<Undo className="h-4 w-4" />
@@ -449,19 +449,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().redo().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Redo"
 			>
 				<Redo className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1" />
 
 			{/* Headings dropdown placeholder - will be simple buttons for now */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Heading 1"
 			>
 				<Heading1 className="h-4 w-4" />
@@ -469,19 +469,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Heading 2"
 			>
 				<Heading2 className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1" />
 
 			{/* Lists */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleBulletList().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Bullet List"
 			>
 				<List className="h-4 w-4" />
@@ -489,19 +489,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Numbered List"
 			>
 				<ListOrdered className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1" />
 
 			{/* Text formatting */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleBold().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 font-bold transition-colors"
 				title="Bold"
 			>
 				<Bold className="h-4 w-4" />
@@ -509,7 +509,7 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleItalic().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 italic"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 italic transition-colors"
 				title="Italic"
 			>
 				<Italic className="h-4 w-4" />
@@ -517,7 +517,7 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleStrike().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Strikethrough"
 			>
 				<Strikethrough className="h-4 w-4" />
@@ -525,19 +525,19 @@ function SimpleEditorToolbar({ editor }: { editor: Editor | null }) {
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleCode().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-mono"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 font-mono transition-colors"
 				title="Code"
 			>
 				<Code className="h-4 w-4" />
 			</button>
 
-			<div className="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-1" />
+			<div className="w-px h-6 bg-slate-300 dark:bg-slate-700 mx-1" />
 
 			{/* Blockquote */}
 			<button
 				type="button"
 				onClick={() => editor.chain().focus().toggleBlockquote().run()}
-				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+				className="p-2 rounded hover:bg-slate-200 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-300 dark:hover:text-amber-400 transition-colors"
 				title="Quote"
 			>
 				<MessageSquareQuote className="h-4 w-4" />
@@ -721,8 +721,8 @@ export function ContentEditor({
 			</div>
 
 			{/* Novel Editor */}
-			<div className="sm:border sm:border-slate-200 sm:dark:border-slate-800 sm:rounded-lg overflow-hidden bg-white dark:bg-slate-900">
-				<div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2 px-3 sm:px-2">
+			<div className="sm:border sm:border-slate-200 sm:dark:border-slate-800 sm:dark:border-t-2 sm:dark:border-t-amber-400/30 sm:rounded-xl overflow-hidden bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 transition-all duration-300 sm:hover:shadow-lg dark:sm:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.1)]">
+				<div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 p-2 px-3 sm:px-2">
 					<SimpleEditorToolbar editor={toolbarEditor} />
 				</div>
 				<EditorRoot>
