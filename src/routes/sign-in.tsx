@@ -28,8 +28,7 @@ function SignInPage() {
       <div className="bg-white p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-6 text-center">Sign In</h1>
         <SignIn
-          routing="path"
-          path="/sign-in"
+          routing="virtual"
           signUpUrl="/sign-up"
           afterSignInUrl={redirect as string}
         />

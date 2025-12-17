@@ -24,9 +24,10 @@ export interface ProjectHeaderProps {
  */
 export function ProjectHeader({ project, onOpenBrandVoices, onOpenPersonas, onOpenKnowledgeBase, onOpenExamples }: ProjectHeaderProps) {
 	return (
-		<div className="bg-white dark:bg-slate-900 border-b-2 border-slate-200 dark:border-b-amber-400/20 px-4 md:px-6 py-4">
-			{/* Breadcrumb navigation */}
-			<nav className="flex mb-2" aria-label="Breadcrumb">
+		<div className="bg-white dark:bg-slate-900 border-b-2 border-slate-200 dark:border-b-amber-400/20 py-4">
+			<div className="max-w-7xl mx-auto px-4 md:px-6">
+				{/* Breadcrumb navigation */}
+				<nav className="flex mb-2" aria-label="Breadcrumb">
 				<ol className="flex items-center space-x-2 text-sm">
 					<li>
 						<Link
@@ -145,6 +146,7 @@ export function ProjectHeader({ project, onOpenBrandVoices, onOpenPersonas, onOp
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
+			</div>
 			</div>
 		</div>
 	);

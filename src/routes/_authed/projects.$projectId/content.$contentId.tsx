@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
 import { ContentEditor, parseContent } from "@/components/content/ContentEditor";
-import { ContentEditorLayout } from "@/components/content/ContentEditorLayout";
 import { ToolsPanel } from "@/components/content/ToolsPanel";
 import { FinalizeDialog } from "@/components/content/FinalizeDialog";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -400,105 +399,53 @@ function ContentEditorPage() {
 	const nextVersion = (contentPiece.currentFinalizedVersion ?? 0) + 1;
 
 	return (
-		<div className="h-full flex flex-col bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 dark:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] dark:from-amber-950/20 dark:via-slate-950 dark:to-slate-950">
-			{/* Page Header */}
-			<div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-b-2 dark:border-b-amber-400/20 px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-					<div className="flex items-center gap-2 md:gap-3 min-w-0">
+		<div className="fixed inset-0 top-[192px] flex flex-col overflow-hidden">
+			{/* Unified Header Bar */}
+			<div className="flex-shrink-0 border-b border-slate-900/10 dark:border-white/10 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl">
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-6 py-3">
+					<div className="flex items-center gap-4 min-w-0">
 						<Link
 							to="/projects/$projectId"
 							params={{ projectId }}
-							className="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 flex-shrink-0 transition-colors"
+							className="group flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
 						>
-							<svg
-								className="w-5 h-5"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth="1.5"
-								stroke="currentColor"
-							>
-								<title>Back</title>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-								/>
+							<svg className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+								<path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
 							</svg>
+							<span className="hidden sm:inline">Back to Project</span>
 						</Link>
-						<svg
-							className="w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0 hidden sm:block"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth="1.5"
-							stroke="currentColor"
-						>
-							<title>Document</title>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-							/>
-						</svg>
-						<h1 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-amber-50 truncate font-['Lexend']">
+						<div className="h-4 w-px bg-slate-300 dark:bg-slate-700 hidden sm:block" />
+						<h1 className="text-lg font-semibold text-slate-900 dark:text-white truncate tracking-tight">
 							{contentPiece.title}
 						</h1>
 					</div>
 
-					<div className="flex items-center gap-2 flex-wrap">
+					<div className="flex items-center gap-2">
 						{contentPiece.persona && (
-							<button
-								type="button"
-								className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-800 hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors"
-								title={`Persona: ${contentPiece.persona.name}`}
-							>
-								<svg
-									className="w-3 h-3 sm:w-4 sm:h-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth="1.5"
-									stroke="currentColor"
-								>
-									<title>Persona</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-									/>
+							<span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-gradient-to-br from-pink-500/10 to-rose-500/10 text-pink-700 dark:text-pink-300 rounded-md border border-pink-500/20" title={`Persona: ${contentPiece.persona.name}`}>
+								<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
 								</svg>
-								<span className="truncate max-w-[100px] sm:max-w-none">{contentPiece.persona.name}</span>
-							</button>
+								<span className="truncate max-w-[120px]">{contentPiece.persona.name}</span>
+							</span>
 						)}
 						{contentPiece.brandVoice && (
-							<button
-								type="button"
-								className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors"
-								title={`Voice: ${contentPiece.brandVoice.name}`}
-							>
-								<svg
-									className="w-3 h-3 sm:w-4 sm:h-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									strokeWidth="1.5"
-									stroke="currentColor"
-								>
-									<title>Voice</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"
-									/>
+							<span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-gradient-to-br from-purple-500/10 to-indigo-500/10 text-purple-700 dark:text-purple-300 rounded-md border border-purple-500/20" title={`Voice: ${contentPiece.brandVoice.name}`}>
+								<svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+									<path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
 								</svg>
-								<span className="truncate max-w-[100px] sm:max-w-none">{contentPiece.brandVoice.name}</span>
-							</button>
+								<span className="truncate max-w-[120px]">{contentPiece.brandVoice.name}</span>
+							</span>
 						)}
 					</div>
 				</div>
 			</div>
 
-			{/* Editor Layout with Tools Panel */}
-			<div className="flex-1 overflow-y-auto sm:px-4 md:px-6 sm:py-4 md:py-6">
-				<ContentEditorLayout
-					editor={
+			{/* Main Content Area - Split Pane Layout */}
+			<div className="flex-1 flex overflow-hidden bg-slate-50 dark:bg-slate-900">
+				{/* Editor Pane */}
+				<div className="flex-1 flex flex-col overflow-hidden">
+					<div className="flex-1 overflow-y-auto px-8 py-8 lg:px-16 lg:py-12">
 						<ContentEditor
 							key={contentPiece.content}
 							initialContent={contentPiece.content}
@@ -512,48 +459,52 @@ function ContentEditorPage() {
 								editorRef.current = editor;
 							}}
 						/>
-					}
-					toolsPanel={
-						<ToolsPanel
-							contentPieceId={contentId as Id<"contentPieces">}
-							projectId={projectId as Id<"projects">}
-							currentContent={contentPiece.content}
-							isFinalized={isFinalized}
-							parentContent={
-								contentPiece.parentContent
-									? {
-										_id: contentPiece.parentContent._id,
-										title: contentPiece.parentContent.title,
-									}
-									: null
-							}
-							derivedContent={derivedContent?.map((child) => ({
-								_id: child._id,
-								title: child.title,
-								category: child.category ? { name: child.category.name } : null,
-							}))}
-							onRefine={() => setShowRefineDialog(true)}
-							onRepurpose={() => setShowRepurposeDialog(true)}
-							onShowVersions={() => setShowVersionSidebar(true)}
-							onOpenImagesModal={() => {
-								setImagesModalInitialView("gallery");
-								setShowImagesModal(true);
-							}}
-							onOpenImagesGenerate={() => {
-								setImagesModalInitialView("generate");
-								setShowImagesModal(true);
-							}}
-							onFinalize={() => {
-								if (isFinalized) {
-									setShowUnfinalizeDialog(true);
-								} else {
-									setShowFinalizeDialog(true);
+					</div>
+				</div>
+
+				{/* Tools Panel - Sidebar */}
+				<div className="hidden lg:flex w-80 xl:w-96 flex-col border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+					<div className="flex-1 overflow-y-auto p-6">
+							<ToolsPanel
+								contentPieceId={contentId as Id<"contentPieces">}
+								projectId={projectId as Id<"projects">}
+								currentContent={contentPiece.content}
+								isFinalized={isFinalized}
+								parentContent={
+									contentPiece.parentContent
+										? {
+											_id: contentPiece.parentContent._id,
+											title: contentPiece.parentContent.title,
+										}
+										: null
 								}
-							}}
-							onDelete={() => setShowDeleteDialog(true)}
-						/>
-					}
-				/>
+								derivedContent={derivedContent?.map((child) => ({
+									_id: child._id,
+									title: child.title,
+									category: child.category ? { name: child.category.name } : null,
+								}))}
+								onRefine={() => setShowRefineDialog(true)}
+								onRepurpose={() => setShowRepurposeDialog(true)}
+								onShowVersions={() => setShowVersionSidebar(true)}
+								onOpenImagesModal={() => {
+									setImagesModalInitialView("gallery");
+									setShowImagesModal(true);
+								}}
+								onOpenImagesGenerate={() => {
+									setImagesModalInitialView("generate");
+									setShowImagesModal(true);
+								}}
+								onFinalize={() => {
+									if (isFinalized) {
+										setShowUnfinalizeDialog(true);
+									} else {
+										setShowFinalizeDialog(true);
+									}
+								}}
+								onDelete={() => setShowDeleteDialog(true)}
+							/>
+					</div>
+				</div>
 			</div>
 
 			{/* Finalize Dialog */}

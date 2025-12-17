@@ -55,10 +55,8 @@ export function ProjectLayout({ projectId }: ProjectLayoutProps) {
 				onOpenExamples={openExamples}
 			/>
 
-			<main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 dark:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] dark:from-amber-950/20 dark:via-slate-950 dark:to-slate-950">
-				<div className="max-w-7xl mx-auto sm:p-4 md:p-6">
-					<Outlet />
-				</div>
+			<main className="flex-1 flex flex-col overflow-hidden">
+				<Outlet />
 			</main>
 
 			{/* Configuration Modals */}
