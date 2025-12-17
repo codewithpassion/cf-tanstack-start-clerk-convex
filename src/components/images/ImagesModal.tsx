@@ -28,6 +28,43 @@ import {
 
 type ModalView = "gallery" | "generate" | "review-prompt" | "generating" | "preview";
 
+/**
+ * Extract plain text from TipTap JSON content
+ */
+function extractTextFromTipTapJSON(content: string): string {
+	try {
+		const parsed = JSON.parse(content);
+
+		const extractText = (node: any): string => {
+			if (!node) return "";
+
+			// Base case: text node
+			if (node.type === "text") {
+				return node.text || "";
+			}
+
+			// Recursive case: node with content array
+			if (Array.isArray(node.content)) {
+				const texts = node.content.map(extractText);
+				// Add spacing between paragraphs and other block elements
+				if (node.type === "paragraph" || node.type === "heading") {
+					return texts.join("") + "\n\n";
+				}
+				return texts.join("");
+			}
+
+			return "";
+		};
+
+		const plainText = extractText(parsed);
+		// Clean up excess whitespace
+		return plainText.trim().replace(/\n{3,}/g, "\n\n");
+	} catch (e) {
+		// If parsing fails, return original content (might already be plain text)
+		return content;
+	}
+}
+
 export interface ImagesModalProps {
 	isOpen: boolean;
 	onClose: () => void;
@@ -426,7 +463,8 @@ export function ImagesModal({
 			// Combine prompt with full content context for API call
 			let finalPrompt = promptResult.prompt;
 			if (formState.includeContentText && contentText) {
-				finalPrompt += `\n\nContent context: ${contentText}`;
+				const plainTextContent = extractTextFromTipTapJSON(contentText);
+				finalPrompt += `\n\nContent context:\n${plainTextContent}`;
 			}
 
 			// Then generate the image(s)
@@ -470,7 +508,8 @@ export function ImagesModal({
 			// Combine prompt with full content context for API call
 			let finalPrompt = generatedPrompt;
 			if (formState.includeContentText && contentText) {
-				finalPrompt += `\n\nContent context: ${contentText}`;
+				const plainTextContent = extractTextFromTipTapJSON(contentText);
+				finalPrompt += `\n\nContent context:\n${plainTextContent}`;
 			}
 
 			const imageResult = await generateImage({
@@ -929,7 +968,7 @@ export function ImagesModal({
 											Content Context <span className="text-slate-400 dark:text-slate-500 font-normal">(included with prompt)</span>
 										</label>
 										<div className="p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-600 dark:text-slate-300 max-h-32 overflow-y-auto whitespace-pre-wrap">
-											{contentText}
+											{extractTextFromTipTapJSON(contentText)}
 										</div>
 									</div>
 								)}

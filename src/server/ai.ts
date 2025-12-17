@@ -1189,10 +1189,17 @@ export const generateImagePrompt = createServerFn({ method: "POST" })
 			const model = createAIProvider(aiConfig, env);
 
 			// Construct prompt for LLM to generate DALL-E prompt
-			const systemPrompt = `You are an expert at creating detailed image generation prompts for DALL-E 3.
-Create a detailed, specific prompt that will produce high-quality images.
-Include visual details, style elements, composition, lighting, and atmosphere.
-Keep the prompt under 400 words and make it clear and specific.`;
+			const systemPrompt = `You are helping convert user image specifications into clear prompts for image generation.
+
+CRITICAL RULES:
+- Stay faithful to the user's input - only clarify or refine what they explicitly requested
+- Do NOT invent new subjects, scenes, activities, or details not mentioned by the user
+- Do NOT add elaborate descriptions unless the user asks for them
+- Keep the prompt concise and focused on what the user actually described
+- If the user's input is simple, keep your output simple
+- Only add technical details (composition, lighting, etc.) if the user mentioned them
+
+Your job is to slightly polish and format the user's request, NOT to reimagine it.`;
 
 			const inputParts: string[] = [
 				`Image type: ${data.imageType}`,
@@ -1212,7 +1219,7 @@ Keep the prompt under 400 words and make it clear and specific.`;
 				inputParts.push(`Colors: ${data.colors}`);
 			}
 
-			const userPrompt = `Create a detailed DALL-E 3 image generation prompt based on these specifications:\n\n${inputParts.join("\n")}\n\nGenerate only the prompt text, without any additional explanation or formatting.`;
+			const userPrompt = `Convert these specifications into a clear image generation prompt:\n\n${inputParts.join("\n")}\n\nOutput only the refined prompt text. Stay close to what the user specified - do not add extra details.`;
 
 			// Estimate token count for balance check
 			const estimatedPromptTokens = countPromptTokens(systemPrompt, userPrompt);
