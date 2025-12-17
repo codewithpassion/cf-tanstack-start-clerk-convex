@@ -48,8 +48,8 @@ export function ReviewStep({
 	if (isLoading) {
 		return (
 			<div className="text-center py-8">
-				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 mx-auto" />
-				<p className="mt-2 text-slate-500">Loading...</p>
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600 dark:border-cyan-400 mx-auto" />
+				<p className="mt-2 text-slate-500 dark:text-slate-400">Loading...</p>
 			</div>
 		);
 	}
@@ -57,27 +57,27 @@ export function ReviewStep({
 	return (
 		<div className="space-y-6">
 			<div>
-				<h2 className="text-2xl font-bold text-slate-900">Review Your Selections</h2>
-				<p className="mt-2 text-slate-600">
+				<h2 className="text-2xl font-bold text-slate-900 dark:text-white">Review Your Selections</h2>
+				<p className="mt-2 text-slate-600 dark:text-slate-300">
 					Review all details before generating your AI draft. You can edit any section.
 				</p>
 			</div>
 
 			<div className="space-y-4">
 				{/* Category */}
-				<div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+				<div className="bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
 					<div className="flex justify-between items-start">
 						<div className="flex-1">
-							<h3 className="text-sm font-medium text-slate-500 mb-1">Content Category</h3>
-							<p className="text-slate-900 font-medium">{category?.name || "Unknown"}</p>
+							<h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Content Category</h3>
+							<p className="text-slate-900 dark:text-white font-medium">{category?.name || "Unknown"}</p>
 							{category?.description && (
-								<p className="text-sm text-slate-600 mt-1">{category.description}</p>
+								<p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{category.description}</p>
 							)}
 						</div>
 						<button
 							type="button"
 							onClick={() => onEdit(1)}
-							className="text-sm text-cyan-600 hover:text-cyan-700 font-medium"
+							className="text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 font-medium"
 						>
 							Edit
 						</button>
@@ -85,25 +85,25 @@ export function ReviewStep({
 				</div>
 
 				{/* Persona */}
-				<div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+				<div className="bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
 					<div className="flex justify-between items-start">
 						<div className="flex-1">
-							<h3 className="text-sm font-medium text-slate-500 mb-1">Persona</h3>
+							<h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Persona</h3>
 							{persona ? (
 								<>
-									<p className="text-slate-900 font-medium">{persona.name}</p>
+									<p className="text-slate-900 dark:text-white font-medium">{persona.name}</p>
 									{persona.description && (
-										<p className="text-sm text-slate-600 mt-1">{persona.description}</p>
+										<p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{persona.description}</p>
 									)}
 								</>
 							) : (
-								<p className="text-slate-500 italic">No persona selected</p>
+								<p className="text-slate-500 dark:text-slate-500 italic">No persona selected</p>
 							)}
 						</div>
 						<button
 							type="button"
 							onClick={() => onEdit(2)}
-							className="text-sm text-cyan-600 hover:text-cyan-700 font-medium"
+							className="text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 font-medium"
 						>
 							Edit
 						</button>
@@ -111,25 +111,25 @@ export function ReviewStep({
 				</div>
 
 				{/* Brand Voice */}
-				<div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+				<div className="bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
 					<div className="flex justify-between items-start">
 						<div className="flex-1">
-							<h3 className="text-sm font-medium text-slate-500 mb-1">Brand Voice</h3>
+							<h3 className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">Brand Voice</h3>
 							{brandVoice ? (
 								<>
-									<p className="text-slate-900 font-medium">{brandVoice.name}</p>
+									<p className="text-slate-900 dark:text-white font-medium">{brandVoice.name}</p>
 									{brandVoice.description && (
-										<p className="text-sm text-slate-600 mt-1">{brandVoice.description}</p>
+										<p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{brandVoice.description}</p>
 									)}
 								</>
 							) : (
-								<p className="text-slate-500 italic">No brand voice selected</p>
+								<p className="text-slate-500 dark:text-slate-500 italic">No brand voice selected</p>
 							)}
 						</div>
 						<button
 							type="button"
 							onClick={() => onEdit(3)}
-							className="text-sm text-cyan-600 hover:text-cyan-700 font-medium"
+							className="text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 font-medium"
 						>
 							Edit
 						</button>
@@ -137,38 +137,38 @@ export function ReviewStep({
 				</div>
 
 				{/* Content Details */}
-				<div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+				<div className="bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
 					<div className="flex justify-between items-start mb-3">
-						<h3 className="text-sm font-medium text-slate-500">Content Details</h3>
+						<h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">Content Details</h3>
 						<button
 							type="button"
 							onClick={() => onEdit(4)}
-							className="text-sm text-cyan-600 hover:text-cyan-700 font-medium"
+							className="text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 font-medium"
 						>
 							Edit
 						</button>
 					</div>
 					<div className="space-y-2">
 						<div>
-							<p className="text-xs text-slate-500">Title</p>
-							<p className="text-slate-900 font-medium">{title}</p>
+							<p className="text-xs text-slate-600 dark:text-slate-400">Title</p>
+							<p className="text-slate-900 dark:text-white font-medium">{title}</p>
 						</div>
 						{topic && (
 							<div>
-								<p className="text-xs text-slate-500">Topic</p>
-								<p className="text-sm text-slate-700">{topic}</p>
+								<p className="text-xs text-slate-600 dark:text-slate-400">Topic</p>
+								<p className="text-sm text-slate-700 dark:text-slate-300">{topic}</p>
 							</div>
 						)}
 						{draftContent && (
 							<div>
-								<p className="text-xs text-slate-500">Draft Content</p>
-								<p className="text-sm text-slate-700 line-clamp-3">{draftContent}</p>
+								<p className="text-xs text-slate-600 dark:text-slate-400">Draft Content</p>
+								<p className="text-sm text-slate-700 dark:text-slate-300 line-clamp-3">{draftContent}</p>
 							</div>
 						)}
 						{uploadedFileIds.length > 0 && (
 							<div>
-								<p className="text-xs text-slate-500">Source Materials</p>
-								<p className="text-sm text-slate-700">
+								<p className="text-xs text-slate-600 dark:text-slate-400">Source Materials</p>
+								<p className="text-sm text-slate-700 dark:text-slate-300">
 									{uploadedFileIds.length} file{uploadedFileIds.length !== 1 ? "s" : ""} uploaded
 								</p>
 							</div>
@@ -177,17 +177,17 @@ export function ReviewStep({
 				</div>
 			</div>
 
-			<div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
-				<p className="text-sm text-cyan-900">
+			<div className="bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800 rounded-lg p-4">
+				<p className="text-sm text-cyan-900 dark:text-cyan-200">
 					Ready to generate? Click the button below to start AI content generation based on your selections.
 				</p>
 			</div>
 
-			<div className="flex gap-3 justify-between pt-4 border-t">
+			<div className="flex gap-3 justify-between pt-4 border-t border-slate-200 dark:border-slate-700">
 				<button
 					type="button"
 					onClick={onBack}
-					className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg"
+					className="px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
 				>
 					Back
 				</button>

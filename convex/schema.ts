@@ -145,6 +145,7 @@ export default defineSchema({
 		categoryId: v.id("categories"),
 		personaId: v.optional(v.id("personas")),
 		brandVoiceId: v.optional(v.id("brandVoices")),
+		selectedKnowledgeBaseIds: v.optional(v.array(v.id("knowledgeBaseItems"))),
 		parentContentId: v.optional(v.id("contentPieces")), // For derived content
 		title: v.string(),
 		content: v.string(), // JSON string from Novel editor

@@ -9,3 +9,6 @@ export type { ContentEditorLayoutProps } from "./ContentEditorLayout";
 
 export { AIChatPanel } from "./AIChatPanel";
 export type { AIChatPanelProps } from "./AIChatPanel";
+
+export { ContentCreationModal } from "./ContentCreationModal";
+export type { ContentCreationModalProps } from "./ContentCreationModal";

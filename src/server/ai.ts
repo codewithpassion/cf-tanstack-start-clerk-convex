@@ -56,6 +56,8 @@ export interface GenerateDraftInput {
 	title: string;
 	topic: string;
 	draftContent?: string;
+	uploadedFileIds?: Id<"files">[];
+	selectedKnowledgeBaseIds?: Id<"knowledgeBaseItems">[];
 }
 
 /**
@@ -66,6 +68,7 @@ export interface AssembleContextInput {
 	personaId?: Id<"personas">;
 	brandVoiceId?: Id<"brandVoices">;
 	projectId: Id<"projects">;
+	selectedKnowledgeBaseIds?: Id<"knowledgeBaseItems">[];
 }
 
 /**
@@ -181,13 +184,23 @@ async function fetchBrandVoiceContext(
 async function fetchRelevantKnowledge(
 	convex: ConvexHttpClient,
 	categoryId: Id<"categories">,
+	selectedKnowledgeBaseIds?: Id<"knowledgeBaseItems">[],
 ): Promise<Array<{ title: string; content: string }>> {
 	const items = await convex.query(api.knowledgeBase.listKnowledgeBaseItems, {
 		categoryId,
 	});
 
+	let filteredItems = items;
+
+	// Filter by selected IDs if provided
+	if (selectedKnowledgeBaseIds && selectedKnowledgeBaseIds.length > 0) {
+		filteredItems = items.filter(item =>
+			selectedKnowledgeBaseIds.includes(item._id)
+		);
+	}
+
 	// Limit to max allowed items
-	const limitedItems = items.slice(0, TOKEN_LIMITS.MAX_KNOWLEDGE_BASE_ITEMS);
+	const limitedItems = filteredItems.slice(0, TOKEN_LIMITS.MAX_KNOWLEDGE_BASE_ITEMS);
 
 	// Transform to simple objects with title and content
 	return limitedItems.map((item) => ({
@@ -228,7 +241,7 @@ export const assembleGenerationContext = createServerFn({ method: "POST" })
 	.inputValidator((input: AssembleContextInput) => input)
 	.handler(async ({ data }): Promise<GenerationContext> => {
 		const convex = await getAuthenticatedConvexClient();
-		const { categoryId, personaId, brandVoiceId } = data;
+		const { categoryId, personaId, brandVoiceId, selectedKnowledgeBaseIds } = data;
 
 		// Fetch all context in parallel
 		const [
@@ -245,7 +258,7 @@ export const assembleGenerationContext = createServerFn({ method: "POST" })
 			brandVoiceId
 				? fetchBrandVoiceContext(convex, brandVoiceId)
 				: Promise.resolve(undefined),
-			fetchRelevantKnowledge(convex, categoryId),
+			fetchRelevantKnowledge(convex, categoryId, selectedKnowledgeBaseIds),
 			fetchRelevantExamples(convex, categoryId),
 		]);
 
@@ -381,6 +394,7 @@ export const generateDraft = createServerFn({ method: "POST" })
 					personaId: data.personaId,
 					brandVoiceId: data.brandVoiceId,
 					projectId: contentPiece.projectId,
+					selectedKnowledgeBaseIds: data.selectedKnowledgeBaseIds,
 				},
 			});
 
@@ -832,6 +846,7 @@ export const refineContent = createServerFn({ method: "POST" })
 					personaId: contentPiece.personaId,
 					brandVoiceId: contentPiece.brandVoiceId,
 					projectId: contentPiece.projectId,
+					selectedKnowledgeBaseIds: contentPiece.selectedKnowledgeBaseIds,
 				},
 			});
 
@@ -1033,6 +1048,7 @@ export const refineSelection = createServerFn({ method: "POST" })
 					personaId: contentPiece.personaId,
 					brandVoiceId: contentPiece.brandVoiceId,
 					projectId: contentPiece.projectId,
+					selectedKnowledgeBaseIds: contentPiece.selectedKnowledgeBaseIds,
 				},
 			});
 
@@ -1514,6 +1530,7 @@ export const repurposeContent = createServerFn({ method: "POST" })
 					personaId: sourceContentPiece.personaId,
 					brandVoiceId: sourceContentPiece.brandVoiceId,
 					projectId: sourceContentPiece.projectId,
+					selectedKnowledgeBaseIds: sourceContentPiece.selectedKnowledgeBaseIds,
 				},
 			});
 

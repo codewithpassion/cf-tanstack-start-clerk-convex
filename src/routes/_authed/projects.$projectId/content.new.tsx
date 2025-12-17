@@ -1,11 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { ContentCreationWizard } from "@/components/content/ContentCreationWizard";
+import { useEffect } from "react";
+import { ContentCreationModal } from "@/components/content/ContentCreationModal";
+import { useModalQueryParam } from "@/hooks/useModalQueryParam";
 import type { Id } from "@/convex/dataModel";
 
 /**
- * Route for creating new content with the content creation wizard.
- * Opens the wizard modal and redirects to the editor upon completion.
+ * Route for creating new content with the content creation modal.
+ * Uses URL-based state management for modal open/close.
+ * Opens the modal via query param and redirects to the editor upon completion.
+ *
+ * URL pattern: /projects/:projectId/content/new?modal=new-content
+ * - Auto-opens modal on mount
+ * - Browser back button closes modal
+ * - Supports deep linking
  */
 export const Route = createFileRoute("/_authed/projects/$projectId/content/new")({
 	component: ContentNewPage,
@@ -14,39 +21,40 @@ export const Route = createFileRoute("/_authed/projects/$projectId/content/new")
 function ContentNewPage() {
 	const { projectId } = Route.useParams();
 	const navigate = useNavigate();
-	const [isWizardOpen, setIsWizardOpen] = useState(true);
+	const [isOpen, open, close] = useModalQueryParam("new-content");
 
-	const handleWizardClose = () => {
-		setIsWizardOpen(false);
-		// Navigate back to project page or content list
+	// Auto-open modal on mount
+	useEffect(() => {
+		if (!isOpen) {
+			open();
+		}
+	}, [isOpen, open]);
+
+	const handleClose = () => {
+		close(); // Removes modal param from URL
 		navigate({
 			to: "/projects/$projectId",
 			params: { projectId },
-			search: {},
 		});
 	};
 
-	const handleWizardComplete = (contentPieceId: Id<"contentPieces">) => {
-		setIsWizardOpen(false);
-		// Navigate to content editor
+	const handleComplete = (contentPieceId: Id<"contentPieces">) => {
+		close();
 		navigate({
 			to: "/projects/$projectId/content/$contentId",
 			params: {
 				projectId,
 				contentId: contentPieceId,
 			},
-			search: {},
 		});
 	};
 
 	return (
-		<div>
-			<ContentCreationWizard
-				isOpen={isWizardOpen}
-				projectId={projectId as Id<"projects">}
-				onClose={handleWizardClose}
-				onComplete={handleWizardComplete}
-			/>
-		</div>
+		<ContentCreationModal
+			isOpen={isOpen}
+			onClose={handleClose}
+			projectId={projectId as Id<"projects">}
+			onComplete={handleComplete}
+		/>
 	);
 }

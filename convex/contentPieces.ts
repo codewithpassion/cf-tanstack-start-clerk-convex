@@ -361,12 +361,13 @@ export const createContentPiece = mutation({
 		categoryId: v.id("categories"),
 		personaId: v.optional(v.id("personas")),
 		brandVoiceId: v.optional(v.id("brandVoices")),
+		selectedKnowledgeBaseIds: v.optional(v.array(v.id("knowledgeBaseItems"))),
 		title: v.string(),
 		content: v.string(),
 	},
 	handler: async (
 		ctx,
-		{ projectId, categoryId, personaId, brandVoiceId, title, content }
+		{ projectId, categoryId, personaId, brandVoiceId, selectedKnowledgeBaseIds, title, content }
 	) => {
 		const { workspace } = await authorizeWorkspaceAccess(ctx);
 
@@ -418,6 +419,7 @@ export const createContentPiece = mutation({
 			categoryId,
 			personaId,
 			brandVoiceId,
+			selectedKnowledgeBaseIds,
 			title: validatedTitle,
 			content: validatedContent,
 			status: "draft",
