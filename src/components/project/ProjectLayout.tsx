@@ -1,11 +1,14 @@
 import { Outlet } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { useState } from "react";
 import { api } from "../../../convex/_generated/api";
 import type { ProjectId } from "@/types/entities";
-import { ProjectSidebar } from "./ProjectSidebar";
 import { ProjectHeader } from "./ProjectHeader";
 import { LoadingState } from "../shared/LoadingState";
+import { useModalQueryParam } from "@/hooks/useModalQueryParam";
+import { BrandVoicesModal } from "../brand-voices/BrandVoicesModal";
+import { PersonasModal } from "../personas/PersonasModal";
+import { KnowledgeBaseModal } from "../knowledge-base/KnowledgeBaseModal";
+import { ExamplesModal } from "../examples/ExamplesModal";
 
 export interface ProjectLayoutProps {
 	projectId: ProjectId;
@@ -13,12 +16,17 @@ export interface ProjectLayoutProps {
 
 /**
  * Layout wrapper for all project pages.
- * Includes sidebar navigation, header, and content area.
- * Responsive: sidebar is a drawer on mobile, visible on desktop.
+ * Includes header with configuration buttons and content area.
+ * Configuration panels are displayed in modals.
  */
 export function ProjectLayout({ projectId }: ProjectLayoutProps) {
 	const project = useQuery(api.projects.getProject, { projectId });
-	const [sidebarOpen, setSidebarOpen] = useState(false);
+
+	// Modal state management via query params
+	const [brandVoicesOpen, openBrandVoices, closeBrandVoices] = useModalQueryParam("brand-voices");
+	const [personasOpen, openPersonas, closePersonas] = useModalQueryParam("personas");
+	const [knowledgeBaseOpen, openKnowledgeBase, closeKnowledgeBase] = useModalQueryParam("knowledge-base");
+	const [examplesOpen, openExamples, closeExamples] = useModalQueryParam("examples");
 
 	if (project === undefined) {
 		return <LoadingState message="Loading project..." />;
@@ -41,37 +49,23 @@ export function ProjectLayout({ projectId }: ProjectLayoutProps) {
 		<div className="min-h-screen flex flex-col">
 			<ProjectHeader
 				project={project}
-				onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-				sidebarOpen={sidebarOpen}
+				onOpenBrandVoices={openBrandVoices}
+				onOpenPersonas={openPersonas}
+				onOpenKnowledgeBase={openKnowledgeBase}
+				onOpenExamples={openExamples}
 			/>
 
-			<div className="flex flex-1 overflow-hidden relative">
-				{/* Mobile sidebar overlay */}
-				{sidebarOpen && (
-					<div
-						className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-						onClick={() => setSidebarOpen(false)}
-						onKeyDown={(e) => e.key === "Escape" && setSidebarOpen(false)}
-					/>
-				)}
-
-				{/* Sidebar - hidden on mobile by default, shown via toggle */}
-				<div
-					className={`
-						fixed inset-y-0 left-0 z-40 w-64 transform transition-transform duration-200 ease-in-out
-						lg:relative lg:translate-x-0 lg:z-0
-						${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-					`}
-				>
-					<ProjectSidebar projectId={projectId} onClose={() => setSidebarOpen(false)} />
+			<main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 dark:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] dark:from-amber-950/20 dark:via-slate-950 dark:to-slate-950">
+				<div className="max-w-7xl mx-auto sm:p-4 md:p-6">
+					<Outlet />
 				</div>
+			</main>
 
-				<main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 via-amber-50/20 to-slate-50 dark:bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] dark:from-amber-950/20 dark:via-slate-950 dark:to-slate-950">
-					<div className="max-w-7xl mx-auto sm:p-4 md:p-6">
-						<Outlet />
-					</div>
-				</main>
-			</div>
+			{/* Configuration Modals */}
+			{brandVoicesOpen && <BrandVoicesModal isOpen onClose={closeBrandVoices} projectId={projectId} />}
+			{personasOpen && <PersonasModal isOpen onClose={closePersonas} projectId={projectId} />}
+			{knowledgeBaseOpen && <KnowledgeBaseModal isOpen onClose={closeKnowledgeBase} projectId={projectId} />}
+			{examplesOpen && <ExamplesModal isOpen onClose={closeExamples} projectId={projectId} />}
 		</div>
 	);
 }

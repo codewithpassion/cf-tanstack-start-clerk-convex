@@ -21,11 +21,6 @@ import { Route as AuthedProjectsProjectIdRouteImport } from './routes/_authed/pr
 import { Route as AuthedAdminBillingRouteImport } from './routes/_authed/admin/billing'
 import { Route as AuthedProjectsProjectIdIndexRouteImport } from './routes/_authed/projects.$projectId.index'
 import { Route as AuthedProjectsProjectIdSettingsRouteImport } from './routes/_authed/projects.$projectId.settings'
-import { Route as AuthedProjectsProjectIdPersonasRouteImport } from './routes/_authed/projects.$projectId.personas'
-import { Route as AuthedProjectsProjectIdKnowledgeBaseRouteImport } from './routes/_authed/projects.$projectId.knowledge-base'
-import { Route as AuthedProjectsProjectIdExamplesRouteImport } from './routes/_authed/projects.$projectId.examples'
-import { Route as AuthedProjectsProjectIdCategoriesRouteImport } from './routes/_authed/projects.$projectId.categories'
-import { Route as AuthedProjectsProjectIdBrandVoicesRouteImport } from './routes/_authed/projects.$projectId.brand-voices'
 import { Route as AuthedProjectsProjectIdContentNewRouteImport } from './routes/_authed/projects.$projectId/content.new'
 import { Route as AuthedProjectsProjectIdContentContentIdRouteImport } from './routes/_authed/projects.$projectId/content.$contentId'
 
@@ -90,36 +85,6 @@ const AuthedProjectsProjectIdSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthedProjectsProjectIdRoute,
   } as any)
-const AuthedProjectsProjectIdPersonasRoute =
-  AuthedProjectsProjectIdPersonasRouteImport.update({
-    id: '/personas',
-    path: '/personas',
-    getParentRoute: () => AuthedProjectsProjectIdRoute,
-  } as any)
-const AuthedProjectsProjectIdKnowledgeBaseRoute =
-  AuthedProjectsProjectIdKnowledgeBaseRouteImport.update({
-    id: '/knowledge-base',
-    path: '/knowledge-base',
-    getParentRoute: () => AuthedProjectsProjectIdRoute,
-  } as any)
-const AuthedProjectsProjectIdExamplesRoute =
-  AuthedProjectsProjectIdExamplesRouteImport.update({
-    id: '/examples',
-    path: '/examples',
-    getParentRoute: () => AuthedProjectsProjectIdRoute,
-  } as any)
-const AuthedProjectsProjectIdCategoriesRoute =
-  AuthedProjectsProjectIdCategoriesRouteImport.update({
-    id: '/categories',
-    path: '/categories',
-    getParentRoute: () => AuthedProjectsProjectIdRoute,
-  } as any)
-const AuthedProjectsProjectIdBrandVoicesRoute =
-  AuthedProjectsProjectIdBrandVoicesRouteImport.update({
-    id: '/brand-voices',
-    path: '/brand-voices',
-    getParentRoute: () => AuthedProjectsProjectIdRoute,
-  } as any)
 const AuthedProjectsProjectIdContentNewRoute =
   AuthedProjectsProjectIdContentNewRouteImport.update({
     id: '/content/new',
@@ -143,11 +108,6 @@ export interface FileRoutesByFullPath {
   '/admin/billing': typeof AuthedAdminBillingRoute
   '/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
   '/settings/billing': typeof AuthedSettingsBillingRoute
-  '/projects/$projectId/brand-voices': typeof AuthedProjectsProjectIdBrandVoicesRoute
-  '/projects/$projectId/categories': typeof AuthedProjectsProjectIdCategoriesRoute
-  '/projects/$projectId/examples': typeof AuthedProjectsProjectIdExamplesRoute
-  '/projects/$projectId/knowledge-base': typeof AuthedProjectsProjectIdKnowledgeBaseRoute
-  '/projects/$projectId/personas': typeof AuthedProjectsProjectIdPersonasRoute
   '/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
   '/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
   '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
@@ -162,11 +122,6 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthedProfileRoute
   '/admin/billing': typeof AuthedAdminBillingRoute
   '/settings/billing': typeof AuthedSettingsBillingRoute
-  '/projects/$projectId/brand-voices': typeof AuthedProjectsProjectIdBrandVoicesRoute
-  '/projects/$projectId/categories': typeof AuthedProjectsProjectIdCategoriesRoute
-  '/projects/$projectId/examples': typeof AuthedProjectsProjectIdExamplesRoute
-  '/projects/$projectId/knowledge-base': typeof AuthedProjectsProjectIdKnowledgeBaseRoute
-  '/projects/$projectId/personas': typeof AuthedProjectsProjectIdPersonasRoute
   '/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
   '/projects/$projectId': typeof AuthedProjectsProjectIdIndexRoute
   '/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
@@ -184,11 +139,6 @@ export interface FileRoutesById {
   '/_authed/admin/billing': typeof AuthedAdminBillingRoute
   '/_authed/projects/$projectId': typeof AuthedProjectsProjectIdRouteWithChildren
   '/_authed/settings/billing': typeof AuthedSettingsBillingRoute
-  '/_authed/projects/$projectId/brand-voices': typeof AuthedProjectsProjectIdBrandVoicesRoute
-  '/_authed/projects/$projectId/categories': typeof AuthedProjectsProjectIdCategoriesRoute
-  '/_authed/projects/$projectId/examples': typeof AuthedProjectsProjectIdExamplesRoute
-  '/_authed/projects/$projectId/knowledge-base': typeof AuthedProjectsProjectIdKnowledgeBaseRoute
-  '/_authed/projects/$projectId/personas': typeof AuthedProjectsProjectIdPersonasRoute
   '/_authed/projects/$projectId/settings': typeof AuthedProjectsProjectIdSettingsRoute
   '/_authed/projects/$projectId/': typeof AuthedProjectsProjectIdIndexRoute
   '/_authed/projects/$projectId/content/$contentId': typeof AuthedProjectsProjectIdContentContentIdRoute
@@ -206,11 +156,6 @@ export interface FileRouteTypes {
     | '/admin/billing'
     | '/projects/$projectId'
     | '/settings/billing'
-    | '/projects/$projectId/brand-voices'
-    | '/projects/$projectId/categories'
-    | '/projects/$projectId/examples'
-    | '/projects/$projectId/knowledge-base'
-    | '/projects/$projectId/personas'
     | '/projects/$projectId/settings'
     | '/projects/$projectId/'
     | '/projects/$projectId/content/$contentId'
@@ -225,11 +170,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/admin/billing'
     | '/settings/billing'
-    | '/projects/$projectId/brand-voices'
-    | '/projects/$projectId/categories'
-    | '/projects/$projectId/examples'
-    | '/projects/$projectId/knowledge-base'
-    | '/projects/$projectId/personas'
     | '/projects/$projectId/settings'
     | '/projects/$projectId'
     | '/projects/$projectId/content/$contentId'
@@ -246,11 +186,6 @@ export interface FileRouteTypes {
     | '/_authed/admin/billing'
     | '/_authed/projects/$projectId'
     | '/_authed/settings/billing'
-    | '/_authed/projects/$projectId/brand-voices'
-    | '/_authed/projects/$projectId/categories'
-    | '/_authed/projects/$projectId/examples'
-    | '/_authed/projects/$projectId/knowledge-base'
-    | '/_authed/projects/$projectId/personas'
     | '/_authed/projects/$projectId/settings'
     | '/_authed/projects/$projectId/'
     | '/_authed/projects/$projectId/content/$contentId'
@@ -350,41 +285,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProjectsProjectIdSettingsRouteImport
       parentRoute: typeof AuthedProjectsProjectIdRoute
     }
-    '/_authed/projects/$projectId/personas': {
-      id: '/_authed/projects/$projectId/personas'
-      path: '/personas'
-      fullPath: '/projects/$projectId/personas'
-      preLoaderRoute: typeof AuthedProjectsProjectIdPersonasRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdRoute
-    }
-    '/_authed/projects/$projectId/knowledge-base': {
-      id: '/_authed/projects/$projectId/knowledge-base'
-      path: '/knowledge-base'
-      fullPath: '/projects/$projectId/knowledge-base'
-      preLoaderRoute: typeof AuthedProjectsProjectIdKnowledgeBaseRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdRoute
-    }
-    '/_authed/projects/$projectId/examples': {
-      id: '/_authed/projects/$projectId/examples'
-      path: '/examples'
-      fullPath: '/projects/$projectId/examples'
-      preLoaderRoute: typeof AuthedProjectsProjectIdExamplesRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdRoute
-    }
-    '/_authed/projects/$projectId/categories': {
-      id: '/_authed/projects/$projectId/categories'
-      path: '/categories'
-      fullPath: '/projects/$projectId/categories'
-      preLoaderRoute: typeof AuthedProjectsProjectIdCategoriesRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdRoute
-    }
-    '/_authed/projects/$projectId/brand-voices': {
-      id: '/_authed/projects/$projectId/brand-voices'
-      path: '/brand-voices'
-      fullPath: '/projects/$projectId/brand-voices'
-      preLoaderRoute: typeof AuthedProjectsProjectIdBrandVoicesRouteImport
-      parentRoute: typeof AuthedProjectsProjectIdRoute
-    }
     '/_authed/projects/$projectId/content/new': {
       id: '/_authed/projects/$projectId/content/new'
       path: '/content/new'
@@ -403,11 +303,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthedProjectsProjectIdRouteChildren {
-  AuthedProjectsProjectIdBrandVoicesRoute: typeof AuthedProjectsProjectIdBrandVoicesRoute
-  AuthedProjectsProjectIdCategoriesRoute: typeof AuthedProjectsProjectIdCategoriesRoute
-  AuthedProjectsProjectIdExamplesRoute: typeof AuthedProjectsProjectIdExamplesRoute
-  AuthedProjectsProjectIdKnowledgeBaseRoute: typeof AuthedProjectsProjectIdKnowledgeBaseRoute
-  AuthedProjectsProjectIdPersonasRoute: typeof AuthedProjectsProjectIdPersonasRoute
   AuthedProjectsProjectIdSettingsRoute: typeof AuthedProjectsProjectIdSettingsRoute
   AuthedProjectsProjectIdIndexRoute: typeof AuthedProjectsProjectIdIndexRoute
   AuthedProjectsProjectIdContentContentIdRoute: typeof AuthedProjectsProjectIdContentContentIdRoute
@@ -416,14 +311,6 @@ interface AuthedProjectsProjectIdRouteChildren {
 
 const AuthedProjectsProjectIdRouteChildren: AuthedProjectsProjectIdRouteChildren =
   {
-    AuthedProjectsProjectIdBrandVoicesRoute:
-      AuthedProjectsProjectIdBrandVoicesRoute,
-    AuthedProjectsProjectIdCategoriesRoute:
-      AuthedProjectsProjectIdCategoriesRoute,
-    AuthedProjectsProjectIdExamplesRoute: AuthedProjectsProjectIdExamplesRoute,
-    AuthedProjectsProjectIdKnowledgeBaseRoute:
-      AuthedProjectsProjectIdKnowledgeBaseRoute,
-    AuthedProjectsProjectIdPersonasRoute: AuthedProjectsProjectIdPersonasRoute,
     AuthedProjectsProjectIdSettingsRoute: AuthedProjectsProjectIdSettingsRoute,
     AuthedProjectsProjectIdIndexRoute: AuthedProjectsProjectIdIndexRoute,
     AuthedProjectsProjectIdContentContentIdRoute:

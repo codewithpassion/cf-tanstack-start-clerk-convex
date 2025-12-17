@@ -1,19 +1,27 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import type { Project } from "@/types/entities";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export interface ProjectHeaderProps {
 	project: Project;
-	onToggleSidebar?: () => void;
-	sidebarOpen?: boolean;
+	onOpenBrandVoices: () => void;
+	onOpenPersonas: () => void;
+	onOpenKnowledgeBase: () => void;
+	onOpenExamples: () => void;
 }
 
 /**
  * Project header with breadcrumb navigation and project name.
  * Shows navigation path from dashboard to current project.
- * Includes mobile sidebar toggle button.
+ * Includes configuration buttons for desktop and dropdown for mobile.
  */
-export function ProjectHeader({ project, onToggleSidebar, sidebarOpen }: ProjectHeaderProps) {
+export function ProjectHeader({ project, onOpenBrandVoices, onOpenPersonas, onOpenKnowledgeBase, onOpenExamples }: ProjectHeaderProps) {
 	return (
 		<div className="bg-white dark:bg-slate-900 border-b-2 border-slate-200 dark:border-b-amber-400/20 px-4 md:px-6 py-4">
 			{/* Breadcrumb navigation */}
@@ -45,17 +53,6 @@ export function ProjectHeader({ project, onToggleSidebar, sidebarOpen }: Project
 			{/* Project name and description */}
 			<div className="flex items-start justify-between gap-3">
 				<div className="flex items-center gap-3 min-w-0">
-					{/* Mobile sidebar toggle */}
-					{onToggleSidebar && (
-						<button
-							type="button"
-							onClick={onToggleSidebar}
-							className="lg:hidden flex-shrink-0 p-2 -ml-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-							aria-label={sidebarOpen ? "Close navigation" : "Open navigation"}
-						>
-							{sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-						</button>
-					)}
 					<div className="min-w-0">
 						<h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-amber-50 truncate font-['Lexend']">
 							{project.name}
@@ -66,6 +63,67 @@ export function ProjectHeader({ project, onToggleSidebar, sidebarOpen }: Project
 							</p>
 						)}
 					</div>
+				</div>
+
+				{/* Desktop config buttons */}
+				<div className="hidden lg:flex items-center gap-2">
+					<button
+						type="button"
+						onClick={onOpenBrandVoices}
+						className="px-3 py-2 text-sm font-medium rounded-md text-cyan-700 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 transition-colors"
+					>
+						Brand Voice
+					</button>
+					<button
+						type="button"
+						onClick={onOpenPersonas}
+						className="px-3 py-2 text-sm font-medium rounded-md text-cyan-700 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 transition-colors"
+					>
+						Personas
+					</button>
+					<button
+						type="button"
+						onClick={onOpenKnowledgeBase}
+						className="px-3 py-2 text-sm font-medium rounded-md text-cyan-700 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 transition-colors"
+					>
+						Knowledge Base
+					</button>
+					<button
+						type="button"
+						onClick={onOpenExamples}
+						className="px-3 py-2 text-sm font-medium rounded-md text-cyan-700 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 transition-colors"
+					>
+						Examples
+					</button>
+				</div>
+
+				{/* Mobile config dropdown */}
+				<div className="lg:hidden">
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<button
+								type="button"
+								className="px-3 py-2 text-sm font-medium rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 transition-colors inline-flex items-center gap-1"
+							>
+								Configure
+								<ChevronDown className="w-4 h-4" />
+							</button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem onClick={onOpenBrandVoices}>
+								Brand Voice
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={onOpenPersonas}>
+								Personas
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={onOpenKnowledgeBase}>
+								Knowledge Base
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={onOpenExamples}>
+								Examples
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 			</div>
 		</div>

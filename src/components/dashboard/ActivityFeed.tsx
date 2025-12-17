@@ -180,7 +180,7 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
 									</Link>
 								) : isProjectAction ? (
 									<Link
-										to="/projects/$projectId/categories"
+										to="/projects/$projectId"
 										params={{ projectId: activity.projectId }}
 										className="group"
 									>

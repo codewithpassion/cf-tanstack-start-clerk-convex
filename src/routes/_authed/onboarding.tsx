@@ -21,7 +21,7 @@ function OnboardingPage() {
 	const handleComplete = (projectId: Id<"projects">) => {
 		// Navigate to the newly created project
 		navigate({
-			to: "/projects/$projectId/categories",
+			to: "/projects/$projectId",
 			params: { projectId },
 		});
 	};

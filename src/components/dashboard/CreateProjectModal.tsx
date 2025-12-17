@@ -54,7 +54,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 
 			// Navigate to the new project
 			router.navigate({
-				to: "/projects/$projectId/categories",
+				to: "/projects/$projectId",
 				params: { projectId: result.projectId },
 			});
 

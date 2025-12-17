@@ -109,12 +109,12 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 					id="name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
-					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 dark:text-white bg-white dark:bg-slate-800"
 					placeholder="e.g., Marketing Manager Persona"
 					maxLength={100}
 					required
 				/>
-				<p className="text-xs text-slate-500 mt-1">{name.length}/100 characters</p>
+				<p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{name.length}/100 characters</p>
 			</div>
 
 			<div>
@@ -126,11 +126,11 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
 					rows={4}
-					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 dark:text-white bg-white dark:bg-slate-800"
 					placeholder="Describe your target persona: demographics, pain points, goals, preferences..."
 					maxLength={2000}
 				/>
-				<p className="text-xs text-slate-500 mt-1">{description.length}/2000 characters</p>
+				<p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{description.length}/2000 characters</p>
 			</div>
 
 			{persona && (
@@ -155,8 +155,8 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 			)}
 
 			{!persona && (
-				<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-					<p className="text-sm text-blue-800">
+				<div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+					<p className="text-sm text-blue-800 dark:text-blue-200">
 						<strong>Tip:</strong> After creating this persona, you'll be able to upload audience
 						research, persona documents, or other reference materials.
 					</p>
@@ -164,12 +164,12 @@ export function PersonaForm({ projectId, persona, onSuccess, onCancel }: Persona
 			)}
 
 			{error && (
-				<div className="bg-red-50 border border-red-200 rounded-lg p-4">
-					<p className="text-sm text-red-800">{error}</p>
+				<div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+					<p className="text-sm text-red-800 dark:text-red-200">{error}</p>
 				</div>
 			)}
 
-			<div className="flex items-center justify-end gap-3 pt-4 border-t">
+			<div className="flex items-center justify-end gap-3 pt-4 border-t dark:border-slate-700">
 				<button
 					type="button"
 					onClick={onCancel}
