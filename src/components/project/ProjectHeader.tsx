@@ -1,10 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Settings } from "lucide-react";
 import type { Project } from "@/types/entities";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -95,6 +96,14 @@ export function ProjectHeader({ project, onOpenBrandVoices, onOpenPersonas, onOp
 					>
 						Examples
 					</button>
+					<Link
+						to="/projects/$projectId/settings"
+						params={{ projectId: project._id }}
+						className="px-3 py-2 text-sm font-medium rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 transition-colors inline-flex items-center gap-1.5"
+					>
+						<Settings className="w-4 h-4" />
+						Settings
+					</Link>
 				</div>
 
 				{/* Mobile config dropdown */}
@@ -121,6 +130,17 @@ export function ProjectHeader({ project, onOpenBrandVoices, onOpenPersonas, onOp
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={onOpenExamples}>
 								Examples
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem asChild>
+								<Link
+									to="/projects/$projectId/settings"
+									params={{ projectId: project._id }}
+									className="flex items-center gap-2"
+								>
+									<Settings className="w-4 h-4" />
+									Settings
+								</Link>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

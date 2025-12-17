@@ -66,17 +66,17 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 					onChange={(e) => setName(e.target.value)}
 					maxLength={50}
 					disabled={isLoading}
-					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-slate-100 disabled:cursor-not-allowed text-slate-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed text-slate-900 dark:text-white bg-white dark:bg-slate-950"
 					placeholder="e.g., Newsletter, Product Update"
 					aria-invalid={!!errors.name}
 					aria-describedby={errors.name ? "name-error" : undefined}
 				/>
 				{errors.name && (
-					<p id="name-error" className="mt-1 text-sm text-red-600">
+					<p id="name-error" className="mt-1 text-sm text-red-600 dark:text-red-400">
 						{errors.name}
 					</p>
 				)}
-				<p className="mt-1 text-xs text-slate-500">{name.length}/50 characters</p>
+				<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{name.length}/50 characters</p>
 			</div>
 
 			<div>
@@ -90,17 +90,17 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 					maxLength={2000}
 					rows={3}
 					disabled={isLoading}
-					className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-slate-100 disabled:cursor-not-allowed text-slate-900 bg-white"
+					className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed text-slate-900 dark:text-white bg-white dark:bg-slate-950"
 					placeholder="Describe the purpose of this category"
 					aria-invalid={!!errors.description}
 					aria-describedby={errors.description ? "description-error" : undefined}
 				/>
 				{errors.description && (
-					<p id="description-error" className="mt-1 text-sm text-red-600">
+					<p id="description-error" className="mt-1 text-sm text-red-600 dark:text-red-400">
 						{errors.description}
 					</p>
 				)}
-				<p className="mt-1 text-xs text-slate-500">{description.length}/2000 characters</p>
+				<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{description.length}/2000 characters</p>
 			</div>
 
 			<div>
@@ -120,11 +120,11 @@ export function CategoryForm({ category, onSubmit, onCancel, isLoading = false }
 					aria-describedby={errors.formatGuidelines ? "guidelines-error" : undefined}
 				/>
 				{errors.formatGuidelines && (
-					<p id="guidelines-error" className="mt-1 text-sm text-red-600">
+					<p id="guidelines-error" className="mt-1 text-sm text-red-600 dark:text-red-400">
 						{errors.formatGuidelines}
 					</p>
 				)}
-				<p className="mt-1 text-xs text-slate-500">{formatGuidelines.length}/5000 characters</p>
+				<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{formatGuidelines.length}/5000 characters</p>
 			</div>
 
 			<div className="flex justify-end gap-3 pt-4">

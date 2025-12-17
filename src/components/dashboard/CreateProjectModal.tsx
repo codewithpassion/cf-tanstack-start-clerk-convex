@@ -40,7 +40,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 		// Validate description
 		const trimmedDescription = description.trim();
 		if (trimmedDescription.length > VALIDATION.project.descriptionMaxLength) {
-			setError(`Description must be ${VALIDATION.project.descriptionMaxLength} characters or less`);
+			setError(`Instructions must be ${VALIDATION.project.descriptionMaxLength} characters or less`);
 			return;
 		}
 
@@ -129,8 +129,11 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 
 								<div>
 									<label htmlFor="project-description" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-										Description (optional)
+										Project Instructions (optional)
 									</label>
+									<p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+										This information will be used when generating content for this project.
+									</p>
 									<textarea
 										id="project-description"
 										value={description}
@@ -138,7 +141,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 										maxLength={VALIDATION.project.descriptionMaxLength}
 										rows={4}
 										className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white dark:bg-slate-950 text-slate-900 dark:text-white"
-										placeholder="Describe the purpose and goals of this project"
+										placeholder="Enter instructions for content generation"
 									/>
 									<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
 										{description.length} / {VALIDATION.project.descriptionMaxLength}

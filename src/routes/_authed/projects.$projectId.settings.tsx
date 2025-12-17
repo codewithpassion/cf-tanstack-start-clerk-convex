@@ -84,7 +84,7 @@ function SettingsPage() {
 		}
 
 		if (formData.description && formData.description.length > 2000) {
-			errors.description = "Description must be 2000 characters or less";
+			errors.description = "Instructions must be 2000 characters or less";
 		}
 
 		setFormErrors(errors);
@@ -208,18 +208,21 @@ function SettingsPage() {
 
 							<div>
 								<label htmlFor="project-description" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-									Description
+									Project Instructions
 								</label>
+								<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+									This information will be used when generating content for this project.
+								</p>
 								<textarea
 									id="project-description"
 									value={formData.description}
 									onChange={(e) => handleChange("description", e.target.value)}
 									rows={4}
-									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm bg-white dark:bg-slate-950 px-3 py-2 border ${formErrors.description
+									className={`mt-2 block w-full rounded-md shadow-sm sm:text-sm bg-white dark:bg-slate-950 px-3 py-2 border ${formErrors.description
 											? "border-red-300 focus:border-red-500 focus:ring-red-500"
 											: "border-slate-300 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500"
 										} text-slate-900 dark:text-white placeholder-slate-400`}
-									placeholder="Enter project description (optional)"
+									placeholder="Enter instructions for content generation (optional)"
 									maxLength={2000}
 									disabled={isSaving}
 								/>

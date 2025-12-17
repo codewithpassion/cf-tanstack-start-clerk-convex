@@ -38,7 +38,7 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 		// Validate description
 		const trimmedDescription = description.trim();
 		if (trimmedDescription.length > VALIDATION.project.descriptionMaxLength) {
-			setError(`Description must be ${VALIDATION.project.descriptionMaxLength} characters or less`);
+			setError(`Instructions must be ${VALIDATION.project.descriptionMaxLength} characters or less`);
 			return;
 		}
 
@@ -88,8 +88,11 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 
 				<div>
 					<label htmlFor="onboarding-project-description" className="block text-sm font-medium text-slate-700 mb-1">
-						Description (optional)
+						Project Instructions (optional)
 					</label>
+					<p className="text-xs text-slate-500 mb-2">
+						This information will be used when generating content for this project.
+					</p>
 					<textarea
 						id="onboarding-project-description"
 						value={description}
@@ -97,7 +100,7 @@ export function ProjectStep({ onNext }: ProjectStepProps) {
 						maxLength={VALIDATION.project.descriptionMaxLength}
 						rows={4}
 						className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 bg-white"
-						placeholder="Describe the purpose and goals of this project"
+						placeholder="Enter instructions for content generation"
 					/>
 					<p className="mt-1 text-xs text-slate-500">
 						{description.length} / {VALIDATION.project.descriptionMaxLength}
