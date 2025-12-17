@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ContentPiece, Category, Persona, BrandVoice, ContentFilters } from "@/types/entities";
 import { ContentArchiveList } from "./ContentArchiveList";
 import { ContentFilters as ContentFiltersComponent } from "./ContentFilters";
@@ -60,8 +60,20 @@ export function ContentArchiveView({
 	onCrossProjectSearchToggle,
 	defaultViewMode = "table",
 }: ContentArchiveViewProps) {
-	const [viewMode, setViewMode] = useState<ViewMode>(defaultViewMode);
+	// Initialize view mode from localStorage or use default
+	const [viewMode, setViewMode] = useState<ViewMode>(() => {
+		if (typeof window === "undefined") return defaultViewMode;
+		const stored = localStorage.getItem("contentArchiveViewMode");
+		return (stored === "table" || stored === "cards") ? stored : defaultViewMode;
+	});
 	const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+	// Persist view mode to localStorage whenever it changes
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			localStorage.setItem("contentArchiveViewMode", viewMode);
+		}
+	}, [viewMode]);
 	const [sortColumn, setSortColumn] = useState<
 		"title" | "category" | "status" | "createdAt" | "updatedAt"
 	>("updatedAt");
