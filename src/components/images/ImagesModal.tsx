@@ -53,6 +53,7 @@ interface GenerationFormState {
 	colors: string;
 	includeContentText: boolean;
 	aspectRatio: AspectRatio;
+	imageCount: number;
 }
 
 // Preset options for editable selects
@@ -305,6 +306,7 @@ export function ImagesModal({
 		colors: "",
 		includeContentText: false,
 		aspectRatio: "square",
+		imageCount: 1,
 	});
 	const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
@@ -340,6 +342,7 @@ export function ImagesModal({
 				colors: "",
 				includeContentText: false,
 				aspectRatio: "square",
+				imageCount: 1,
 			});
 			setShowAdvancedOptions(false);
 			setGeneratedPrompt("");
@@ -431,6 +434,7 @@ export function ImagesModal({
 				data: {
 					prompt: finalPrompt,
 					aspectRatio: formState.aspectRatio,
+					imageCount: formState.imageCount,
 					workspaceId,
 					projectId,
 				},
@@ -473,6 +477,7 @@ export function ImagesModal({
 				data: {
 					prompt: finalPrompt,
 					aspectRatio: formState.aspectRatio,
+					imageCount: formState.imageCount,
 					workspaceId,
 					projectId,
 				},
@@ -518,6 +523,7 @@ export function ImagesModal({
 				colors: "",
 				includeContentText: false,
 				aspectRatio: "square",
+				imageCount: 1,
 			});
 			setView("gallery");
 		} catch (err) {
@@ -765,6 +771,31 @@ export function ImagesModal({
 										value={formState.aspectRatio}
 										onChange={(value) => setFormState({ ...formState, aspectRatio: value })}
 									/>
+								</div>
+
+								{/* Number of Images */}
+								<div>
+									<label htmlFor="image-count" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+										Number of Images
+									</label>
+									<div className="flex items-center gap-3">
+										<input
+											id="image-count"
+											type="range"
+											min="1"
+											max="4"
+											step="1"
+											value={formState.imageCount}
+											onChange={(e) => setFormState({ ...formState, imageCount: Number.parseInt(e.target.value) })}
+											className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-cyan-600 dark:accent-amber-500"
+										/>
+										<span className="text-sm font-medium text-slate-700 dark:text-slate-200 min-w-[2rem] text-center">
+											{formState.imageCount}
+										</span>
+									</div>
+									<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+										Generate 1-4 images per request
+									</p>
 								</div>
 
 								{/* Include Content Text Switch - moved above Style */}

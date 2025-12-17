@@ -11,6 +11,7 @@ export type ImageAspectRatio = "square" | "landscape" | "portrait";
 export interface GenerateImageInput {
 	prompt: string;
 	aspectRatio?: ImageAspectRatio;
+	imageCount?: number;
 	workspaceId: Id<"workspaces">;
 	projectId: Id<"projects">;
 }

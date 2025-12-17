@@ -40,18 +40,21 @@ export class GoogleImageGenerationStrategy implements ImageGenerationStrategy {
 		// Map aspect ratio for billing purposes (Google generates 1024x1024 for all aspect ratios)
 		const size = "1024x1024";
 
-		// Calculate fixed cost for at least 1 image (pre-flight check)
-		// Actual billing will be based on number of images returned
-		const singleImageBilling = calculateImageBillableTokens("google", size, 1);
+		// Default to 1 image if not specified
+		const requestedImageCount = input.imageCount ?? 1;
 
-		// Pre-flight balance check for at least 1 image
+		// Calculate fixed cost for requested number of images (pre-flight check)
+		// Actual billing will be based on number of images returned
+		const estimatedBilling = calculateImageBillableTokens("google", size, requestedImageCount);
+
+		// Pre-flight balance check for requested number of images
 		const balanceCheck = await convex.query(api.billing.accounts.checkBalance, {
 			userId: user._id,
-			requiredTokens: singleImageBilling.billableTokens,
+			requiredTokens: estimatedBilling.billableTokens,
 		});
 		if (!balanceCheck.sufficient) {
 			throw new Error(
-				`Insufficient token balance. You have ${balanceCheck.balance} tokens but need ${singleImageBilling.billableTokens} tokens for image generation.`,
+				`Insufficient token balance. You have ${balanceCheck.balance} tokens but need ${estimatedBilling.billableTokens} tokens for generating ${requestedImageCount} image${requestedImageCount > 1 ? "s" : ""}.`,
 			);
 		}
 
@@ -63,12 +66,15 @@ export class GoogleImageGenerationStrategy implements ImageGenerationStrategy {
 		});
 
 		try {
+			// Default to 1 image if not specified
+			const numberOfImages = input.imageCount ?? 1;
 
 			// The AI SDK returns an `images` array (may contain 1 or more images)
 			const { images } = await experimental_generateImage({
 				model: google.image("nano-banana-pro-preview"),
 				prompt: input.prompt,
 				aspectRatio: this.mapAspectRatio(input.aspectRatio),
+				n: numberOfImages,
 			});
 
 			// Process all returned images
