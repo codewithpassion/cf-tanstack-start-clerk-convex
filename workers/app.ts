@@ -6,6 +6,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../convex/_generated/api";
 import type { Id } from "../convex/_generated/dataModel";
 import { downloadFile } from "../src/lib/r2-client";
+import { PDFDocument } from "pdf-lib";
 
 
 interface CloudflareVariables {
@@ -98,6 +99,126 @@ app.get("/api/files/:fileId/preview", async (c) => {
 		});
 	} catch (error) {
 		console.error("File preview error:", error);
+		return c.json({ error: "Internal server error" }, 500);
+	}
+});
+
+// PDF export endpoint for content images
+app.get("/api/content/:contentPieceId/images-pdf", async (c) => {
+	try {
+		const auth = getAuth(c);
+		if (!auth?.userId) {
+			return c.json({ error: "Unauthorized" }, 401);
+		}
+
+		const contentPieceId = c.req.param("contentPieceId") as Id<"contentPieces">;
+
+		// Get Convex client with auth
+		const convexUrl = process.env.VITE_CONVEX_URL;
+		if (!convexUrl) {
+			console.error("VITE_CONVEX_URL not set");
+			return c.json({ error: "Configuration error" }, 500);
+		}
+
+		const convex = new ConvexHttpClient(convexUrl);
+		const token = await auth.getToken({ template: "convex" });
+		if (!token) {
+			return c.json({ error: "Failed to get auth token" }, 401);
+		}
+		convex.setAuth(token);
+
+		// Get all images for this content piece from Convex
+		const images = await convex.query(api.contentImages.listContentImages, {
+			contentPieceId,
+		});
+
+		if (!images || images.length === 0) {
+			return c.json({ error: "No images found for this content piece" }, 404);
+		}
+
+		// Get R2 bucket
+		const bucket = c.env.R2_BUCKET;
+		if (!bucket) {
+			console.error("R2 bucket binding not found");
+			return c.json({ error: "Storage not configured" }, 500);
+		}
+
+		// Create a new PDF document
+		const pdfDoc = await PDFDocument.create();
+
+		// Process each image
+		for (const image of images) {
+			if (!image.file) {
+				console.warn(`Skipping image ${image._id}: file metadata not found`);
+				continue;
+			}
+
+			try {
+				// Download image from R2
+				const object = await downloadFile(bucket, image.file.r2Key);
+				if (!object) {
+					console.warn(`Skipping image ${image._id}: file not found in R2`);
+					continue;
+				}
+
+				const imageBytes = await object.arrayBuffer();
+
+				// Embed the image in the PDF
+				let embeddedImage;
+				const mimeType = image.file.mimeType.toLowerCase();
+
+				if (mimeType === "image/jpeg" || mimeType === "image/jpg") {
+					embeddedImage = await pdfDoc.embedJpg(imageBytes);
+				} else if (mimeType === "image/png") {
+					embeddedImage = await pdfDoc.embedPng(imageBytes);
+				} else {
+					console.warn(
+						`Skipping image ${image._id}: unsupported format ${mimeType}`
+					);
+					continue;
+				}
+
+				// Get image dimensions
+				const { width, height } = embeddedImage.scale(1);
+
+				// Create a page with dimensions matching the image (no borders)
+				const page = pdfDoc.addPage([width, height]);
+
+				// Draw the image to fill the entire page
+				page.drawImage(embeddedImage, {
+					x: 0,
+					y: 0,
+					width,
+					height,
+				});
+			} catch (imageError) {
+				console.error(`Error processing image ${image._id}:`, imageError);
+				// Continue with next image instead of failing entire PDF
+				continue;
+			}
+		}
+
+		// Check if any pages were added
+		if (pdfDoc.getPageCount() === 0) {
+			return c.json({ error: "No valid images could be processed" }, 500);
+		}
+
+		// Serialize the PDF to bytes
+		const pdfBytes = await pdfDoc.save();
+
+		// Create a new Uint8Array to ensure proper type
+		const buffer = new Uint8Array(pdfBytes);
+
+		// Return the PDF with appropriate headers
+		return new Response(buffer, {
+			headers: {
+				"Content-Type": "application/pdf",
+				"Content-Disposition": `attachment; filename="images-${contentPieceId}.pdf"`,
+				"Content-Length": buffer.byteLength.toString(),
+			},
+		});
+	} catch (error) {
+		console.error("PDF generation error:", error);
 		return c.json({ error: "Internal server error" }, 500);
 	}
 });
