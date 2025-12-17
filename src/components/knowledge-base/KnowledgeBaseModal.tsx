@@ -96,6 +96,7 @@ export function KnowledgeBaseModal({ isOpen, onClose, projectId }: KnowledgeBase
 				size="2xl"
 			>
 				<KnowledgeBaseItemForm
+					projectId={projectId}
 					item={editingItem ?? undefined}
 					onSubmit={handleFormSubmit}
 					onCancel={() => {

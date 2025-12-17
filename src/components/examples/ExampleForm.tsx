@@ -1,7 +1,12 @@
 import { useState } from "react";
-import type { Doc } from "../../../convex/_generated/dataModel";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import type { Doc, Id } from "../../../convex/_generated/dataModel";
+import { FileUpload } from "../shared/FileUpload";
+import { FileList } from "../shared/FileList";
 
 export interface ExampleFormProps {
+	projectId: string;
 	example?: Doc<"examples">;
 	onSubmit: (data: { title: string; content?: string; notes?: string }) => void;
 	onCancel: () => void;
@@ -13,6 +18,7 @@ export interface ExampleFormProps {
  * Supports title, content, notes fields, and file uploads.
  */
 export function ExampleForm({
+	projectId,
 	example,
 	onSubmit,
 	onCancel,
@@ -22,6 +28,20 @@ export function ExampleForm({
 	const [content, setContent] = useState(example?.content || "");
 	const [notes, setNotes] = useState(example?.notes || "");
 	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [error, setError] = useState<string | null>(null);
+
+	const deleteFile = useMutation(api.files.deleteFile);
+
+	// Fetch files if editing existing example
+	const files = useQuery(
+		api.files.getFilesForOwner,
+		example ? { ownerType: "example", ownerId: example._id } : "skip"
+	);
+
+	const projectDoc = useQuery(api.projects.getProject, {
+		projectId: projectId as Id<"projects">,
+	});
+	const workspaceId = projectDoc?.workspaceId;
 
 	const validate = () => {
 		const newErrors: Record<string, string> = {};
@@ -53,6 +73,20 @@ export function ExampleForm({
 				content: content.trim() || undefined,
 				notes: notes.trim() || undefined,
 			});
+		}
+	};
+
+	const handleFileUploadComplete = (fileId: Id<"files">) => {
+		// File was uploaded successfully, it will appear in the files list
+		console.log("File uploaded:", fileId);
+	};
+
+	const handleFileDelete = async (fileId: Id<"files">) => {
+		try {
+			await deleteFile({ fileId });
+		} catch (err) {
+			console.error("File delete error:", err);
+			setError(err instanceof Error ? err.message : "Failed to delete file");
 		}
 	};
 
@@ -112,6 +146,42 @@ export function ExampleForm({
 				{errors.notes && <p className="mt-1 text-sm text-red-600">{errors.notes}</p>}
 				<p className="mt-1 text-xs text-slate-500">{notes.length}/2,000 characters</p>
 			</div>
+
+			{example && (
+				<div>
+					{files && files.length > 0 && (
+						<div className="mb-4">
+							<h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Attached Files</h4>
+							<FileList files={files} onDelete={handleFileDelete} />
+						</div>
+					)}
+
+					<label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Upload Files</label>
+					<FileUpload
+						onUploadComplete={handleFileUploadComplete}
+						ownerType="example"
+						ownerId={example._id}
+						workspaceId={workspaceId as string}
+						multiple={true}
+						disabled={!workspaceId}
+					/>
+				</div>
+			)}
+
+			{!example && (
+				<div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+					<p className="text-sm text-blue-800 dark:text-blue-200">
+						<strong>Tip:</strong> After creating this example, you'll be able to upload
+						sample files, documents, or images to showcase the example.
+					</p>
+				</div>
+			)}
+
+			{error && (
+				<div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+					<p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+				</div>
+			)}
 
 			<div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
 				<button

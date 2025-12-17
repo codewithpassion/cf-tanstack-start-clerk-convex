@@ -96,6 +96,7 @@ export function ExamplesModal({ isOpen, onClose, projectId }: ExamplesModalProps
 				size="2xl"
 			>
 				<ExampleForm
+					projectId={projectId}
 					example={editingExample ?? undefined}
 					onSubmit={handleFormSubmit}
 					onCancel={() => {

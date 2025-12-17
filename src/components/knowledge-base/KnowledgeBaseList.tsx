@@ -10,14 +10,14 @@ export interface KnowledgeBaseListProps {
 
 /**
  * List component for displaying knowledge base items.
- * Shows an empty state when no items exist, otherwise displays items in a grid.
+ * Shows an empty state when no items exist, otherwise displays items in a list.
  */
 export function KnowledgeBaseList({ items, onEdit, onDelete }: KnowledgeBaseListProps) {
 	if (items.length === 0) {
 		return (
 			<EmptyState
 				title="No knowledge base items"
-				description="Add reference materials, documentation, and resources for this category."
+				description="Add reference materials, documentation, and resources. You can also upload files after creating items."
 				icon={
 					<svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<title>Book</title>
@@ -34,7 +34,7 @@ export function KnowledgeBaseList({ items, onEdit, onDelete }: KnowledgeBaseList
 	}
 
 	return (
-		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+		<div className="space-y-4">
 			{items.map((item) => (
 				<KnowledgeBaseItemCard
 					key={item._id}

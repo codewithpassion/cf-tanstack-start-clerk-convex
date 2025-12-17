@@ -80,7 +80,7 @@ export function FileList({ files, onDelete, onDownload }: FileListProps) {
 
 	if (files.length === 0) {
 		return (
-			<div className="text-center py-6 text-slate-500 text-sm">
+			<div className="text-center py-6 text-slate-500 dark:text-slate-400 text-sm">
 				No files uploaded yet
 			</div>
 		);
@@ -91,7 +91,7 @@ export function FileList({ files, onDelete, onDownload }: FileListProps) {
 			{files.map((file) => (
 				<div
 					key={file._id}
-					className="border border-slate-200 rounded-lg p-4 hover:border-slate-300 transition-colors"
+					className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:border-slate-300 dark:hover:border-slate-600 transition-colors bg-white dark:bg-slate-800"
 				>
 					<div className="flex items-start gap-3">
 						<div className="flex-shrink-0">{getFileIcon(file.mimeType)}</div>
@@ -99,8 +99,8 @@ export function FileList({ files, onDelete, onDownload }: FileListProps) {
 						<div className="flex-1 min-w-0">
 							<div className="flex items-start justify-between gap-2">
 								<div className="flex-1 min-w-0">
-									<p className="text-sm font-medium text-slate-900 truncate">{file.filename}</p>
-									<p className="text-xs text-slate-500 mt-1">
+									<p className="text-sm font-medium text-slate-900 dark:text-white truncate">{file.filename}</p>
+									<p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
 										{formatFileSize(file.sizeBytes)} • Uploaded{" "}
 										{new Date(file.createdAt).toLocaleDateString()}
 									</p>
@@ -111,7 +111,7 @@ export function FileList({ files, onDelete, onDownload }: FileListProps) {
 										<button
 											type="button"
 											onClick={() => onDownload(file._id)}
-											className="text-slate-400 hover:text-cyan-600 transition-colors"
+											className="text-slate-400 dark:text-slate-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
 											title="Download file"
 											aria-label={`Download ${file.filename}`}
 										>
@@ -129,7 +129,7 @@ export function FileList({ files, onDelete, onDownload }: FileListProps) {
 									<button
 										type="button"
 										onClick={() => onDelete(file._id)}
-										className="text-slate-400 hover:text-red-600 transition-colors"
+										className="text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 transition-colors"
 										title="Delete file"
 										aria-label={`Delete ${file.filename}`}
 									>
@@ -150,7 +150,7 @@ export function FileList({ files, onDelete, onDownload }: FileListProps) {
 									<button
 										type="button"
 										onClick={() => toggleExpanded(file._id)}
-										className="text-xs text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1"
+										className="text-xs text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 font-medium flex items-center gap-1"
 									>
 										{expandedFileId === file._id ? "Hide" : "Show"} extracted text
 										<svg
@@ -164,14 +164,14 @@ export function FileList({ files, onDelete, onDownload }: FileListProps) {
 									</button>
 
 									{expandedFileId === file._id && (
-										<div className="mt-2 p-3 bg-slate-50 rounded border border-slate-200">
-											<p className="text-xs text-slate-700 whitespace-pre-wrap">
+										<div className="mt-2 p-3 bg-slate-50 dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-700">
+											<p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
 												{file.extractedText.length > 500
 													? `${file.extractedText.substring(0, 500)}...`
 													: file.extractedText}
 											</p>
 											{file.extractedText.length > 500 && (
-												<p className="text-xs text-slate-500 mt-2 italic">
+												<p className="text-xs text-slate-500 dark:text-slate-400 mt-2 italic">
 													Showing first 500 characters of {file.extractedText.length} total
 												</p>
 											)}

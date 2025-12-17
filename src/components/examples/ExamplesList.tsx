@@ -10,14 +10,14 @@ export interface ExamplesListProps {
 
 /**
  * List component for displaying examples.
- * Shows an empty state when no examples exist, otherwise displays examples in a grid.
+ * Shows an empty state when no examples exist, otherwise displays examples in a list.
  */
 export function ExamplesList({ examples, onEdit, onDelete }: ExamplesListProps) {
 	if (examples.length === 0) {
 		return (
 			<EmptyState
 				title="No examples"
-				description="Add successful content samples to guide the style and quality of future content."
+				description="Add successful content samples to guide the style and quality of future content. You can also upload files after creating examples."
 				icon={
 					<svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<title>Document</title>
@@ -34,7 +34,7 @@ export function ExamplesList({ examples, onEdit, onDelete }: ExamplesListProps) 
 	}
 
 	return (
-		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+		<div className="space-y-4">
 			{examples.map((example) => (
 				<ExampleCard
 					key={example._id}

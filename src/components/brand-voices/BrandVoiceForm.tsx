@@ -135,6 +135,13 @@ export function BrandVoiceForm({ projectId, brandVoice, onSuccess, onCancel }: B
 
 			{brandVoice && (
 				<div>
+					{files && files.length > 0 && (
+						<div className="mb-4">
+							<h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Attached Files</h4>
+							<FileList files={files} onDelete={handleFileDelete} />
+						</div>
+					)}
+
 					<label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Upload Files</label>
 					<FileUpload
 						onUploadComplete={handleFileUploadComplete}
@@ -144,13 +151,6 @@ export function BrandVoiceForm({ projectId, brandVoice, onSuccess, onCancel }: B
 						multiple={true}
 						disabled={!workspaceId}
 					/>
-
-					{files && files.length > 0 && (
-						<div className="mt-4">
-							<h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Attached Files</h4>
-							<FileList files={files} onDelete={handleFileDelete} />
-						</div>
-					)}
 				</div>
 			)}
 
