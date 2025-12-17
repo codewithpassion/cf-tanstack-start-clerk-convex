@@ -425,22 +425,22 @@ export function ToolsPanel({
 				>
 					<div className="flex min-h-screen items-center justify-center p-4">
 						<div
-							className="fixed inset-0 bg-black bg-opacity-75 transition-opacity"
+							className="fixed inset-0 bg-black bg-opacity-75 dark:bg-black dark:bg-opacity-90 transition-opacity"
 							onClick={() => setPreviewImage(null)}
 						/>
-						<div className="relative bg-white rounded-lg max-w-4xl w-full">
-							<div className="p-4 border-b">
+						<div className="relative bg-white dark:bg-slate-900 rounded-lg max-w-4xl w-full border border-slate-200 dark:border-slate-800">
+							<div className="p-4 border-b border-slate-200 dark:border-slate-800">
 								<div className="flex items-center justify-between">
 									<h3
 										id="image-preview-title"
-										className="text-lg font-medium text-slate-900"
+										className="text-lg font-medium text-slate-900 dark:text-amber-50"
 									>
 										Image Preview
 									</h3>
 									<button
 										type="button"
 										onClick={() => setPreviewImage(null)}
-										className="text-slate-400 hover:text-slate-500"
+										className="text-slate-400 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-300"
 										aria-label="Close preview"
 									>
 										<svg
@@ -460,7 +460,7 @@ export function ToolsPanel({
 								</div>
 							</div>
 							<div className="p-4">
-								<div className="bg-slate-100 rounded flex items-center justify-center max-h-96 overflow-auto">
+								<div className="bg-slate-100 dark:bg-slate-950 rounded flex items-center justify-center max-h-96 overflow-auto">
 									<img
 										src={`/api/files/${previewImage.fileId}/preview?variant=thumbnail`}
 										alt={previewImage.caption || previewImage.filename}
@@ -468,11 +468,11 @@ export function ToolsPanel({
 									/>
 								</div>
 								{previewImage.caption && (
-									<p className="mt-4 text-sm text-slate-700">
+									<p className="mt-4 text-sm text-slate-700 dark:text-slate-200">
 										{previewImage.caption}
 									</p>
 								)}
-								<p className="mt-2 text-xs text-slate-500">
+								<p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
 									{previewImage.filename}
 								</p>
 							</div>

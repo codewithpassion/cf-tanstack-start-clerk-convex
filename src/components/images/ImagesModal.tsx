@@ -135,26 +135,26 @@ function EditableSelect({ id, value, onChange, options, placeholder, maxLength =
 					value={value}
 					onChange={(e) => onChange(e.target.value)}
 					onFocus={() => setIsOpen(true)}
-					className="w-full px-4 py-2.5 pr-10 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-slate-400"
+					className="w-full px-4 py-2.5 pr-10 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-amber-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
 					placeholder={placeholder}
 					maxLength={maxLength}
 				/>
 				<button
 					type="button"
 					onClick={() => setIsOpen(!isOpen)}
-					className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+					className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
 				>
 					<ChevronDown className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""}`} />
 				</button>
 			</div>
 			{isOpen && (
-				<div className="absolute z-10 w-full mt-1 bg-white border border-slate-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+				<div className="absolute z-10 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
 					{options.map((option) => (
 						<button
 							key={option.value}
 							type="button"
 							onClick={() => handleSelect(option.value)}
-							className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-100 ${value === option.value ? "bg-cyan-50 text-cyan-700" : "text-slate-700"
+							className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 ${value === option.value ? "bg-cyan-50 dark:bg-amber-900/30 text-cyan-700 dark:text-amber-300" : "text-slate-700 dark:text-slate-200"
 								}`}
 						>
 							{option.label}
@@ -203,8 +203,8 @@ function AspectRatioSelector({ value, onChange }: AspectRatioSelectorProps) {
 							flex items-center gap-2 px-3 py-2 rounded-lg border
 							cursor-pointer transition-all duration-150 focus:outline-none
 							${isSelected
-								? "border-cyan-500 bg-cyan-50 ring-1 ring-cyan-500"
-								: "border-slate-200 bg-white hover:border-slate-300"
+								? "border-cyan-500 dark:border-amber-500 bg-cyan-50 dark:bg-amber-900/30 ring-1 ring-cyan-500 dark:ring-amber-500"
+								: "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600"
 							}
 						`}
 					>
@@ -222,8 +222,8 @@ function AspectRatioSelector({ value, onChange }: AspectRatioSelectorProps) {
 									height="16"
 									rx="2"
 									className={`transition-colors duration-150 ${isSelected
-											? "fill-cyan-200 stroke-cyan-600"
-											: "fill-slate-100 stroke-slate-400"
+											? "fill-cyan-200 dark:fill-amber-300/30 stroke-cyan-600 dark:stroke-amber-500"
+											: "fill-slate-100 dark:fill-slate-700 stroke-slate-400 dark:stroke-slate-500"
 										}`}
 									strokeWidth="1.5"
 								/>
@@ -236,8 +236,8 @@ function AspectRatioSelector({ value, onChange }: AspectRatioSelectorProps) {
 									height="12"
 									rx="2"
 									className={`transition-colors duration-150 ${isSelected
-											? "fill-cyan-200 stroke-cyan-600"
-											: "fill-slate-100 stroke-slate-400"
+											? "fill-cyan-200 dark:fill-amber-300/30 stroke-cyan-600 dark:stroke-amber-500"
+											: "fill-slate-100 dark:fill-slate-700 stroke-slate-400 dark:stroke-slate-500"
 										}`}
 									strokeWidth="1.5"
 								/>
@@ -250,15 +250,15 @@ function AspectRatioSelector({ value, onChange }: AspectRatioSelectorProps) {
 									height="20"
 									rx="2"
 									className={`transition-colors duration-150 ${isSelected
-											? "fill-cyan-200 stroke-cyan-600"
-											: "fill-slate-100 stroke-slate-400"
+											? "fill-cyan-200 dark:fill-amber-300/30 stroke-cyan-600 dark:stroke-amber-500"
+											: "fill-slate-100 dark:fill-slate-700 stroke-slate-400 dark:stroke-slate-500"
 										}`}
 									strokeWidth="1.5"
 								/>
 							)}
 						</svg>
 						{/* Label */}
-						<span className={`text-sm ${isSelected ? "font-medium text-cyan-700" : "text-slate-700"}`}>
+						<span className={`text-sm ${isSelected ? "font-medium text-cyan-700 dark:text-amber-300" : "text-slate-700 dark:text-slate-200"}`}>
 							{option.sublabel}
 						</span>
 					</button>
@@ -639,14 +639,14 @@ export function ImagesModal({
 		<>
 			{/* Backdrop */}
 			<div
-				className="fixed inset-0 bg-slate-900/90  z-40"
+				className="fixed inset-0 bg-slate-900/90 dark:bg-black/90 z-40"
 				onClick={onClose}
 			/>
 
 			{/* Modal */}
 			<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 				<div
-					className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[85vh] flex flex-col"
+					className="bg-white dark:bg-slate-900 rounded-lg shadow-xl dark:shadow-[0_8px_30px_rgba(0,0,0,0.5),0_0_30px_rgba(251,191,36,0.15)] w-full max-w-4xl max-h-[85vh] flex flex-col border border-slate-200 dark:border-slate-800"
 					onClick={(e) => e.stopPropagation()}
 					onKeyDown={handleKeyDown}
 					onDragEnter={handleDragEnter}
@@ -655,10 +655,10 @@ export function ImagesModal({
 					onDrop={handleDrop}
 				>
 					{/* Header */}
-					<div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+					<div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
 						<div className="flex items-center gap-2">
-							<ImageIcon className="w-5 h-5 text-cyan-600" />
-							<h2 className="text-xl font-semibold text-slate-900">
+							<ImageIcon className="w-5 h-5 text-cyan-600 dark:text-amber-400" />
+							<h2 className="text-xl font-semibold text-slate-900 dark:text-amber-50">
 								{view === "gallery" && "Images"}
 								{view === "generate" && "Generate Image"}
 								{view === "review-prompt" && "Review Prompt"}
@@ -669,7 +669,7 @@ export function ImagesModal({
 						<button
 							type="button"
 							onClick={onClose}
-							className="text-slate-400 hover:text-slate-600 transition-colors"
+							className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
 						>
 							<X className="w-5 h-5" />
 						</button>
@@ -677,7 +677,7 @@ export function ImagesModal({
 
 					{/* Error message */}
 					{error && (
-						<div className="mx-6 mt-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded text-sm">
+						<div className="mx-6 mt-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 px-4 py-3 rounded text-sm">
 							{error}
 						</div>
 					)}
@@ -691,7 +691,7 @@ export function ImagesModal({
 								<div
 									className={`
 										border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer
-										${isDragging ? "border-cyan-500 bg-cyan-50" : "border-slate-300 hover:border-slate-400"}
+										${isDragging ? "border-cyan-500 dark:border-amber-500 bg-cyan-50 dark:bg-amber-900/30" : "border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"}
 										${isUploading ? "opacity-50 cursor-not-allowed" : ""}
 									`}
 									onClick={() => !isUploading && fileInputRef.current?.click()}
@@ -705,13 +705,13 @@ export function ImagesModal({
 										disabled={isUploading}
 									/>
 									<div className="flex items-center justify-center gap-3">
-										<Upload className="w-5 h-5 text-slate-400" />
-										<span className="text-sm text-slate-600">
+										<Upload className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+										<span className="text-sm text-slate-600 dark:text-slate-300">
 											{isUploading ? (
 												"Uploading..."
 											) : (
 												<>
-													<span className="font-medium text-cyan-600">Click to upload</span> or drag and drop
+													<span className="font-medium text-cyan-600 dark:text-amber-400">Click to upload</span> or drag and drop
 												</>
 											)}
 										</span>
@@ -728,7 +728,7 @@ export function ImagesModal({
 							<div className="space-y-5">
 								{/* Image Type */}
 								<div>
-									<label htmlFor="image-type" className="block text-sm font-medium text-slate-700 mb-2">
+									<label htmlFor="image-type" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
 										Image Type
 									</label>
 									<EditableSelect
@@ -742,23 +742,23 @@ export function ImagesModal({
 
 								{/* Subject */}
 								<div>
-									<label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-2">
-										Subject <span className="text-red-500">*</span>
+									<label htmlFor="subject" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+										Subject <span className="text-red-500 dark:text-red-400">*</span>
 									</label>
 									<textarea
 										id="subject"
 										value={formState.subject}
 										onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
-										className="w-full h-24 px-4 py-3 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none placeholder:text-slate-400"
+										className="w-full h-24 px-4 py-3 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-amber-500 resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
 										placeholder="e.g., A modern office workspace with natural lighting and plants..."
 										maxLength={500}
 									/>
-									<p className="mt-1 text-xs text-slate-500">{formState.subject.length}/500 characters</p>
+									<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{formState.subject.length}/500 characters</p>
 								</div>
 
 								{/* Aspect Ratio */}
 								<div>
-									<label className="block text-sm font-medium text-slate-700 mb-3">
+									<label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-3">
 										Aspect Ratio
 									</label>
 									<AspectRatioSelector
@@ -769,10 +769,10 @@ export function ImagesModal({
 
 								{/* Include Content Text Switch - moved above Style */}
 								{contentText && (
-									<div className="flex items-center justify-between py-3 border-t border-b border-slate-200">
+									<div className="flex items-center justify-between py-3 border-t border-b border-slate-200 dark:border-slate-800">
 										<div>
-											<p className="text-sm font-medium text-slate-700">Include content text in prompt</p>
-											<p className="text-xs text-slate-500">Add context from your content to the image prompt</p>
+											<p className="text-sm font-medium text-slate-700 dark:text-slate-200">Include content text in prompt</p>
+											<p className="text-xs text-slate-500 dark:text-slate-400">Add context from your content to the image prompt</p>
 										</div>
 										<button
 											type="button"
@@ -781,7 +781,7 @@ export function ImagesModal({
 											onClick={() => setFormState({ ...formState, includeContentText: !formState.includeContentText })}
 											className={`
 												relative inline-flex h-6 w-11 items-center rounded-full transition-colors
-												${formState.includeContentText ? "bg-cyan-600" : "bg-slate-200"}
+												${formState.includeContentText ? "bg-cyan-600 dark:bg-amber-500" : "bg-slate-200 dark:bg-slate-700"}
 											`}
 										>
 											<span
@@ -796,8 +796,8 @@ export function ImagesModal({
 
 								{/* Style */}
 								<div>
-									<label htmlFor="style" className="block text-sm font-medium text-slate-700 mb-2">
-										Style <span className="text-slate-400 font-normal">(optional)</span>
+									<label htmlFor="style" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+										Style <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span>
 									</label>
 									<EditableSelect
 										id="style"
@@ -810,8 +810,8 @@ export function ImagesModal({
 
 								{/* Mood */}
 								<div>
-									<label htmlFor="mood" className="block text-sm font-medium text-slate-700 mb-2">
-										Mood <span className="text-slate-400 font-normal">(optional)</span>
+									<label htmlFor="mood" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+										Mood <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span>
 									</label>
 									<EditableSelect
 										id="mood"
@@ -827,7 +827,7 @@ export function ImagesModal({
 									<button
 										type="button"
 										onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
-										className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-cyan-600"
+										className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-amber-400"
 									>
 										{showAdvancedOptions ? (
 											<ChevronUp className="w-4 h-4" />
@@ -838,9 +838,9 @@ export function ImagesModal({
 									</button>
 
 									{showAdvancedOptions && (
-										<div className="mt-4 space-y-4 pl-4 border-l-2 border-slate-200">
+										<div className="mt-4 space-y-4 pl-4 border-l-2 border-slate-200 dark:border-slate-800">
 											<div>
-												<label htmlFor="composition" className="block text-sm font-medium text-slate-700 mb-2">
+												<label htmlFor="composition" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
 													Composition
 												</label>
 												<input
@@ -848,13 +848,13 @@ export function ImagesModal({
 													type="text"
 													value={formState.composition}
 													onChange={(e) => setFormState({ ...formState, composition: e.target.value })}
-													className="w-full px-4 py-2.5 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-slate-400"
+													className="w-full px-4 py-2.5 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-amber-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
 													placeholder="e.g., Centered, Rule of thirds, Wide angle..."
 													maxLength={200}
 												/>
 											</div>
 											<div>
-												<label htmlFor="colors" className="block text-sm font-medium text-slate-700 mb-2">
+												<label htmlFor="colors" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
 													Colors
 												</label>
 												<input
@@ -862,7 +862,7 @@ export function ImagesModal({
 													type="text"
 													value={formState.colors}
 													onChange={(e) => setFormState({ ...formState, colors: e.target.value })}
-													className="w-full px-4 py-2.5 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 placeholder:text-slate-400"
+													className="w-full px-4 py-2.5 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-amber-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
 													placeholder="e.g., Warm tones, Blue and gold, Pastel..."
 													maxLength={200}
 												/>
@@ -877,27 +877,27 @@ export function ImagesModal({
 						{view === "review-prompt" && (
 							<div className="space-y-5">
 								<div>
-									<label htmlFor="prompt" className="block text-sm font-medium text-slate-700 mb-2">
+									<label htmlFor="prompt" className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
 										Generated Prompt
 									</label>
 									<textarea
 										id="prompt"
 										value={generatedPrompt}
 										onChange={(e) => setGeneratedPrompt(e.target.value)}
-										className="w-full h-48 px-4 py-3 text-slate-900 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none placeholder:text-slate-400"
+										className="w-full h-48 px-4 py-3 text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-amber-500 resize-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
 										placeholder="Edit the generated prompt..."
 										maxLength={4000}
 									/>
-									<p className="mt-1 text-xs text-slate-500">{generatedPrompt.length}/4000 characters</p>
+									<p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{generatedPrompt.length}/4000 characters</p>
 								</div>
 
 								{/* Content Context (read-only, shown when enabled) */}
 								{formState.includeContentText && contentText && (
 									<div>
-										<label className="block text-sm font-medium text-slate-700 mb-2">
-											Content Context <span className="text-slate-400 font-normal">(included with prompt)</span>
+										<label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+											Content Context <span className="text-slate-400 dark:text-slate-500 font-normal">(included with prompt)</span>
 										</label>
-										<div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600 max-h-32 overflow-y-auto whitespace-pre-wrap">
+										<div className="p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-600 dark:text-slate-300 max-h-32 overflow-y-auto whitespace-pre-wrap">
 											{contentText}
 										</div>
 									</div>
@@ -908,9 +908,9 @@ export function ImagesModal({
 						{/* Generating View */}
 						{view === "generating" && (
 							<div className="flex flex-col items-center justify-center py-12">
-								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mb-4" />
-								<h3 className="text-lg font-medium text-slate-900 mb-2">Generating Image</h3>
-								<p className="text-sm text-slate-500">This may take 10-30 seconds...</p>
+								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 dark:border-amber-500 mb-4" />
+								<h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">Generating Image</h3>
+								<p className="text-sm text-slate-500 dark:text-slate-400">This may take 10-30 seconds...</p>
 							</div>
 						)}
 
@@ -919,14 +919,14 @@ export function ImagesModal({
 							<div className="space-y-6">
 								{/* Image count indicator */}
 								{generatedImages.length > 1 && (
-									<div className="text-sm text-slate-600 text-center">
+									<div className="text-sm text-slate-600 dark:text-slate-300 text-center">
 										Generated {generatedImages.length} images
 									</div>
 								)}
 
 								{/* Image Preview Grid */}
 								{generatedImages.length === 1 ? (
-									<div className="bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden">
+									<div className="bg-slate-100 dark:bg-slate-950 rounded-lg flex items-center justify-center overflow-hidden">
 										<img
 											src={generatedImages[0].previewUrl}
 											alt="Generated image"
@@ -938,7 +938,7 @@ export function ImagesModal({
 										{generatedImages.map((image, index) => (
 											<div
 												key={image.fileId}
-												className="bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden aspect-square"
+												className="bg-slate-100 dark:bg-slate-950 rounded-lg flex items-center justify-center overflow-hidden aspect-square"
 											>
 												<img
 													src={image.previewUrl}
@@ -952,10 +952,10 @@ export function ImagesModal({
 
 								{/* Prompt Used (Collapsible) */}
 								<details className="text-sm">
-									<summary className="cursor-pointer text-slate-600 hover:text-slate-900">
+									<summary className="cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100">
 										View prompt used
 									</summary>
-									<div className="mt-2 p-3 bg-slate-50 rounded-lg text-slate-700 whitespace-pre-wrap">
+									<div className="mt-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg text-slate-700 dark:text-slate-200 whitespace-pre-wrap">
 										{generatedImages[0]?.prompt}
 									</div>
 								</details>
@@ -964,21 +964,21 @@ export function ImagesModal({
 					</div>
 
 					{/* Footer */}
-					<div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-slate-50">
+					<div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
 						{/* Gallery View Footer */}
 						{view === "gallery" && (
 							<>
 								<button
 									type="button"
 									onClick={onClose}
-									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+									className="px-4 py-2 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
 								>
 									Close
 								</button>
 								<button
 									type="button"
 									onClick={() => setView("generate")}
-									className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+									className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 dark:bg-amber-500 text-white rounded-lg hover:bg-cyan-700 dark:hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-amber-500 transition-colors"
 								>
 									<Sparkles className="w-4 h-4" />
 									Generate with AI
@@ -992,7 +992,7 @@ export function ImagesModal({
 								<button
 									type="button"
 									onClick={() => setView("gallery")}
-									className="inline-flex items-center gap-2 px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors"
+									className="inline-flex items-center gap-2 px-4 py-2 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
 								>
 									<ArrowLeft className="w-4 h-4" />
 									Back
@@ -1002,7 +1002,7 @@ export function ImagesModal({
 										type="button"
 										onClick={handleGeneratePrompt}
 										disabled={!formState.subject.trim() || isGeneratingPrompt}
-										className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+										className="px-4 py-2 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-amber-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 									>
 										Review Prompt
 									</button>
@@ -1010,7 +1010,7 @@ export function ImagesModal({
 										type="button"
 										onClick={handleGenerateImage}
 										disabled={!formState.subject.trim() || isGeneratingPrompt}
-										className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+										className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 dark:bg-amber-500 text-white rounded-lg hover:bg-cyan-700 dark:hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-amber-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 									>
 										{isGeneratingPrompt ? (
 											<>
@@ -1034,24 +1034,24 @@ export function ImagesModal({
 								<button
 									type="button"
 									onClick={() => setView("generate")}
-									className="inline-flex items-center gap-2 px-4 py-2 text-slate-700 hover:text-slate-900 transition-colors"
+									className="inline-flex items-center gap-2 px-4 py-2 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
 								>
 									<ArrowLeft className="w-4 h-4" />
 									Back
 								</button>
 								<div className="flex items-center gap-3">
-									<p className="text-xs text-slate-500">
+									<p className="text-xs text-slate-500 dark:text-slate-400">
 										Press{" "}
-										<kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded">Ctrl</kbd>
+										<kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded">Ctrl</kbd>
 										{" + "}
-										<kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded">Enter</kbd>
+										<kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded">Enter</kbd>
 										{" to generate"}
 									</p>
 									<button
 										type="button"
 										onClick={handleGenerateImageFromPrompt}
 										disabled={!generatedPrompt.trim()}
-										className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+										className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 dark:bg-amber-500 text-white rounded-lg hover:bg-cyan-700 dark:hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-amber-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 									>
 										<Sparkles className="w-4 h-4" />
 										Generate
@@ -1067,7 +1067,7 @@ export function ImagesModal({
 								<button
 									type="button"
 									disabled
-									className="px-4 py-2 bg-slate-300 text-slate-500 rounded-lg cursor-not-allowed"
+									className="px-4 py-2 bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-lg cursor-not-allowed"
 								>
 									Generating...
 								</button>
@@ -1080,7 +1080,7 @@ export function ImagesModal({
 								<button
 									type="button"
 									onClick={handleDiscardGeneratedImages}
-									className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+									className="px-4 py-2 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
 								>
 									Discard
 								</button>
@@ -1088,14 +1088,14 @@ export function ImagesModal({
 									<button
 										type="button"
 										onClick={handleRetry}
-										className="px-4 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+										className="px-4 py-2 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
 									>
 										Retry
 									</button>
 									<button
 										type="button"
 										onClick={handleAttachGeneratedImages}
-										className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors"
+										className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 dark:bg-amber-500 text-white rounded-lg hover:bg-cyan-700 dark:hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-amber-500 transition-colors"
 									>
 										{generatedImages.length > 1
 											? `Attach All ${generatedImages.length} Images`
