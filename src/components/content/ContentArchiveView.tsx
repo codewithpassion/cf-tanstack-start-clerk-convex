@@ -32,6 +32,8 @@ export interface ContentArchiveViewProps {
 	showCrossProjectSearch?: boolean;
 	onCrossProjectSearchToggle?: (enabled: boolean) => void;
 	defaultViewMode?: ViewMode;
+	showFilters?: boolean;
+	onShowFiltersChange?: (show: boolean) => void;
 }
 
 type ViewMode = "table" | "cards";
@@ -59,6 +61,8 @@ export function ContentArchiveView({
 	showCrossProjectSearch = false,
 	onCrossProjectSearchToggle,
 	defaultViewMode = "table",
+	showFilters: controlledShowFilters,
+	onShowFiltersChange,
 }: ContentArchiveViewProps) {
 	// Initialize view mode from localStorage or use default
 	const [viewMode, setViewMode] = useState<ViewMode>(() => {
@@ -79,7 +83,11 @@ export function ContentArchiveView({
 	>("updatedAt");
 	const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-	const [showFilters, setShowFilters] = useState(false);
+
+	// Use controlled state if provided, otherwise fall back to internal state
+	const [internalShowFilters, setInternalShowFilters] = useState(false);
+	const showFilters = controlledShowFilters ?? internalShowFilters;
+	const setShowFilters = onShowFiltersChange ?? setInternalShowFilters;
 
 	const handleSort = (column: typeof sortColumn) => {
 		if (sortColumn === column) {
