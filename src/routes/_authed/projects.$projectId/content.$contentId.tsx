@@ -13,6 +13,7 @@ import { RefineDialog } from "@/components/content/RefineDialog";
 import { SelectionRefineDialog } from "@/components/content/SelectionRefineDialog";
 import { RepurposeDialog } from "@/components/content/RepurposeDialog";
 import { ImagesModal } from "@/components/images/ImagesModal";
+import { ContentSubNav } from "@/components/navigation/ContentSubNav";
 import { refineSelection } from "@/server/ai";
 import { useStreamingResponse } from "@/hooks/useStreamingResponse";
 import type { Editor } from "@tiptap/core";
@@ -400,59 +401,39 @@ function ContentEditorPage() {
 
 	return (
 		<>
-			{/* Content Header - Full Width */}
-			<div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-				<div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
-					<h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight leading-tight mb-3">
-						{contentPiece.title}
-					</h1>
+			{/* Content Sub-Navigation */}
+			<ContentSubNav
+				title={contentPiece.title}
+				projectId={projectId}
+				persona={contentPiece.persona}
+				brandVoice={contentPiece.brandVoice}
+			/>
 
-					{/* Metadata badges */}
-					<div className="flex items-center gap-2 flex-wrap">
-						{contentPiece.persona && (
-							<span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 rounded-md border border-pink-200 dark:border-pink-800/50" title={`Persona: ${contentPiece.persona.name}`}>
-								<svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-								</svg>
-								{contentPiece.persona.name}
-							</span>
-						)}
-						{contentPiece.brandVoice && (
-							<span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-md border border-purple-200 dark:border-purple-800/50" title={`Voice: ${contentPiece.brandVoice.name}`}>
-								<svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
-								</svg>
-								{contentPiece.brandVoice.name}
-							</span>
-						)}
-					</div>
-				</div>
-			</div>
-
-			{/* Main Content Area - Split Pane Layout */}
+			{/* Main Content Area - Full Width Split Pane Layout */}
 			<div className="flex-1 flex overflow-hidden">
-				{/* Editor Pane */}
-				<div className="flex-1 overflow-y-auto bg-white dark:bg-slate-900">
-					<div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
-						<ContentEditor
-							key={contentPiece.content}
-							initialContent={contentPiece.content}
-							onChange={() => {
-								// Content changes are handled by autosave in ContentEditor
-							}}
-							contentPieceId={contentId as Id<"contentPieces">}
-							disabled={isFinalized}
-							onTriggerInlineRefine={handleInlineRefineTrigger}
-							onEditorReady={(editor) => {
-								editorRef.current = editor;
-							}}
-						/>
-					</div>
+				{/* Editor Pane - Full Width */}
+				<div className="flex-1 overflow-y-auto bg-slate-950">
+					<ContentEditor
+						key={contentPiece.content}
+						initialContent={contentPiece.content}
+						onChange={() => {
+							// Content changes are handled by autosave in ContentEditor
+						}}
+						contentPieceId={contentId as Id<"contentPieces">}
+						disabled={isFinalized}
+						onTriggerInlineRefine={handleInlineRefineTrigger}
+						onEditorReady={(editor) => {
+							editorRef.current = editor;
+						}}
+					/>
 				</div>
 
-				{/* Tools Panel - Sidebar */}
-				<div className="hidden lg:flex w-80 xl:w-96 flex-col border-l border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 overflow-y-auto">
-					<div className="p-6">
+				{/* Tools Panel - Always Visible Sidebar */}
+				<div className="hidden lg:flex w-80 flex-col border-l border-slate-800 bg-slate-900/80 overflow-y-auto flex-shrink-0">
+					<div className="p-4 border-b border-slate-800">
+						<h3 className="font-semibold text-slate-200">Content Actions</h3>
+					</div>
+					<div className="p-4">
 						<ToolsPanel
 							contentPieceId={contentId as Id<"contentPieces">}
 							projectId={projectId as Id<"projects">}

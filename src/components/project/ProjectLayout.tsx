@@ -2,13 +2,13 @@ import { Outlet } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { ProjectId } from "@/types/entities";
-import { ProjectHeader } from "./ProjectHeader";
 import { LoadingState } from "../shared/LoadingState";
 import { useModalQueryParam } from "@/hooks/useModalQueryParam";
 import { BrandVoicesModal } from "../brand-voices/BrandVoicesModal";
 import { PersonasModal } from "../personas/PersonasModal";
 import { KnowledgeBaseModal } from "../knowledge-base/KnowledgeBaseModal";
 import { ExamplesModal } from "../examples/ExamplesModal";
+import { ProjectProvider } from "@/contexts/project-context";
 
 export interface ProjectLayoutProps {
 	projectId: ProjectId;
@@ -16,8 +16,8 @@ export interface ProjectLayoutProps {
 
 /**
  * Layout wrapper for all project pages.
- * Includes header with configuration buttons and content area.
- * Configuration panels are displayed in modals.
+ * Provides project context to header and renders modals.
+ * No longer renders ProjectHeader - navigation is in the global header.
  */
 export function ProjectLayout({ projectId }: ProjectLayoutProps) {
 	const project = useQuery(api.projects.getProject, { projectId });
@@ -46,24 +46,24 @@ export function ProjectLayout({ projectId }: ProjectLayoutProps) {
 	}
 
 	return (
-		<div className="min-h-screen flex flex-col">
-			<ProjectHeader
-				project={project}
-				onOpenBrandVoices={openBrandVoices}
-				onOpenPersonas={openPersonas}
-				onOpenKnowledgeBase={openKnowledgeBase}
-				onOpenExamples={openExamples}
-			/>
+		<ProjectProvider
+			project={project}
+			onOpenBrandVoices={openBrandVoices}
+			onOpenPersonas={openPersonas}
+			onOpenKnowledgeBase={openKnowledgeBase}
+			onOpenExamples={openExamples}
+		>
+			<div className="min-h-screen flex flex-col bg-slate-950">
+				<main className="flex-1 flex flex-col overflow-hidden">
+					<Outlet />
+				</main>
 
-			<main className="flex-1 flex flex-col overflow-hidden">
-				<Outlet />
-			</main>
-
-			{/* Configuration Modals */}
-			{brandVoicesOpen && <BrandVoicesModal isOpen onClose={closeBrandVoices} projectId={projectId} />}
-			{personasOpen && <PersonasModal isOpen onClose={closePersonas} projectId={projectId} />}
-			{knowledgeBaseOpen && <KnowledgeBaseModal isOpen onClose={closeKnowledgeBase} projectId={projectId} />}
-			{examplesOpen && <ExamplesModal isOpen onClose={closeExamples} projectId={projectId} />}
-		</div>
+				{/* Configuration Modals */}
+				{brandVoicesOpen && <BrandVoicesModal isOpen onClose={closeBrandVoices} projectId={projectId} />}
+				{personasOpen && <PersonasModal isOpen onClose={closePersonas} projectId={projectId} />}
+				{knowledgeBaseOpen && <KnowledgeBaseModal isOpen onClose={closeKnowledgeBase} projectId={projectId} />}
+				{examplesOpen && <ExamplesModal isOpen onClose={closeExamples} projectId={projectId} />}
+			</div>
+		</ProjectProvider>
 	);
 }

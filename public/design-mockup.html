@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Postmate - Navigation Redesign Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwindcss.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Instrument Sans', 'system-ui', 'sans-serif'],
+            serif: ['Newsreader', 'Georgia', 'serif'],
+          },
+          colors: {
+            slate: {
+              925: '#0d1117',
+              950: '#0a0c10',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Dropdown animation */
+    .dropdown-content {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.95);
+      pointer-events: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dropdown:hover .dropdown-content,
+    .dropdown:focus-within .dropdown-content {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Editor focus state */
+    .editor-area:focus-within {
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Subtle gradient background */
+    .editor-bg {
+      background: linear-gradient(180deg, #0f172a 0%, #0a0c10 100%);
+    }
+
+    /* Badge hover effect */
+    .badge-hover:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body class="dark bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- ==================== FINAL DESIGN: Design B Header + Design A Tools Panel ==================== -->
+  <div class="border-b-4 border-emerald-500 pb-8 mb-8">
+    <div class="bg-emerald-500/20 text-emerald-300 text-sm px-4 py-3 text-center font-semibold">
+      ★ FINAL DESIGN: Design B Header + Design A Visible Tools Panel ★
+    </div>
+
+    <!-- Slim App Bar (from Design B) -->
+    <nav class="h-12 bg-slate-925 border-b border-slate-800 flex items-center px-4">
+      <button class="p-1.5 hover:bg-slate-800 rounded-lg transition-colors mr-3" title="Menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <a href="#" class="font-bold text-lg tracking-tight text-white mr-6">Postmate</a>
+
+      <!-- Project Dropdown (instead of tabs, simpler) -->
+      <div class="dropdown relative">
+        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition-colors">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Personal Brand
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+
+        <!-- Project Dropdown Content -->
+        <div class="dropdown-content absolute top-full left-0 mt-1 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50">
+          <div class="p-2 border-b border-slate-800">
+            <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Switch Project</div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-800/50 transition-colors">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="font-medium text-white">Personal Brand</span>
+              <span class="ml-auto text-xs text-slate-500">Active</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors">
+              <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+              <span class="font-medium text-slate-300">Tech Blog</span>
+            </a>
+          </div>
+          <div class="p-2">
+            <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Project Config</div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                </svg>
+              </span>
+              <div>
+                <div class="font-medium text-slate-200 text-sm">Brand Voice</div>
+                <div class="text-xs text-slate-500">Professional, Educational</div>
+              </div>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+              </span>
+              <div>
+                <div class="font-medium text-slate-200 text-sm">Personas</div>
+                <div class="text-xs text-slate-500">3 personas defined</div>
+              </div>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+              </span>
+              <div>
+                <div class="font-medium text-slate-200 text-sm">Knowledge Base</div>
+                <div class="text-xs text-slate-500">12 documents</div>
+              </div>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+              <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </span>
+              <div>
+                <div class="font-medium text-slate-200 text-sm">Examples</div>
+                <div class="text-xs text-slate-500">5 examples</div>
+              </div>
+            </a>
+          </div>
+          <div class="border-t border-slate-800 p-2">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span class="font-medium text-sm">Project Settings</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-3">
+        <button class="p-1.5 hover:bg-slate-800 rounded-lg transition-colors text-slate-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+        <div class="px-2.5 py-1 bg-slate-800 rounded-lg text-xs font-medium text-amber-400">68,500</div>
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500"></div>
+      </div>
+    </nav>
+
+    <!-- Content Sub-Navigation (slim, from Design B) -->
+    <div class="bg-slate-900/80 border-b border-slate-800">
+      <div class="flex items-center justify-between h-11 px-4">
+        <!-- Left: Back + Content Title + Badges -->
+        <div class="flex items-center gap-3 min-w-0 flex-1">
+          <button class="p-1.5 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h1 class="text-sm font-medium text-slate-100 truncate">Claude code for software engineers</h1>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <span class="px-2 py-0.5 text-xs font-medium bg-pink-500/15 text-pink-400 rounded-full border border-pink-500/20">Senior Engineer</span>
+            <span class="px-2 py-0.5 text-xs font-medium bg-purple-500/15 text-purple-400 rounded-full border border-purple-500/20">Professional</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Area: Full-Width Editor + Tools Panel (from Design A) -->
+    <div class="flex h-[600px]">
+      <!-- Editor Area - Full Width, No Side Gutters -->
+      <div class="flex-1 overflow-y-auto bg-slate-950">
+        <div class="h-full flex flex-col">
+          <!-- Editor Toolbar (full width) -->
+          <div class="border-b border-slate-800 bg-slate-900/50 px-4 py-2 flex items-center gap-1">
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+            </button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/></svg>
+            </button>
+            <div class="w-px h-6 bg-slate-700 mx-2"></div>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 font-bold text-sm">H1</button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 font-bold text-sm">H2</button>
+            <div class="w-px h-6 bg-slate-700 mx-2"></div>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            </button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h10M4 18h10"/></svg>
+            </button>
+            <div class="w-px h-6 bg-slate-700 mx-2"></div>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 font-bold">B</button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 italic">I</button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 line-through">S</button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 font-mono text-xs">&lt;/&gt;</button>
+            <div class="w-px h-6 bg-slate-700 mx-2"></div>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+            </button>
+          </div>
+
+          <!-- Editor Content - Full Width with readable max-width for text -->
+          <div class="flex-1 overflow-y-auto">
+            <div class="max-w-4xl mx-auto px-6 py-8">
+              <article class="prose prose-lg prose-invert prose-slate max-w-none font-serif">
+                <p class="text-2xl leading-relaxed text-slate-200 font-medium">Claude Code for Software Engineers: Why It's My Go-To CLI Coding Assistant</p>
+                <p class="text-slate-400 leading-relaxed text-lg">If you're a software engineer hunting for a powerful, versatile command-line interface (CLI) editor with smart coding assistance, you need to know about Claude Code. This tool has quickly become my favorite coding companion — and here's why.</p>
+                <p class="text-slate-400 leading-relaxed text-lg">Claude Code is more than just an editor; it's a robust coding assistant designed for flexibility and deep integration. What sets Claude apart is its rich ecosystem of extension points, including custom commands, sub-agents, and recently added "skills." These features allow you to tailor your coding environment to your exact workflow needs — whether you're debugging, writing documentation, or architecting complex features.</p>
+                <p class="text-slate-400 leading-relaxed text-lg">One of the standout capabilities I use daily is the Plan Mode. When I start a new task, I don't jump straight into writing code. Instead, I draft a prompt describing the problem or feature. Then I activate Plan Mode, often alongside the Ultra Think keyboard, which encourages Claude to think critically about the task before implementation.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools Panel - Always Visible (from Design A) -->
+      <div class="w-80 border-l border-slate-800 bg-slate-900/80 overflow-y-auto flex-shrink-0">
+        <div class="p-4 border-b border-slate-800">
+          <h3 class="font-semibold text-slate-200">Content Actions</h3>
+        </div>
+        <div class="p-4 space-y-3">
+          <button class="w-full px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Refine
+          </button>
+          <button class="w-full px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Finalize
+          </button>
+          <button class="w-full px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-lg transition-all flex items-center justify-center gap-2 border border-slate-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            Repurpose
+          </button>
+        </div>
+        <div class="p-4 border-t border-slate-800 space-y-3">
+          <button class="w-full px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-lg transition-all flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Versions
+          </button>
+          <button class="w-full px-4 py-2.5 text-red-400 hover:bg-red-500/10 font-medium rounded-lg transition-all flex items-center justify-center gap-2 border border-red-500/20">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            Delete
+          </button>
+        </div>
+        <div class="p-4 border-t border-slate-800">
+          <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Images</h4>
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="aspect-square rounded-lg bg-slate-800 overflow-hidden">
+              <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-slate-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+            </div>
+            <div class="aspect-square rounded-lg bg-slate-800 overflow-hidden">
+              <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-slate-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button class="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition-all">
+              Generate
+            </button>
+            <button class="flex-1 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition-all">
+              Manage
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DESIGN A: Unified Breadcrumb Nav ==================== -->
+  <div class="border-b-2 border-dashed border-amber-500/30 pb-8 mb-8">
+    <div class="bg-amber-500/10 text-amber-400 text-sm px-4 py-2 text-center font-medium">
+      DESIGN A: Unified Breadcrumb Navigation
+    </div>
+
+    <!-- Single Unified Navigation Bar -->
+    <nav class="h-14 bg-slate-900 border-b border-slate-800 flex items-center px-4 sticky top-0 z-50">
+      <!-- Left: Menu + Logo -->
+      <div class="flex items-center gap-3">
+        <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors" title="Menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <a href="#" class="font-bold text-lg tracking-tight text-white">Postmate</a>
+      </div>
+
+      <!-- Center: Breadcrumb Navigation -->
+      <div class="flex-1 flex items-center justify-center gap-2 text-sm">
+        <!-- Project Dropdown -->
+        <div class="dropdown relative">
+          <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-slate-800 transition-colors font-medium text-slate-200">
+            Personal Brand
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+
+          <!-- Dropdown Content -->
+          <div class="dropdown-content absolute top-full left-0 mt-1 w-64 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+            <div class="p-2">
+              <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Project Configuration</div>
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+                <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                  </svg>
+                </span>
+                <div>
+                  <div class="font-medium text-slate-200">Brand Voice</div>
+                  <div class="text-xs text-slate-500">Professional, Educational</div>
+                </div>
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+                <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                </span>
+                <div>
+                  <div class="font-medium text-slate-200">Personas</div>
+                  <div class="text-xs text-slate-500">3 personas defined</div>
+                </div>
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+                <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                  </svg>
+                </span>
+                <div>
+                  <div class="font-medium text-slate-200">Knowledge Base</div>
+                  <div class="text-xs text-slate-500">12 documents</div>
+                </div>
+              </a>
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+                <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </span>
+                <div>
+                  <div class="font-medium text-slate-200">Examples</div>
+                  <div class="text-xs text-slate-500">5 examples</div>
+                </div>
+              </a>
+            </div>
+            <div class="border-t border-slate-800 p-2">
+              <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="font-medium">Project Settings</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <span class="text-slate-600">/</span>
+
+        <!-- Content Title -->
+        <span class="text-slate-100 font-medium truncate max-w-md">Claude code for software engineers</span>
+      </div>
+
+      <!-- Right: Actions -->
+      <div class="flex items-center gap-2">
+        <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors" title="Toggle theme">
+          <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+        <div class="px-3 py-1.5 bg-slate-800 rounded-lg text-sm font-medium text-amber-400">
+          68,500
+        </div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500"></div>
+      </div>
+    </nav>
+
+    <!-- Content Area with Tools Panel -->
+    <div class="flex h-[600px]">
+      <!-- Editor Area - Full Width -->
+      <div class="flex-1 overflow-y-auto editor-bg">
+        <!-- Metadata Badges (moved here from header) -->
+        <div class="max-w-4xl mx-auto px-8 pt-6">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-pink-500/10 text-pink-400 rounded-full border border-pink-500/20 badge-hover transition-all cursor-pointer">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+              Senior software engineer
+            </span>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20 badge-hover transition-all cursor-pointer">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+              </svg>
+              Professional, Educational
+            </span>
+          </div>
+        </div>
+
+        <!-- Editor Toolbar -->
+        <div class="max-w-4xl mx-auto px-8">
+          <div class="bg-slate-900/50 border border-slate-800 rounded-t-xl p-2 flex items-center gap-1">
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+            </button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/></svg>
+            </button>
+            <div class="w-px h-6 bg-slate-700 mx-2"></div>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 font-bold">H1</button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 font-bold">H2</button>
+            <div class="w-px h-6 bg-slate-700 mx-2"></div>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            </button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h10M4 18h10"/></svg>
+            </button>
+            <div class="w-px h-6 bg-slate-700 mx-2"></div>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 font-bold">B</button>
+            <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-slate-200 italic">I</button>
+          </div>
+        </div>
+
+        <!-- Editor Content -->
+        <div class="max-w-4xl mx-auto px-8 pb-8">
+          <div class="bg-slate-900/30 border border-t-0 border-slate-800 rounded-b-xl p-8 min-h-[400px] editor-area transition-shadow">
+            <article class="prose prose-invert prose-slate max-w-none font-serif">
+              <p class="text-xl leading-relaxed text-slate-300">Claude Code for Software Engineers: Why It's My Go-To CLI Coding Assistant</p>
+              <p class="text-slate-400 leading-relaxed">If you're a software engineer hunting for a powerful, versatile command-line interface (CLI) editor with smart coding assistance, you need to know about Claude Code. This tool has quickly become my favorite coding companion — and here's why.</p>
+              <p class="text-slate-400 leading-relaxed">Claude Code is more than just an editor; it's a robust coding assistant designed for flexibility and deep integration. What sets Claude apart is its rich ecosystem of extension points, including custom commands, sub-agents, and recently added "skills."</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools Panel -->
+      <div class="w-80 border-l border-slate-800 bg-slate-900/50 overflow-y-auto">
+        <div class="p-4 border-b border-slate-800">
+          <h3 class="font-semibold text-slate-200">Content Actions</h3>
+        </div>
+        <div class="p-4 space-y-3">
+          <button class="w-full px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Refine
+          </button>
+          <button class="w-full px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Finalize
+          </button>
+          <button class="w-full px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium rounded-lg transition-all flex items-center justify-center gap-2 border border-slate-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            Repurpose
+          </button>
+        </div>
+        <div class="p-4 border-t border-slate-800 space-y-3">
+          <button class="w-full px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-lg transition-all flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Versions
+          </button>
+          <button class="w-full px-4 py-2.5 text-red-400 hover:bg-red-500/10 font-medium rounded-lg transition-all flex items-center justify-center gap-2 border border-red-500/20">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            Delete
+          </button>
+        </div>
+        <div class="p-4 border-t border-slate-800">
+          <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Images</h4>
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="aspect-square rounded-lg bg-slate-800 overflow-hidden">
+              <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-slate-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+            </div>
+            <div class="aspect-square rounded-lg bg-slate-800 overflow-hidden">
+              <div class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-slate-600">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+            </div>
+          </div>
+          <button class="w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition-all">
+            Generate Images
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DESIGN B: Tab-Based Navigation ==================== -->
+  <div class="border-b-2 border-dashed border-cyan-500/30 pb-8 mb-8">
+    <div class="bg-cyan-500/10 text-cyan-400 text-sm px-4 py-2 text-center font-medium">
+      DESIGN B: Project Tabs Navigation (Content as focused view)
+    </div>
+
+    <!-- Slim App Bar -->
+    <nav class="h-12 bg-slate-925 border-b border-slate-800 flex items-center px-4">
+      <button class="p-1.5 hover:bg-slate-800 rounded-lg transition-colors mr-3" title="Menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <a href="#" class="font-bold text-lg tracking-tight text-white mr-6">Postmate</a>
+
+      <!-- Project Tabs -->
+      <div class="flex-1 flex items-center gap-1 overflow-x-auto">
+        <a href="#" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Personal Brand
+        </a>
+        <a href="#" class="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-slate-800/50 text-slate-400 text-sm font-medium transition-colors">
+          <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+          Tech Blog
+        </a>
+        <button class="p-1.5 hover:bg-slate-800 rounded-lg transition-colors text-slate-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-2">
+        <div class="px-2.5 py-1 bg-slate-800 rounded-lg text-xs font-medium text-amber-400">68,500</div>
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500"></div>
+      </div>
+    </nav>
+
+    <!-- Project Sub-Navigation (Integrated with content) -->
+    <div class="bg-slate-900 border-b border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-11">
+        <!-- Left: Back + Content Title -->
+        <div class="flex items-center gap-3">
+          <button class="p-1.5 hover:bg-slate-800 rounded-lg transition-colors text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <h1 class="text-sm font-medium text-slate-200 truncate max-w-lg">Claude code for software engineers</h1>
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 text-xs font-medium bg-pink-500/10 text-pink-400 rounded-full">Engineer</span>
+            <span class="px-2 py-0.5 text-xs font-medium bg-purple-500/10 text-purple-400 rounded-full">Professional</span>
+          </div>
+        </div>
+
+        <!-- Right: Project Config -->
+        <div class="flex items-center gap-1">
+          <button class="px-2.5 py-1 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-md transition-colors">Voice</button>
+          <button class="px-2.5 py-1 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-md transition-colors">Personas</button>
+          <button class="px-2.5 py-1 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-md transition-colors">Knowledge</button>
+          <button class="p-1.5 hover:bg-slate-800 rounded-lg transition-colors text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full-Width Editor -->
+    <div class="flex h-[500px]">
+      <div class="flex-1 overflow-y-auto bg-slate-950 p-8">
+        <div class="max-w-3xl mx-auto">
+          <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+            <div class="p-3 border-b border-slate-800 flex items-center gap-1 bg-slate-900/50">
+              <button class="p-1.5 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+              </button>
+              <button class="p-1.5 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/></svg>
+              </button>
+              <div class="w-px h-5 bg-slate-700 mx-1"></div>
+              <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm font-semibold">H1</button>
+              <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm font-semibold">H2</button>
+              <div class="w-px h-5 bg-slate-700 mx-1"></div>
+              <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm font-bold">B</button>
+              <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm italic">I</button>
+            </div>
+            <div class="p-6 min-h-[350px]">
+              <article class="prose prose-invert prose-slate max-w-none font-serif text-slate-300 leading-relaxed">
+                <p>Claude Code for Software Engineers: Why It's My Go-To CLI Coding Assistant</p>
+                <p class="text-slate-400">If you're a software engineer hunting for a powerful, versatile command-line interface (CLI) editor with smart coding assistance, you need to know about Claude Code.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsed Tools Panel Indicator -->
+      <div class="w-12 bg-slate-900 border-l border-slate-800 flex flex-col items-center py-4 gap-2">
+        <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-amber-400" title="Refine">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </button>
+        <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-emerald-400" title="Finalize">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+        <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-400" title="Repurpose">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        </button>
+        <div class="flex-1"></div>
+        <button class="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-500" title="Expand Panel">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DESIGN C: Command Palette Style ==================== -->
+  <div class="pb-8">
+    <div class="bg-emerald-500/10 text-emerald-400 text-sm px-4 py-2 text-center font-medium">
+      DESIGN C: Minimal Chrome + Command Palette Access
+    </div>
+
+    <!-- Ultra-minimal top bar -->
+    <nav class="h-10 bg-slate-950 border-b border-slate-800/50 flex items-center px-3">
+      <button class="p-1 hover:bg-slate-800 rounded transition-colors text-slate-500" title="Menu">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <!-- Breadcrumb as main navigation -->
+      <div class="flex-1 flex items-center justify-center text-sm">
+        <button class="text-slate-500 hover:text-slate-300 transition-colors">Personal Brand</button>
+        <svg class="w-4 h-4 text-slate-700 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+        <span class="text-slate-200 font-medium">Claude code for software engineers</span>
+      </div>
+
+      <!-- Command palette trigger -->
+      <button class="flex items-center gap-2 px-2 py-1 bg-slate-900 border border-slate-800 rounded-md text-slate-500 text-xs hover:border-slate-700 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span>⌘K</span>
+      </button>
+
+      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 ml-3"></div>
+    </nav>
+
+    <!-- Full-screen editor with floating tools -->
+    <div class="relative h-[550px] bg-slate-950">
+      <!-- Floating metadata -->
+      <div class="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+        <span class="px-2.5 py-1 text-xs font-medium bg-slate-900/80 backdrop-blur text-pink-400 rounded-full border border-slate-800">
+          Senior Engineer
+        </span>
+        <span class="px-2.5 py-1 text-xs font-medium bg-slate-900/80 backdrop-blur text-purple-400 rounded-full border border-slate-800">
+          Professional Voice
+        </span>
+      </div>
+
+      <!-- Centered editor -->
+      <div class="h-full flex items-start justify-center pt-16 px-4">
+        <div class="w-full max-w-2xl">
+          <!-- Floating toolbar -->
+          <div class="flex items-center justify-center gap-1 mb-4 p-1 bg-slate-900/50 backdrop-blur rounded-lg border border-slate-800 w-fit mx-auto">
+            <button class="p-2 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg></button>
+            <button class="p-2 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"/></svg></button>
+            <div class="w-px h-5 bg-slate-700"></div>
+            <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm font-semibold">H1</button>
+            <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm font-semibold">H2</button>
+            <div class="w-px h-5 bg-slate-700"></div>
+            <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm font-bold">B</button>
+            <button class="px-2 py-1 hover:bg-slate-800 rounded text-slate-500 hover:text-slate-300 text-sm italic">I</button>
+          </div>
+
+          <!-- Editor content -->
+          <div class="bg-slate-900/30 rounded-xl border border-slate-800/50 p-8 min-h-[400px]">
+            <article class="prose prose-invert prose-slate max-w-none font-serif">
+              <p class="text-xl text-slate-200 leading-relaxed">Claude Code for Software Engineers: Why It's My Go-To CLI Coding Assistant</p>
+              <p class="text-slate-400 leading-relaxed">If you're a software engineer hunting for a powerful, versatile command-line interface (CLI) editor with smart coding assistance, you need to know about Claude Code. This tool has quickly become my favorite coding companion — and here's why.</p>
+              <p class="text-slate-400 leading-relaxed">Claude Code is more than just an editor; it's a robust coding assistant designed for flexibility and deep integration...</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating action buttons (right edge) -->
+      <div class="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+        <button class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-shadow flex items-center justify-center" title="Refine">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </button>
+        <button class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-shadow flex items-center justify-center" title="Finalize">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+        <button class="w-10 h-10 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-colors flex items-center justify-center" title="Repurpose">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        </button>
+        <div class="w-10 h-px bg-slate-800 my-1"></div>
+        <button class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-colors flex items-center justify-center" title="Images">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </button>
+        <button class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 transition-colors flex items-center justify-center" title="Versions">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comparison Summary -->
+  <div class="max-w-4xl mx-auto p-8 bg-slate-900/50 rounded-xl border border-slate-800 m-8">
+    <h2 class="text-xl font-bold text-white mb-4">Design Comparison Summary</h2>
+    <div class="grid grid-cols-3 gap-6 text-sm">
+      <div>
+        <h3 class="font-semibold text-amber-400 mb-2">Design A: Unified Breadcrumb</h3>
+        <ul class="text-slate-400 space-y-1">
+          <li>• Single 56px header (vs ~200px)</li>
+          <li>• Project config in dropdown</li>
+          <li>• Clear breadcrumb hierarchy</li>
+          <li>• Full tools panel visible</li>
+          <li>• Best for: Frequent config access</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-cyan-400 mb-2">Design B: Tab Navigation</h3>
+        <ul class="text-slate-400 space-y-1">
+          <li>• Project tabs for multi-project</li>
+          <li>• Compact sub-nav (44px)</li>
+          <li>• Tools collapsed by default</li>
+          <li>• Quick project switching</li>
+          <li>• Best for: Power users</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-semibold text-emerald-400 mb-2">Design C: Minimal Chrome</h3>
+        <ul class="text-slate-400 space-y-1">
+          <li>• Ultra-minimal header (40px)</li>
+          <li>• Command palette (⌘K) access</li>
+          <li>• Floating action buttons</li>
+          <li>• Maximum focus on content</li>
+          <li>• Best for: Distraction-free writing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

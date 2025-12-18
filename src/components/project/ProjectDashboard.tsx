@@ -216,7 +216,7 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 	};
 
 	return (
-		<div className="space-y-8">
+		<div className="container mx-auto pt-6 pb-6 space-y-8">
 			{/* Stats Row */}
 			<DashboardStats
 				totalCount={totalCount}

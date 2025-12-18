@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import appCss from "../styles.css?url";
 import { ConvexClientProvider } from "@/lib/convex";
 import { AuthProvider } from "@/contexts/auth-context";
+import { ProjectContextProvider } from "@/contexts/project-context";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { api } from "../../convex/_generated/api";
 
@@ -78,7 +79,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 		<ClerkProvider>
 			<ConvexClientProvider convexUrl={import.meta.env.VITE_CONVEX_URL}>
 				<AuthProvider>
-					<ThemeWrapper>{children}</ThemeWrapper>
+					<ProjectContextProvider>
+						<ThemeWrapper>{children}</ThemeWrapper>
+					</ProjectContextProvider>
 				</AuthProvider>
 			</ConvexClientProvider>
 		</ClerkProvider>

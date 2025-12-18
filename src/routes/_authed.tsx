@@ -27,9 +27,5 @@ export const Route = createFileRoute('/_authed')({
 })
 
 function AuthedLayout() {
-  return (
-    <div className="container mx-auto p-6">
-      <Outlet />
-    </div>
-  )
+  return <Outlet />
 }
