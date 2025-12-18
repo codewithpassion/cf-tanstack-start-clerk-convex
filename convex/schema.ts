@@ -149,6 +149,7 @@ export default defineSchema({
 		parentContentId: v.optional(v.id("contentPieces")), // For derived content
 		title: v.string(),
 		content: v.string(), // JSON string from Novel editor
+		lastGeneratedPrompt: v.optional(v.string()), // The most recent prompt used to generate this content
 		status: v.union(v.literal("draft"), v.literal("finalized")),
 		currentFinalizedVersion: v.optional(v.number()), // v1, v2, v3, etc.
 		deletedAt: v.optional(v.number()),

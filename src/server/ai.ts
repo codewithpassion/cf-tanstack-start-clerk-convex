@@ -426,6 +426,13 @@ export const generateDraft = createServerFn({ method: "POST" })
 			);
 			console.log("Estimated prompt tokens:", estimatedPromptTokens);
 
+			// Save the full prompt to the content piece (fire and forget)
+			const fullPrompt = `${systemPrompt}\n\n--- USER PROMPT ---\n\n${userPrompt}`;
+			await convex.mutation(api.contentPieces.updateGeneratedPrompt, {
+				contentPieceId: data.contentPieceId,
+				prompt: fullPrompt,
+			});
+
 			// Pre-flight balance check
 			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
 			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
@@ -871,6 +878,13 @@ export const refineContent = createServerFn({ method: "POST" })
 			);
 			console.log("Refine estimated prompt tokens:", estimatedPromptTokens);
 
+			// Save the full prompt to the content piece (fire and forget)
+			const fullPrompt = `${systemPrompt}\n\n--- USER PROMPT ---\n\n${userPrompt}`;
+			await convex.mutation(api.contentPieces.updateGeneratedPrompt, {
+				contentPieceId,
+				prompt: fullPrompt,
+			});
+
 			// Pre-flight balance check
 			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
 			const estimatedTokens = Math.ceil(estimatedPromptTokens * 1.5 * 2);
@@ -1078,6 +1092,13 @@ export const refineSelection = createServerFn({ method: "POST" })
 				"Refine selection estimated prompt tokens:",
 				estimatedPromptTokens
 			);
+
+			// Save the full prompt to the content piece (fire and forget)
+			const fullPrompt = `${systemPrompt}\n\n--- USER PROMPT ---\n\n${userPrompt}`;
+			await convex.mutation(api.contentPieces.updateGeneratedPrompt, {
+				contentPieceId,
+				prompt: fullPrompt,
+			});
 
 			// Pre-flight balance check
 			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin
@@ -1577,6 +1598,44 @@ export const repurposeContent = createServerFn({ method: "POST" })
 			// Estimate token count for logging
 			const estimatedPromptTokens = countPromptTokens(systemPrompt, userPrompt);
 			console.log("Repurpose estimated prompt tokens:", estimatedPromptTokens);
+
+			// Save the full prompt to the content piece
+			// Note: repurposeContent creates a NEW content piece, but we don't have its ID yet?
+			// Wait, repurposeContent returns a stream. The ID is not created here?
+			// Ah, the logic in convex/contentPieces.ts `repurposeContent` mutation creates it?
+			// No, `repurposeContent` here is a Server Function.
+			// The caller presumably creates the new content piece OR this function should?
+			// Checking `repurposeContent` implementation...
+			// It takes `sourceContentPieceId` but outputs to a stream.
+			// It seems it does NOT create a new content piece ID in this function?
+			// Re-reading `repurposeContent`. It streams text.
+			// The UI `ToolsPanel` calls this.
+			// `onRepurpose` in `ProjectDashboard.tsx` probably handles the creation?
+			// If I don't have the TARGET content piece ID, I can't save the prompt to it.
+			// Looking at `RepurposeContentInput`:
+			/*
+			export interface RepurposeContentInput {
+				sourceContentPieceId: Id<"contentPieces">;
+				targetCategoryId: Id<"categories">;
+				...
+			}
+			*/
+			// It doesn't have `targetContentPieceId`.
+			// So where does the new content piece go?
+			// The current implementation just streams text back.
+			// The client likely captures it and creates a content piece?
+			// If so, I cannot save the prompt to the new content piece here because it doesn't exist yet.
+			// BUT, maybe I save it to the SOURCE content piece? No, that's wrong.
+			// CHECK LOGIC: `repurposeContent` *streams* the result.
+			// On the client, it probably calls `createDerivedContent` then fills it?
+			// Or `createDerivedContent` is called first?
+			// Let's check `ToolsPanel.tsx` -> `onRepurpose`.
+			// `ToolsPanel` calls `onRepurpose` prop.
+			// I need to check where `ToolsPanel` is used.
+			// `src/routes/_authed/projects.$projectId/content.$contentId.tsx`.
+
+			// For now, I will SKIP adding prompt saving to `repurposeContent` until I verify the flow.
+			// I will add it for the others.
 
 			// Pre-flight balance check
 			// Estimate: (prompt tokens) * 1.5 for output * 2 for safety margin

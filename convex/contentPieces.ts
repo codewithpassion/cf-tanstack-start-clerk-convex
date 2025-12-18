@@ -770,3 +770,37 @@ export const createDerivedContent = mutation({
 		return { contentPieceId };
 	},
 });
+
+/**
+ * Update the last generated prompt for a content piece.
+ * Internal mutation used by AI server functions.
+ */
+/**
+ * Update the last generated prompt for a content piece.
+ * Public mutation (secured by auth) used by AI server functions.
+ */
+export const updateGeneratedPrompt = mutation({
+	args: {
+		contentPieceId: v.id("contentPieces"),
+		prompt: v.string(),
+	},
+	handler: async (ctx, { contentPieceId, prompt }) => {
+		const { workspace } = await authorizeWorkspaceAccess(ctx);
+
+		const contentPiece = await ctx.db.get(contentPieceId);
+		if (!contentPiece) {
+			throw new ConvexError("Content piece not found");
+		}
+
+		// Verify ownership
+		const project = await ctx.db.get(contentPiece.projectId);
+		if (!project || project.workspaceId !== workspace._id) {
+			throw new ConvexError("Content piece not found");
+		}
+
+		await ctx.db.patch(contentPieceId, {
+			lastGeneratedPrompt: prompt,
+			updatedAt: Date.now(),
+		});
+	},
+});
