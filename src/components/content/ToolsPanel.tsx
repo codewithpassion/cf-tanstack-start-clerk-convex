@@ -21,9 +21,9 @@ import {
 	Download,
 	GitFork,
 	ArrowRight,
-	FileDown,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { ImageDownloadDropdown } from "@/components/images/ImageDownloadDropdown";
 
 export interface ToolsPanelProps {
 	/**
@@ -137,10 +137,7 @@ export function ToolsPanel({
 		caption?: string;
 	} | null>(null);
 
-	// PDF download state
-	const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
-
-	// Handle image download
+	// Handle single image download
 	const handleDownload = async (fileId: Id<"files">, filename: string) => {
 		try {
 			const response = await fetch(`/api/files/${fileId}/preview`);
@@ -155,33 +152,6 @@ export function ToolsPanel({
 			document.body.removeChild(a);
 		} catch (error) {
 			console.error("Failed to download image:", error);
-		}
-	};
-
-	// Handle PDF download
-	const handleDownloadPdf = async () => {
-		try {
-			setIsDownloadingPdf(true);
-			const response = await fetch(`/api/content/${contentPieceId}/images-pdf`);
-
-			if (!response.ok) {
-				throw new Error(`Failed to generate PDF: ${response.statusText}`);
-			}
-
-			const blob = await response.blob();
-			const url = window.URL.createObjectURL(blob);
-			const link = document.createElement("a");
-			link.href = url;
-			link.download = `images-${contentPieceId}.pdf`;
-			document.body.appendChild(link);
-			link.click();
-			window.URL.revokeObjectURL(url);
-			document.body.removeChild(link);
-		} catch (error) {
-			console.error("Failed to download PDF:", error);
-			alert("Failed to download PDF. Please try again.");
-		} finally {
-			setIsDownloadingPdf(false);
 		}
 	};
 
@@ -450,24 +420,14 @@ export function ToolsPanel({
 							<Image className="w-4 h-4" />
 							Manage
 						</button>
-						<button
-							type="button"
-							onClick={handleDownloadPdf}
-							disabled={isDownloadingPdf || !contentImages || contentImages.length === 0}
-							className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 rounded-lg hover:bg-cyan-100 dark:hover:bg-cyan-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 transition-all duration-300 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-cyan-50 dark:disabled:hover:bg-cyan-900/30"
-						>
-							{isDownloadingPdf ? (
-								<>
-									<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-700 dark:border-cyan-300" />
-									<span>Generating...</span>
-								</>
-							) : (
-								<>
-									<FileDown className="w-4 h-4" />
-									<span>Download PDF</span>
-								</>
-							)}
-						</button>
+						<ImageDownloadDropdown
+							contentPieceId={contentPieceId}
+							imageCount={contentImages?.length || 0}
+							disabled={!contentImages || contentImages.length === 0}
+							size="md"
+							variant="primary"
+							className="w-full"
+						/>
 					</div>
 				</div>
 			)}
