@@ -13,6 +13,7 @@ export interface ReviewStepProps {
 	onGenerate: () => void;
 	onEdit: (step: 1 | 2 | 3 | 4 | 5 | 6) => void;
 	onBack: () => void;
+	isGenerating?: boolean;
 }
 
 /**
@@ -30,6 +31,7 @@ export function ReviewStep({
 	onGenerate,
 	onEdit,
 	onBack,
+	isGenerating = false,
 }: ReviewStepProps) {
 	const category = useQuery(api.categories.getCategory, { categoryId });
 	const persona = useQuery(
@@ -187,16 +189,21 @@ export function ReviewStep({
 				<button
 					type="button"
 					onClick={onBack}
-					className="px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+					disabled={isGenerating}
+					className="px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
 				>
 					Back
 				</button>
 				<button
 					type="button"
 					onClick={onGenerate}
-					className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 font-medium"
+					disabled={isGenerating}
+					className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
 				>
-					Generate Draft
+					{isGenerating && (
+						<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+					)}
+					{isGenerating ? "Creating..." : "Generate Draft"}
 				</button>
 			</div>
 		</div>

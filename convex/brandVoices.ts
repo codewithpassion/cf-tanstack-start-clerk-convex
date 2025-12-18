@@ -10,7 +10,7 @@ import { authorizeWorkspaceAccess } from "./lib/auth";
  * Validation constants for brand voice fields.
  */
 const BRAND_VOICE_NAME_MAX_LENGTH = 100;
-const BRAND_VOICE_DESCRIPTION_MAX_LENGTH = 2000;
+const BRAND_VOICE_DESCRIPTION_MAX_LENGTH = 5000;
 
 /**
  * Validate brand voice name.

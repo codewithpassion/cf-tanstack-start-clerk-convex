@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/api";
 import { Modal } from "@/components/shared/Modal";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SelectionStep } from "./wizard-steps/SelectionStep";
@@ -106,6 +108,10 @@ export function ContentCreationModal({
 	// Close confirmation state
 	const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
+	// Mutation for creating content
+	const createContentPiece = useMutation(api.contentPieces.createContentPiece);
+	const [isCreating, setIsCreating] = useState(false);
+
 	// Handle close with confirmation if progress beyond step 1
 	const handleClose = () => {
 		if (state.currentStep > 1) {
@@ -194,13 +200,45 @@ export function ContentCreationModal({
 		setState({ ...state, currentStep: 2 });
 	};
 
-	// Handle generation (placeholder for actual implementation)
-	const handleGenerate = () => {
-		// TODO: This will be implemented in a future phase to trigger AI generation
-		// For now, this is a placeholder that will be connected to the generation logic
-		// When implemented, it will call onComplete with the generated content piece ID
-		console.log("Generate content with state:", state);
-		console.log("onComplete callback will be used:", typeof onComplete);
+	// Handle generation - create content piece and navigate to editor
+	const handleGenerate = async () => {
+		if (!state.categoryId) return;
+
+		setIsCreating(true);
+		try {
+			const result = await createContentPiece({
+				projectId,
+				categoryId: state.categoryId,
+				personaId: state.personaId ?? undefined,
+				brandVoiceId: state.brandVoiceId ?? undefined,
+				selectedKnowledgeBaseIds: state.selectedKnowledgeBaseIds.length > 0
+					? state.selectedKnowledgeBaseIds
+					: undefined,
+				title: state.title,
+				content: state.draftContent || "",
+			});
+
+			// Reset state and complete
+			setState({
+				currentStep: 1,
+				categoryId: null,
+				personaId: null,
+				brandVoiceId: null,
+				useAllKnowledgeBase: true,
+				selectedKnowledgeBaseIds: [],
+				title: "",
+				topic: "",
+				draftContent: "",
+				uploadedFileIds: [],
+			});
+
+			onComplete(result.contentPieceId);
+		} catch (error) {
+			console.error("Failed to create content piece:", error);
+			alert("Failed to create content. Please try again.");
+		} finally {
+			setIsCreating(false);
+		}
 	};
 
 	// Handle edit navigation from ReviewStep (uses old step numbers)
@@ -258,6 +296,7 @@ export function ContentCreationModal({
 							onGenerate={handleGenerate}
 							onEdit={handleEditFromReview}
 							onBack={handleBackToStep2}
+							isGenerating={isCreating}
 						/>
 					)}
 				</div>

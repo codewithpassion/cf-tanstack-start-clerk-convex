@@ -203,7 +203,7 @@ export const VALIDATION = {
 	},
 	brandVoice: {
 		nameMaxLength: 100,
-		descriptionMaxLength: 2000,
+		descriptionMaxLength: 5000,
 	},
 	persona: {
 		nameMaxLength: 100,

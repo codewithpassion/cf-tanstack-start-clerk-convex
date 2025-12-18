@@ -4,6 +4,7 @@ import { api } from "../../../convex/_generated/api";
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
 import { FileUpload } from "../shared/FileUpload";
 import { FileList } from "../shared/FileList";
+import { VALIDATION } from "@/types/entities";
 
 export interface BrandVoiceFormProps {
 	projectId: string;
@@ -51,8 +52,8 @@ export function BrandVoiceForm({ projectId, brandVoice, onSuccess, onCancel }: B
 			return;
 		}
 
-		if (description && description.length > 2000) {
-			setError("Description must be 2000 characters or less");
+		if (description && description.length > VALIDATION.brandVoice.descriptionMaxLength) {
+			setError(`Description must be ${VALIDATION.brandVoice.descriptionMaxLength} characters or less`);
 			return;
 		}
 
@@ -128,9 +129,9 @@ export function BrandVoiceForm({ projectId, brandVoice, onSuccess, onCancel }: B
 					rows={4}
 					className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 text-slate-900 dark:text-white bg-white dark:bg-slate-800"
 					placeholder="Describe your brand voice, tone, and style guidelines..."
-					maxLength={2000}
+					maxLength={VALIDATION.brandVoice.descriptionMaxLength}
 				/>
-				<p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{description.length}/2000 characters</p>
+				<p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{description.length}/{VALIDATION.brandVoice.descriptionMaxLength} characters</p>
 			</div>
 
 			{brandVoice && (
