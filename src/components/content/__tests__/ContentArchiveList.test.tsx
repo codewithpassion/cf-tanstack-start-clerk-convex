@@ -46,8 +46,6 @@ describe("ContentArchiveList", () => {
 			<ContentArchiveList
 				contentPieces={[]}
 				onEdit={vi.fn()}
-				onSelectionChange={vi.fn()}
-				selectedIds={[]}
 			/>,
 		);
 
@@ -59,8 +57,6 @@ describe("ContentArchiveList", () => {
 			<ContentArchiveList
 				contentPieces={mockContentPieces}
 				onEdit={vi.fn()}
-				onSelectionChange={vi.fn()}
-				selectedIds={[]}
 			/>
 		);
 
@@ -75,8 +71,6 @@ describe("ContentArchiveList", () => {
 			<ContentArchiveList
 				contentPieces={mockContentPieces}
 				onEdit={vi.fn()}
-				onSelectionChange={vi.fn()}
-				selectedIds={[]}
 			/>
 		);
 
@@ -90,8 +84,6 @@ describe("ContentArchiveList", () => {
 			<ContentArchiveList
 				contentPieces={mockContentPieces}
 				onEdit={onEdit}
-				onSelectionChange={vi.fn()}
-				selectedIds={[]}
 			/>
 		);
 
@@ -99,22 +91,5 @@ describe("ContentArchiveList", () => {
 		row?.click();
 
 		expect(onEdit).toHaveBeenCalledWith("content1");
-	});
-
-	it("handles selection changes for bulk actions", () => {
-		const onSelectionChange = vi.fn();
-		render(
-			<ContentArchiveList
-				contentPieces={mockContentPieces}
-				onEdit={vi.fn()}
-				onSelectionChange={onSelectionChange}
-				selectedIds={[]}
-			/>
-		);
-
-		const checkboxes = screen.getAllByRole("checkbox");
-		checkboxes[1].click(); // Click first item checkbox (index 0 is select all)
-
-		expect(onSelectionChange).toHaveBeenCalled();
 	});
 });

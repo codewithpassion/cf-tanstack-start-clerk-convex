@@ -17,8 +17,6 @@ export interface ContentArchiveListProps {
 		derivedCount?: number;
 	})[];
 	onEdit: (contentPieceId: string) => void;
-	onSelectionChange: (selectedIds: string[]) => void;
-	selectedIds: string[];
 	sortColumn?: "title" | "category" | "status" | "createdAt" | "updatedAt";
 	sortDirection?: "asc" | "desc";
 	onSort?: (column: "title" | "category" | "status" | "createdAt" | "updatedAt") => void;
@@ -29,13 +27,11 @@ export interface ContentArchiveListProps {
 
 /**
  * Table view component for displaying content pieces in the archive.
- * Includes sortable column headers, row selection, and click-to-edit functionality.
+ * Includes sortable column headers and click-to-edit functionality.
  */
 export function ContentArchiveList({
 	contentPieces,
 	onEdit,
-	onSelectionChange,
-	selectedIds,
 	sortColumn,
 	sortDirection = "desc",
 	onSort,
@@ -43,27 +39,10 @@ export function ContentArchiveList({
 	onDelete,
 	onRepurpose,
 }: ContentArchiveListProps) {
-	const handleSelectAll = (checked: boolean) => {
-		if (checked) {
-			onSelectionChange(contentPieces.map((cp) => cp._id));
-		} else {
-			onSelectionChange([]);
-		}
-	};
-
-	const handleSelectOne = (contentPieceId: string, checked: boolean) => {
-		if (checked) {
-			onSelectionChange([...selectedIds, contentPieceId]);
-		} else {
-			onSelectionChange(selectedIds.filter((id) => id !== contentPieceId));
-		}
-	};
-
 	const handleRowClick = (contentPieceId: string, e: React.MouseEvent) => {
-		// Don't navigate if clicking on checkbox or action buttons
+		// Don't navigate if clicking on action buttons
 		const target = e.target as HTMLElement;
 		if (
-			target.tagName === "INPUT" ||
 			target.tagName === "BUTTON" ||
 			target.closest("button")
 		) {
@@ -149,30 +128,11 @@ export function ContentArchiveList({
 		);
 	}
 
-	const allSelected =
-		contentPieces.length > 0 &&
-		contentPieces.every((cp) => selectedIds.includes(cp._id));
-	const someSelected = selectedIds.length > 0 && !allSelected;
-
 	return (
 		<div className="overflow-x-auto">
 			<table className="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
 				<thead className="bg-slate-50 dark:bg-slate-900">
 					<tr>
-						<th className="px-3 py-3 text-left">
-							<input
-								type="checkbox"
-								checked={allSelected}
-								ref={(input) => {
-									if (input) {
-										input.indeterminate = someSelected;
-									}
-								}}
-								onChange={(e) => handleSelectAll(e.target.checked)}
-								className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500 dark:bg-slate-800"
-								aria-label="Select all content pieces"
-							/>
-						</th>
 						<th
 							className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800"
 							onClick={() => handleSortClick("title")}
@@ -230,18 +190,6 @@ export function ContentArchiveList({
 							className="hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
 							onClick={(e) => handleRowClick(contentPiece._id, e)}
 						>
-							<td className="px-3 py-4 whitespace-nowrap">
-								<input
-									type="checkbox"
-									checked={selectedIds.includes(contentPiece._id)}
-									onChange={(e) =>
-										handleSelectOne(contentPiece._id, e.target.checked)
-									}
-									className="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-cyan-600 focus:ring-cyan-500 dark:bg-slate-800"
-									aria-label={`Select ${contentPiece.title}`}
-									onClick={(e) => e.stopPropagation()}
-								/>
-							</td>
 							<td className="px-6 py-4">
 								<div className="text-sm font-medium text-slate-900 dark:text-white">
 									{contentPiece.title}

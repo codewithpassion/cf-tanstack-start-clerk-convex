@@ -74,7 +74,6 @@ export function ContentArchiveView({
 		const stored = localStorage.getItem("contentArchiveViewMode");
 		return (stored === "table" || stored === "cards") ? stored : defaultViewMode;
 	});
-	const [selectedIds, setSelectedIds] = useState<string[]>([]);
 	const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
 	// Persist view mode to localStorage whenever it changes
@@ -103,19 +102,10 @@ export function ContentArchiveView({
 		}
 	};
 
-	const handleBulkDelete = () => {
-		if (selectedIds.length > 0) {
-			setShowDeleteConfirm(true);
-		}
-	};
-
-	const handleConfirmBulkDelete = () => {
+	const handleConfirmDelete = () => {
 		if (itemToDelete) {
 			onBulkDelete([itemToDelete]);
 			setItemToDelete(null);
-		} else {
-			onBulkDelete(selectedIds);
-			setSelectedIds([]);
 		}
 		setShowDeleteConfirm(false);
 	};
@@ -198,49 +188,30 @@ export function ContentArchiveView({
 				)}
 			</div>
 
-			{/* View Mode Toggle and Bulk Actions */}
-			<div className="flex items-center justify-between mb-4">
-				<div className="flex items-center gap-4">
-					{/* View Mode Toggle */}
-					<div className="flex rounded-md shadow-sm">
-						<button
-							type="button"
-							onClick={() => setViewMode("table")}
-							className={`px-4 py-2 text-sm font-medium rounded-l-md border ${viewMode === "table"
-								? "bg-cyan-600 text-white border-cyan-600"
-								: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
-								}`}
-						>
-							Table
-						</button>
-						<button
-							type="button"
-							onClick={() => setViewMode("cards")}
-							className={`px-4 py-2 text-sm font-medium rounded-r-md border-t border-r border-b ${viewMode === "cards"
-								? "bg-cyan-600 text-white border-cyan-600"
-								: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
-								}`}
-						>
-							Cards
-						</button>
-					</div>
+			{/* View Mode Toggle */}
+			<div className="flex items-center gap-4 mb-4">
+				<div className="flex rounded-md shadow-sm">
+					<button
+						type="button"
+						onClick={() => setViewMode("table")}
+						className={`px-4 py-2 text-sm font-medium rounded-l-md border ${viewMode === "table"
+							? "bg-cyan-600 text-white border-cyan-600"
+							: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
+							}`}
+					>
+						Table
+					</button>
+					<button
+						type="button"
+						onClick={() => setViewMode("cards")}
+						className={`px-4 py-2 text-sm font-medium rounded-r-md border-t border-r border-b ${viewMode === "cards"
+							? "bg-cyan-600 text-white border-cyan-600"
+							: "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800"
+							}`}
+					>
+						Cards
+					</button>
 				</div>
-
-				{/* Bulk Actions */}
-				{selectedIds.length > 0 && (
-					<div className="flex items-center gap-4">
-						<span className="text-sm text-slate-700">
-							{selectedIds.length} selected
-						</span>
-						<button
-							type="button"
-							onClick={handleBulkDelete}
-							className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-						>
-							Delete Selected
-						</button>
-					</div>
-				)}
 			</div>
 
 			{/* Content Display */}
@@ -248,8 +219,6 @@ export function ContentArchiveView({
 				<ContentArchiveList
 					contentPieces={contentPieces}
 					onEdit={onNavigateToContent}
-					onSelectionChange={setSelectedIds}
-					selectedIds={selectedIds}
 					sortColumn={sortColumn}
 					sortDirection={sortDirection}
 					onSort={handleSort}
@@ -264,14 +233,8 @@ export function ContentArchiveView({
 							key={contentPiece._id}
 							contentPiece={contentPiece}
 							onClick={onNavigateToContent}
-							isSelected={selectedIds.includes(contentPiece._id)}
-							onSelect={(id, selected) => {
-								if (selected) {
-									setSelectedIds([...selectedIds, id]);
-								} else {
-									setSelectedIds(selectedIds.filter((sid) => sid !== id));
-								}
-							}}
+							isSelected={false}
+							onSelect={() => {}}
 							onFinalize={onFinalize}
 							onDelete={handleDelete}
 							onRepurpose={onRepurpose}
@@ -306,10 +269,11 @@ export function ContentArchiveView({
 				isOpen={showDeleteConfirm}
 				onClose={() => {
 					setShowDeleteConfirm(false);
+					setItemToDelete(null);
 				}}
-				onConfirm={handleConfirmBulkDelete}
-				title={itemToDelete ? "Delete Content Piece" : `Delete ${selectedIds.length} Content Piece${selectedIds.length > 1 ? "s" : ""}`}
-				message={itemToDelete ? "Are you sure you want to delete this content piece? This action cannot be undone." : `Are you sure you want to delete ${selectedIds.length} content piece${selectedIds.length > 1 ? "s" : ""}? This action cannot be undone.`}
+				onConfirm={handleConfirmDelete}
+				title="Delete Content Piece"
+				message="Are you sure you want to delete this content piece? This action cannot be undone."
 				confirmLabel="Delete"
 				cancelLabel="Cancel"
 			/>
