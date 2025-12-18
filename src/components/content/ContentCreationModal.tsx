@@ -6,6 +6,8 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { SelectionStep } from "./wizard-steps/SelectionStep";
 import { DetailsStep } from "./wizard-steps/DetailsStep";
 import { ReviewStep } from "./ReviewStep";
+import { generateDraft } from "@/server/ai";
+import { useStreamingResponse } from "@/hooks/useStreamingResponse";
 import type { Id } from "@/convex/dataModel";
 
 export interface ContentCreationModalProps {
@@ -108,9 +110,11 @@ export function ContentCreationModal({
 	// Close confirmation state
 	const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
 
-	// Mutation for creating content
+	// Mutations for creating and updating content
 	const createContentPiece = useMutation(api.contentPieces.createContentPiece);
+	const updateContentPiece = useMutation(api.contentPieces.updateContentPiece);
 	const [isCreating, setIsCreating] = useState(false);
+	const { startStream } = useStreamingResponse();
 
 	// Handle close with confirmation if progress beyond step 1
 	const handleClose = () => {
@@ -200,12 +204,13 @@ export function ContentCreationModal({
 		setState({ ...state, currentStep: 2 });
 	};
 
-	// Handle generation - create content piece and navigate to editor
+	// Handle generation - create content piece, generate AI content, and navigate to editor
 	const handleGenerate = async () => {
 		if (!state.categoryId) return;
 
 		setIsCreating(true);
 		try {
+			// Step 1: Create the content piece with placeholder content
 			const result = await createContentPiece({
 				projectId,
 				categoryId: state.categoryId,
@@ -215,10 +220,36 @@ export function ContentCreationModal({
 					? state.selectedKnowledgeBaseIds
 					: undefined,
 				title: state.title,
-				content: state.draftContent || "",
+				content: state.draftContent || "Generating...",
 			});
 
-			// Reset state and complete
+			const contentPieceId = result.contentPieceId;
+
+			// Step 2: Generate AI content using the topic and context
+			const response = await generateDraft({
+				data: {
+					contentPieceId,
+					categoryId: state.categoryId,
+					personaId: state.personaId ?? undefined,
+					brandVoiceId: state.brandVoiceId ?? undefined,
+					title: state.title,
+					topic: state.topic,
+					draftContent: state.draftContent,
+					uploadedFileIds: state.uploadedFileIds,
+					selectedKnowledgeBaseIds: state.selectedKnowledgeBaseIds,
+				},
+			});
+
+			// Step 3: Stream the AI-generated content
+			const fullContent = await startStream(response);
+
+			// Step 4: Update the content piece with the AI-generated content
+			await updateContentPiece({
+				contentPieceId,
+				content: fullContent,
+			});
+
+			// Reset state
 			setState({
 				currentStep: 1,
 				categoryId: null,
@@ -232,7 +263,8 @@ export function ContentCreationModal({
 				uploadedFileIds: [],
 			});
 
-			onComplete(result.contentPieceId);
+			// Complete and navigate to editor with AI-generated content
+			onComplete(contentPieceId);
 		} catch (error) {
 			console.error("Failed to create content piece:", error);
 			alert("Failed to create content. Please try again.");
