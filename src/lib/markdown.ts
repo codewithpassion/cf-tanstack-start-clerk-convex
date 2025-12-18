@@ -107,6 +107,10 @@ export function nodeToMarkdown(node: JSONContent): string {
         return "\n";
     }
 
+    if (type === "horizontalRule") {
+        return "---";
+    }
+
     // Default: recurse or return empty
     if (content) {
         return content.map(child => nodeToMarkdown(child)).join("");

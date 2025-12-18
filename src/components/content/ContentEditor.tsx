@@ -40,6 +40,7 @@ import {
 	Undo,
 	Redo,
 	Sparkles,
+	Minus,
 } from "lucide-react";
 import { InlineRefinePopover } from "./InlineRefinePopover";
 import type { Editor } from "@tiptap/core";
@@ -201,11 +202,10 @@ function markdownToTiptap(markdown: string): JSONContent {
 			continue;
 		}
 
-		// Horizontal rule - convert to a simple paragraph with dashes
+		// Horizontal rule
 		if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) {
 			content.push({
-				type: "paragraph",
-				content: [{ type: "text", text: "---" }],
+				type: "horizontalRule",
 			});
 			i++;
 			continue;
@@ -416,6 +416,15 @@ const suggestionItems = createSuggestionItems([
 		icon: <MessageSquareQuote size={18} />,
 		command: ({ editor, range }: { editor: Editor; range: any }) => {
 			editor.chain().focus().deleteRange(range).toggleBlockquote().run();
+		},
+	},
+	{
+		title: "Divider",
+		description: "Insert a horizontal line",
+		searchTerms: ["hr", "line", "separator", "---"],
+		icon: <Minus size={18} />,
+		command: ({ editor, range }: { editor: Editor; range: any }) => {
+			editor.chain().focus().deleteRange(range).setHorizontalRule().run();
 		},
 	},
 ]);
