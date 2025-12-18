@@ -16,6 +16,7 @@ export interface ProjectDropdownProps {
 	onOpenPersonas: () => void;
 	onOpenKnowledgeBase: () => void;
 	onOpenExamples: () => void;
+	trigger?: React.ReactNode;
 }
 
 /**
@@ -30,18 +31,21 @@ export function ProjectDropdown({
 	onOpenPersonas,
 	onOpenKnowledgeBase,
 	onOpenExamples,
+	trigger,
 }: ProjectDropdownProps) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<button
-					type="button"
-					className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition-colors"
-				>
-					<span className="w-2 h-2 rounded-full bg-emerald-400" />
-					<span className="truncate max-w-[180px]">{project.name}</span>
-					<ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
-				</button>
+				{trigger || (
+					<button
+						type="button"
+						className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition-colors"
+					>
+						<span className="w-2 h-2 rounded-full bg-emerald-400" />
+						<span className="truncate max-w-[180px]">{project.name}</span>
+						<ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
+					</button>
+				)}
 			</DropdownMenuTrigger>
 
 			<DropdownMenuContent align="start" className="w-72">

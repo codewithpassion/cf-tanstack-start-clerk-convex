@@ -89,6 +89,11 @@ export interface ContentEditorProps {
 	 * Callback to receive the editor instance when it's ready.
 	 */
 	onEditorReady?: (editor: Editor | null) => void;
+
+	/**
+	 * Callback when save state changes.
+	 */
+	onSaveStateChange?: (isSaving: boolean, lastSaved: Date | null) => void;
 }
 
 /**
@@ -557,8 +562,8 @@ export function ContentEditor({
 	debounceMs = 3000,
 	onTriggerInlineRefine,
 	onEditorReady,
+	onSaveStateChange,
 }: ContentEditorProps) {
-	const [isSaving, setIsSaving] = useState(false);
 	const [lastSaved, setLastSaved] = useState<Date | null>(null);
 	const [toolbarEditor, setToolbarEditor] = useState<Editor | null>(null);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -672,23 +677,24 @@ export function ContentEditor({
 
 				// If contentPieceId is provided, trigger autosave
 				if (contentPieceId) {
-					setIsSaving(true);
+					onSaveStateChange?.(true, lastSaved);
 					updateContentPiece({
 						contentPieceId,
 						content: jsonString,
 					})
 						.then(() => {
-							setLastSaved(new Date());
-							setIsSaving(false);
+							const savedTime = new Date();
+							setLastSaved(savedTime);
+							onSaveStateChange?.(false, savedTime);
 						})
 						.catch((error) => {
 							console.error("Failed to autosave content:", error);
-							setIsSaving(false);
+							onSaveStateChange?.(false, lastSaved);
 						});
 				}
 			}, debounceMs);
 		},
-		[onChange, contentPieceId, updateContentPiece, debounceMs]
+		[onChange, contentPieceId, updateContentPiece, debounceMs, onSaveStateChange, lastSaved]
 	);
 
 	/**
@@ -704,24 +710,8 @@ export function ContentEditor({
 
 	return (
 		<div className="w-full">
-			{/* Save indicator */}
-			<div className="mb-2 text-sm text-slate-500 dark:text-slate-400 text-right">
-				{isSaving && (
-					<span className="flex items-center justify-end gap-2">
-						<div className="animate-spin rounded-full h-3 w-3 border-b-2 border-cyan-600" />
-						Saving...
-					</span>
-				)}
-				{!isSaving && lastSaved && (
-					<span>
-						Last saved at{" "}
-						{lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-					</span>
-				)}
-			</div>
-
 			{/* Novel Editor */}
-			<div className="sm:border sm:border-slate-200 sm:dark:border-slate-800 sm:dark:border-t-2 sm:dark:border-t-amber-400/30 sm:rounded-xl overflow-hidden bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 transition-all duration-300 sm:hover:shadow-lg dark:sm:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.1)]">
+			<div className="border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/80 transition-all duration-300 hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3),0_0_30px_rgba(251,191,36,0.1)]">
 				<div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 p-2 px-3 sm:px-2">
 					<SimpleEditorToolbar editor={toolbarEditor} />
 				</div>
@@ -749,10 +739,10 @@ export function ContentEditor({
 						initialContent={parsedInitialContent}
 						onUpdate={handleUpdate}
 						editable={!disabled}
-						className="min-h-[500px] p-3 sm:p-6"
+						className="min-h-[500px] p-6 sm:p-12 max-w-[1400px] mx-auto w-full"
 						editorProps={{
 							attributes: {
-								class: "prose prose-sm sm:prose dark:prose-invert focus:outline-none max-w-none",
+								class: "prose prose-lg dark:prose-invert focus:outline-none max-w-none w-full",
 							},
 							handleDOMEvents: {
 								keydown: (_view, event) => handleCommandNavigation(event),
@@ -841,15 +831,12 @@ export function ContentEditor({
 			</div>
 
 			{/* Keyboard shortcuts help text */}
-			<div className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+			<div className="mt-3 text-xs text-slate-500 dark:text-slate-400 p-8 pt-4">
 				<p className="mb-1">
 					<strong>Markdown shortcuts:</strong> Type # for headings, - for bullet lists, 1. for numbered lists, {">"} for quotes
 				</p>
 				<p className="mb-1">
 					<strong>Formatting:</strong> **bold**, *italic*, `code`, ~~strikethrough~~
-				</p>
-				<p>
-					<strong>Slash commands:</strong> Type / to see all commands
 				</p>
 			</div>
 

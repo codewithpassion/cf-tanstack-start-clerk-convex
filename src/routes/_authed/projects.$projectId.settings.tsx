@@ -166,7 +166,7 @@ function SettingsPage() {
 	};
 
 	return (
-		<div className="max-w-4xl">
+		<div className="max-w-4xl p-6 mx-auto">
 			<PageHeader
 				title="Project Settings"
 				description="Manage your project details and settings."
@@ -194,8 +194,8 @@ function SettingsPage() {
 									value={formData.name}
 									onChange={(e) => handleChange("name", e.target.value)}
 									className={`mt-1 block w-full rounded-md shadow-sm sm:text-sm bg-white dark:bg-slate-950 px-3 py-2 border ${formErrors.name
-											? "border-red-300 focus:border-red-500 focus:ring-red-500"
-											: "border-slate-300 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500"
+										? "border-red-300 focus:border-red-500 focus:ring-red-500"
+										: "border-slate-300 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500"
 										} text-slate-900 dark:text-white placeholder-slate-400`}
 									placeholder="Enter project name"
 									maxLength={100}
@@ -219,8 +219,8 @@ function SettingsPage() {
 									onChange={(e) => handleChange("description", e.target.value)}
 									rows={4}
 									className={`mt-2 block w-full rounded-md shadow-sm sm:text-sm bg-white dark:bg-slate-950 px-3 py-2 border ${formErrors.description
-											? "border-red-300 focus:border-red-500 focus:ring-red-500"
-											: "border-slate-300 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500"
+										? "border-red-300 focus:border-red-500 focus:ring-red-500"
+										: "border-slate-300 dark:border-slate-700 focus:border-cyan-500 focus:ring-cyan-500"
 										} text-slate-900 dark:text-white placeholder-slate-400`}
 									placeholder="Enter instructions for content generation (optional)"
 									maxLength={2000}

@@ -25,6 +25,8 @@ export interface ContentArchiveViewProps {
 	hasMore: boolean;
 	onNavigateToContent: (contentPieceId: string) => void;
 	onBulkDelete: (contentPieceIds: string[]) => void;
+	onFinalize?: (contentPieceId: string) => void;
+	onRepurpose?: (contentPieceId: string) => void;
 	searchQuery?: string;
 	onSearchQueryChange?: (query: string) => void;
 	searchResults?: SearchResult[];
@@ -54,6 +56,8 @@ export function ContentArchiveView({
 	hasMore,
 	onNavigateToContent,
 	onBulkDelete,
+	onFinalize,
+	onRepurpose,
 	searchQuery = "",
 	onSearchQueryChange,
 	searchResults = [],
@@ -71,6 +75,7 @@ export function ContentArchiveView({
 		return (stored === "table" || stored === "cards") ? stored : defaultViewMode;
 	});
 	const [selectedIds, setSelectedIds] = useState<string[]>([]);
+	const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
 	// Persist view mode to localStorage whenever it changes
 	useEffect(() => {
@@ -105,9 +110,19 @@ export function ContentArchiveView({
 	};
 
 	const handleConfirmBulkDelete = () => {
-		onBulkDelete(selectedIds);
-		setSelectedIds([]);
+		if (itemToDelete) {
+			onBulkDelete([itemToDelete]);
+			setItemToDelete(null);
+		} else {
+			onBulkDelete(selectedIds);
+			setSelectedIds([]);
+		}
 		setShowDeleteConfirm(false);
+	};
+
+	const handleDelete = (contentPieceId: string) => {
+		setItemToDelete(contentPieceId);
+		setShowDeleteConfirm(true);
 	};
 
 	const handleSearchResultClick = (contentPieceId: string, _projectId: string) => {
@@ -238,6 +253,9 @@ export function ContentArchiveView({
 					sortColumn={sortColumn}
 					sortDirection={sortDirection}
 					onSort={handleSort}
+					onFinalize={onFinalize}
+					onDelete={handleDelete}
+					onRepurpose={onRepurpose}
 				/>
 			) : (
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -254,6 +272,9 @@ export function ContentArchiveView({
 									setSelectedIds(selectedIds.filter((sid) => sid !== id));
 								}
 							}}
+							onFinalize={onFinalize}
+							onDelete={handleDelete}
+							onRepurpose={onRepurpose}
 						/>
 					))}
 				</div>
@@ -287,8 +308,8 @@ export function ContentArchiveView({
 					setShowDeleteConfirm(false);
 				}}
 				onConfirm={handleConfirmBulkDelete}
-				title={`Delete ${selectedIds.length} Content Piece${selectedIds.length > 1 ? "s" : ""}`}
-				message={`Are you sure you want to delete ${selectedIds.length} content piece${selectedIds.length > 1 ? "s" : ""}? This action cannot be undone.`}
+				title={itemToDelete ? "Delete Content Piece" : `Delete ${selectedIds.length} Content Piece${selectedIds.length > 1 ? "s" : ""}`}
+				message={itemToDelete ? "Are you sure you want to delete this content piece? This action cannot be undone." : `Are you sure you want to delete ${selectedIds.length} content piece${selectedIds.length > 1 ? "s" : ""}? This action cannot be undone.`}
 				confirmLabel="Delete"
 				cancelLabel="Cancel"
 			/>

@@ -10,6 +10,8 @@ export interface ContentSubNavProps {
 	brandVoice?: {
 		name: string;
 	} | null;
+	isSaving?: boolean;
+	lastSaved?: Date | null;
 }
 
 /**
@@ -21,6 +23,8 @@ export function ContentSubNav({
 	projectId,
 	persona,
 	brandVoice,
+	isSaving,
+	lastSaved,
 }: ContentSubNavProps) {
 	return (
 		<div className="bg-slate-900/80 border-b border-slate-800">
@@ -51,6 +55,22 @@ export function ContentSubNav({
 							</span>
 						)}
 					</div>
+				</div>
+
+				{/* Right: Save Indicator */}
+				<div className="text-xs text-slate-400 flex-shrink-0">
+					{isSaving && (
+						<span className="flex items-center gap-2">
+							<div className="animate-spin rounded-full h-3 w-3 border-b-2 border-cyan-500" />
+							Saving...
+						</span>
+					)}
+					{!isSaving && lastSaved && (
+						<span>
+							Saved at{" "}
+							{lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+						</span>
+					)}
 				</div>
 			</div>
 		</div>

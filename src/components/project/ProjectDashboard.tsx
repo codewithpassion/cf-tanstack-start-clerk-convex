@@ -1,12 +1,15 @@
 import { useState, useEffect, memo } from "react";
+import { useProjectContext } from "@/contexts/project-context";
+import { ProjectDropdown } from "@/components/navigation/ProjectDropdown";
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
 import type { ProjectId, ContentFilters } from "@/types/entities";
 import { LoadingState } from "@/components/shared/LoadingState";
-import { FileText, Layers, Plus } from "lucide-react";
+import { FileText, Layers, Plus, Settings, ArrowLeft } from "lucide-react";
 import { ContentArchiveView } from "@/components/content/ContentArchiveView";
+import { RepurposeDialog } from "@/components/content/RepurposeDialog";
 import type { SearchResult } from "@/components/content/SearchResults";
 import { Link } from "@tanstack/react-router";
 
@@ -94,6 +97,7 @@ const DashboardStats = memo(function DashboardStats({
  */
 export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 	// State for content list
+	const projectContext = useProjectContext();
 	const [limit, setLimit] = useState(25);
 	const [filters, setFilters] = useState<ContentFilters>({});
 	const [searchQuery, setSearchQuery] = useState("");
@@ -151,6 +155,11 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 
 	// Mutations
 	const deleteContentPiece = useMutation(api.contentPieces.deleteContentPiece);
+	const finalizeContentPiece = useMutation(api.contentPieces.finalizeContentPiece);
+	const createDerivedContent = useMutation(api.contentPieces.createDerivedContent);
+
+	// State for repurposing
+	const [repurposeTargetId, setRepurposeTargetId] = useState<string | null>(null);
 
 	// Loading state
 	if (
@@ -215,8 +224,82 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 		}
 	};
 
+	const handleFinalize = async (contentPieceId: string) => {
+		try {
+			await finalizeContentPiece({ contentPieceId: contentPieceId as Id<"contentPieces"> });
+		} catch (error) {
+			console.error("Failed to finalize content piece:", error);
+			alert("Failed to finalize content piece. Please try again.");
+		}
+	};
+
+	const handleRepurpose = (contentPieceId: string) => {
+		setRepurposeTargetId(contentPieceId);
+	};
+
+	const handleAcceptRepurpose = async (
+		content: string,
+		categoryId: Id<"categories">,
+		title: string,
+		personaId?: Id<"personas">,
+		brandVoiceId?: Id<"brandVoices">
+	) => {
+		if (!repurposeTargetId) return;
+
+		try {
+			// Create the derived content piece with the repurposed content
+			const result = await createDerivedContent({
+				parentContentId: repurposeTargetId as Id<"contentPieces">,
+				categoryId,
+				title,
+				personaId,
+				brandVoiceId,
+				content,
+			});
+
+			setRepurposeTargetId(null);
+
+			// Navigate to the new content piece
+			window.location.href = `/projects/${projectId}/content/${result.contentPieceId}`;
+		} catch (error) {
+			console.error("Failed to repurpose content:", error);
+			alert("Failed to repurpose content. Please try again.");
+		}
+	};
+
+	const repurposeTargetContent = repurposeTargetId
+		? contentPieces.find((cp) => cp._id === repurposeTargetId)
+		: null;
+
 	return (
 		<div className="container mx-auto pt-6 pb-6 space-y-8">
+			{/* Project Header */}
+			<div className="flex items-center gap-4">
+				<Link
+					to="/dashboard"
+					className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-amber-400 transition-colors"
+				>
+					<ArrowLeft className="w-6 h-6" />
+				</Link>
+				<h1 className="text-3xl font-bold text-slate-900 dark:text-white font-['Lexend'] tracking-tight">
+					{projectContext?.project?.name}
+				</h1>
+				{projectContext?.project && (
+					<ProjectDropdown
+						project={projectContext.project}
+						onOpenBrandVoices={projectContext.onOpenBrandVoices}
+						onOpenPersonas={projectContext.onOpenPersonas}
+						onOpenKnowledgeBase={projectContext.onOpenKnowledgeBase}
+						onOpenExamples={projectContext.onOpenExamples}
+						trigger={
+							<button className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-amber-400 transition-colors">
+								<Settings className="w-5 h-5" />
+							</button>
+						}
+					/>
+				)}
+			</div>
+
 			{/* Stats Row */}
 			<DashboardStats
 				totalCount={totalCount}
@@ -253,6 +336,8 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 					hasMore={contentPieces.length < totalCount}
 					onNavigateToContent={handleNavigateToContent}
 					onBulkDelete={handleBulkDelete}
+					onFinalize={handleFinalize}
+					onRepurpose={handleRepurpose}
 					searchQuery={searchQuery}
 					onSearchQueryChange={setSearchQuery}
 					searchResults={mappedSearchResults}
@@ -262,6 +347,21 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 					onShowFiltersChange={setShowFilters}
 				/>
 			</div>
+
+			{/* Repurpose Dialog */}
+			{repurposeTargetContent && (
+				<RepurposeDialog
+					isOpen={!!repurposeTargetId}
+					onClose={() => setRepurposeTargetId(null)}
+					contentPieceId={repurposeTargetContent._id}
+					projectId={projectId as Id<"projects">}
+					currentCategoryId={repurposeTargetContent.categoryId}
+					currentPersonaId={repurposeTargetContent.personaId ?? undefined}
+					currentBrandVoiceId={repurposeTargetContent.brandVoiceId ?? undefined}
+					sourceTitle={repurposeTargetContent.title}
+					onAccept={handleAcceptRepurpose}
+				/>
+			)}
 		</div>
 	);
 }

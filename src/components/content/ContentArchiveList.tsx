@@ -1,6 +1,12 @@
 import type { ContentPiece } from "@/types/entities";
 import { formatDistanceToNow } from "date-fns";
-import { GitFork, ArrowRight } from "lucide-react";
+import { GitFork, ArrowRight, MoreVertical, Trash, CheckCircle } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export interface ContentArchiveListProps {
 	contentPieces: (ContentPiece & {
@@ -16,6 +22,9 @@ export interface ContentArchiveListProps {
 	sortColumn?: "title" | "category" | "status" | "createdAt" | "updatedAt";
 	sortDirection?: "asc" | "desc";
 	onSort?: (column: "title" | "category" | "status" | "createdAt" | "updatedAt") => void;
+	onFinalize?: (contentPieceId: string) => void;
+	onDelete?: (contentPieceId: string) => void;
+	onRepurpose?: (contentPieceId: string) => void;
 }
 
 /**
@@ -30,6 +39,9 @@ export function ContentArchiveList({
 	sortColumn,
 	sortDirection = "desc",
 	onSort,
+	onFinalize,
+	onDelete,
+	onRepurpose,
 }: ContentArchiveListProps) {
 	const handleSelectAll = (checked: boolean) => {
 		if (checked) {
@@ -120,8 +132,8 @@ export function ContentArchiveList({
 		return (
 			<span
 				className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${isDraft
-						? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
-						: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
+					? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
+					: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
 					}`}
 			>
 				{isDraft ? "Draft" : "Finalized"}
@@ -206,6 +218,9 @@ export function ContentArchiveList({
 								<SortIcon column="updatedAt" />
 							</div>
 						</th>
+						<th className="relative px-6 py-3">
+							<span className="sr-only">Actions</span>
+						</th>
 					</tr>
 				</thead>
 				<tbody className="bg-white dark:bg-slate-950 divide-y divide-slate-200 dark:divide-slate-800">
@@ -282,6 +297,57 @@ export function ContentArchiveList({
 								{formatDistanceToNow(new Date(contentPiece.updatedAt), {
 									addSuffix: true,
 								})}
+							</td>
+							<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<button
+											type="button"
+											onClick={(e) => e.stopPropagation()}
+											className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+										>
+											<MoreVertical className="h-4 w-4" />
+										</button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="end">
+										{onRepurpose && (
+											<DropdownMenuItem
+												onClick={(e) => {
+													e.stopPropagation();
+													onRepurpose(contentPiece._id);
+												}}
+												className="text-slate-700 dark:text-slate-200"
+											>
+												<GitFork className="mr-2 h-4 w-4" />
+												Repurpose
+											</DropdownMenuItem>
+										)}
+										{contentPiece.status === "draft" && onFinalize && (
+											<DropdownMenuItem
+												onClick={(e) => {
+													e.stopPropagation();
+													onFinalize(contentPiece._id);
+												}}
+												className="text-slate-700 dark:text-slate-200"
+											>
+												<CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+												Finalize
+											</DropdownMenuItem>
+										)}
+										{onDelete && (
+											<DropdownMenuItem
+												onClick={(e) => {
+													e.stopPropagation();
+													onDelete(contentPiece._id);
+												}}
+												className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+											>
+												<Trash className="mr-2 h-4 w-4" />
+												Delete
+											</DropdownMenuItem>
+										)}
+									</DropdownMenuContent>
+								</DropdownMenu>
 							</td>
 						</tr>
 					))}

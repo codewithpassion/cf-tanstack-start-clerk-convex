@@ -13,7 +13,18 @@ export interface ContentCardProps {
 	onClick: (contentPieceId: string) => void;
 	isSelected?: boolean;
 	onSelect?: (contentPieceId: string, selected: boolean) => void;
+	onFinalize?: (contentPieceId: string) => void;
+	onDelete?: (contentPieceId: string) => void;
+	onRepurpose?: (contentPieceId: string) => void;
 }
+
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { CheckCircle, MoreVertical, Trash } from "lucide-react";
 
 /**
  * Card variant for displaying content pieces in the archive view.
@@ -24,6 +35,9 @@ export function ContentCard({
 	onClick,
 	isSelected = false,
 	onSelect,
+	onFinalize,
+	onDelete,
+	onRepurpose,
 }: ContentCardProps) {
 	const handleCardClick = () => {
 		onClick(contentPiece._id);
@@ -41,8 +55,8 @@ export function ContentCard({
 		return (
 			<span
 				className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${isDraft
-						? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
-						: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
+					? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200"
+					: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
 					}`}
 			>
 				{isDraft ? "Draft" : "Finalized"}
@@ -62,7 +76,7 @@ export function ContentCard({
 			onClick={handleCardClick}
 		>
 			{onSelect && (
-				<div className="absolute top-4 left-4">
+				<div className="absolute top-4 left-4 z-10">
 					<input
 						type="checkbox"
 						checked={isSelected}
@@ -80,7 +94,58 @@ export function ContentCard({
 					<h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 line-clamp-2">
 						{contentPiece.title}
 					</h3>
-					<StatusBadge status={contentPiece.status} />
+					<div className="flex items-center gap-2 shrink-0">
+						<StatusBadge status={contentPiece.status} />
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<button
+									type="button"
+									onClick={(e) => e.stopPropagation()}
+									className="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+								>
+									<MoreVertical className="h-4 w-4" />
+								</button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								{onRepurpose && (
+									<DropdownMenuItem
+										onClick={(e) => {
+											e.stopPropagation();
+											onRepurpose(contentPiece._id);
+										}}
+										className="text-slate-700 dark:text-slate-200"
+									>
+										<GitFork className="mr-2 h-4 w-4" />
+										Repurpose
+									</DropdownMenuItem>
+								)}
+								{contentPiece.status === "draft" && onFinalize && (
+									<DropdownMenuItem
+										onClick={(e) => {
+											e.stopPropagation();
+											onFinalize(contentPiece._id);
+										}}
+										className="text-slate-700 dark:text-slate-200"
+									>
+										<CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+										Finalize
+									</DropdownMenuItem>
+								)}
+								{onDelete && (
+									<DropdownMenuItem
+										onClick={(e) => {
+											e.stopPropagation();
+											onDelete(contentPiece._id);
+										}}
+										className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+									>
+										<Trash className="mr-2 h-4 w-4" />
+										Delete
+									</DropdownMenuItem>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 				</div>
 
 				{/* Category and Metadata */}
@@ -102,7 +167,7 @@ export function ContentCard({
 
 				{/* Repurpose relationship indicators */}
 				{(contentPiece.parentContent ||
-					(contentPiece.derivedCount && contentPiece.derivedCount > 0)) && (
+					(contentPiece.derivedCount || 0) > 0) && (
 						<div className="flex flex-wrap items-center gap-2 mb-3">
 							{contentPiece.parentContent && (
 								<button

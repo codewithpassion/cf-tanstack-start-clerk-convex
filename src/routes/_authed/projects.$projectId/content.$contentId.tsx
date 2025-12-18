@@ -152,6 +152,10 @@ function ContentEditorPage() {
 	} | null>(null);
 	const editorRef = useRef<Editor | null>(null);
 
+	// State for save indicator
+	const [isSaving, setIsSaving] = useState(false);
+	const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
 	// Streaming hook for inline refine
 	const {
 		content: refinedSelectionContent,
@@ -407,12 +411,14 @@ function ContentEditorPage() {
 				projectId={projectId}
 				persona={contentPiece.persona}
 				brandVoice={contentPiece.brandVoice}
+				isSaving={isSaving}
+				lastSaved={lastSaved}
 			/>
 
 			{/* Main Content Area - Full Width Split Pane Layout */}
 			<div className="flex-1 flex overflow-hidden">
 				{/* Editor Pane - Full Width */}
-				<div className="flex-1 overflow-y-auto bg-slate-950">
+				<div className="flex-1 overflow-y-auto bg-slate-950 p-0">
 					<ContentEditor
 						key={contentPiece.content}
 						initialContent={contentPiece.content}
@@ -424,6 +430,10 @@ function ContentEditorPage() {
 						onTriggerInlineRefine={handleInlineRefineTrigger}
 						onEditorReady={(editor) => {
 							editorRef.current = editor;
+						}}
+						onSaveStateChange={(saving, saved) => {
+							setIsSaving(saving);
+							setLastSaved(saved);
 						}}
 					/>
 				</div>
