@@ -279,7 +279,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 					>
 						{/* Image Thumbnail */}
 						<div
-							className="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer relative"
+							className="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer"
 							onClick={() => openPreview(image)}
 						>
 							{image.file ? (
@@ -293,19 +293,6 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 								/>
 							) : (
 								<div className="text-slate-400 text-sm">No preview</div>
-							)}
-
-							{/* Download Button - Visible on mobile, hover on desktop */}
-							{image.file && (
-								<button
-									type="button"
-									onClick={(e) => handleDownloadImage(image.fileId, image.file!.filename, e)}
-									className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-full shadow-lg hover:bg-white dark:hover:bg-slate-800 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
-									aria-label="Download image"
-									title="Download image"
-								>
-									<Download className="w-3.5 h-3.5 text-slate-700 dark:text-slate-200" />
-								</button>
 							)}
 						</div>
 
@@ -366,8 +353,25 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 							)}
 						</div>
 
-						{/* Action Buttons - Visible on hover */}
-						<div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+						{/* Action Buttons - Visible on hover (always visible on mobile) */}
+						<div className="absolute top-2 right-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex gap-1">
+							{/* Download Button */}
+							{image.file && (
+								<button
+									type="button"
+									onClick={(e) => {
+										e.stopPropagation();
+										handleDownloadImage(image.fileId, image.file!.filename, e);
+									}}
+									className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 p-1.5 rounded-full hover:bg-white dark:hover:bg-slate-800 shadow-lg"
+									aria-label="Download image"
+									title="Download image"
+								>
+									<Download className="w-4 h-4" />
+								</button>
+							)}
+
+							{/* Delete Button */}
 							<button
 								type="button"
 								onClick={() => setDeleteConfirmId(image._id)}
