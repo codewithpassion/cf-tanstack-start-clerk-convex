@@ -13,6 +13,7 @@ export interface ContentSubNavProps {
 	isSaving?: boolean;
 	lastSaved?: Date | null;
 	onOpenMobileTools?: () => void;
+	onOpenMobileImages?: () => void;
 }
 
 /**
@@ -27,11 +28,12 @@ export function ContentSubNav({
 	isSaving,
 	lastSaved,
 	onOpenMobileTools,
+	onOpenMobileImages,
 }: ContentSubNavProps) {
 	return (
 		<div className="bg-slate-900/80 border-b border-slate-800">
-			<div className="flex items-center justify-between h-11 px-4">
-				{/* Left: Back + Content Title + Badges */}
+			<div className="flex flex-col lg:flex-row lg:items-center justify-between h-auto py-3 lg:py-0 lg:h-11 px-4 gap-2 lg:gap-0">
+				{/* Top Row: Back + Title + (Desktop Badges) */}
 				<div className="flex items-center gap-3 min-w-0 flex-1">
 					<Link
 						to="/projects/$projectId"
@@ -45,50 +47,76 @@ export function ContentSubNav({
 						{title}
 					</h1>
 
-					<div className="flex items-center gap-1.5 flex-shrink-0">
-						{persona && (
-							<span className="px-2 py-0.5 text-xs font-medium bg-pink-500/15 text-pink-400 rounded-full border border-pink-500/20">
-								{persona.name}
-							</span>
-						)}
-						{brandVoice && (
-							<span className="px-2 py-0.5 text-xs font-medium bg-purple-500/15 text-purple-400 rounded-full border border-purple-500/20">
-								{brandVoice.name}
-							</span>
-						)}
+					{/* Desktop Badges (Hidden on Mobile) */}
+					<div className="hidden lg:flex items-center gap-1.5 flex-shrink-0">
+						<BadgeList persona={persona} brandVoice={brandVoice} />
 					</div>
 				</div>
 
-				{/* Right: Save Indicator & Mobile Tools */}
-				<div className="flex items-center gap-3 flex-shrink-0">
-					<div className="hidden sm:block text-xs text-slate-400">
-						{isSaving && (
-							<span className="flex items-center gap-2">
-								<div className="animate-spin rounded-full h-3 w-3 border-b-2 border-cyan-500" />
-								Saving...
-							</span>
-						)}
-						{!isSaving && lastSaved && (
-							<span>
-								Saved at{" "}
-								{lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-							</span>
-						)}
+				{/* Bottom Row (Mobile): Badges + Actions */}
+				{/* Right Side (Desktop): Save + Actions */}
+				<div className="flex items-center justify-between lg:justify-end gap-3 w-full lg:w-auto">
+					{/* Mobile Badges (Hidden on Desktop) */}
+					<div className="flex lg:hidden items-center gap-1.5 flex-1 min-w-0 overflow-x-auto no-scrollbar mask-linear-fade">
+						<BadgeList persona={persona} brandVoice={brandVoice} />
 					</div>
 
-					{/* Mobile Tools Toggle */}
-					<button
-						onClick={onOpenMobileTools}
-						className="lg:hidden p-1.5 hover:bg-slate-800 rounded-lg transition-colors text-slate-400"
-						aria-label="Open tools"
-						type="button"
-					>
-						<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-						</svg>
-					</button>
+					<div className="flex items-center gap-3 flex-shrink-0 ml-auto lg:ml-0">
+						<div className="hidden sm:block text-xs text-slate-400">
+							{isSaving && (
+								<span className="flex items-center gap-2">
+									<div className="animate-spin rounded-full h-3 w-3 border-b-2 border-cyan-500" />
+									Saving...
+								</span>
+							)}
+							{!isSaving && lastSaved && (
+								<span>
+									Saved at{" "}
+									{lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+								</span>
+							)}
+						</div>
+
+						{/* Mobile Actions */}
+						<div className="flex items-center gap-2 lg:hidden">
+							<button
+								onClick={onOpenMobileImages}
+								className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-md text-slate-300 text-xs font-medium transition-colors border border-slate-700"
+								type="button"
+							>
+								Images
+							</button>
+							<button
+								onClick={onOpenMobileTools}
+								className="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-700 rounded-md text-white text-xs font-medium transition-colors shadow-sm shadow-cyan-900/20"
+								type="button"
+							>
+								Actions
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
+	);
+}
+
+function BadgeList({ persona, brandVoice }: {
+	persona?: { name: string } | null;
+	brandVoice?: { name: string } | null;
+}) {
+	return (
+		<>
+			{persona && (
+				<span className="px-2 py-0.5 text-xs font-medium bg-pink-500/15 text-pink-400 rounded-full border border-pink-500/20 whitespace-nowrap">
+					{persona.name}
+				</span>
+			)}
+			{brandVoice && (
+				<span className="px-2 py-0.5 text-xs font-medium bg-purple-500/15 text-purple-400 rounded-full border border-purple-500/20 whitespace-nowrap">
+					{brandVoice.name}
+				</span>
+			)}
+		</>
 	);
 }
