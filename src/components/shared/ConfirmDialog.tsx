@@ -59,7 +59,7 @@ export function ConfirmDialog({
 			<div className="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
 				{/* Background overlay */}
 				<div
-					className="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-90 transition-opacity"
+					className="fixed inset-0 bg-black/50 dark:bg-black/90 transition-opacity"
 					aria-hidden="true"
 					onClick={handleCancel}
 				/>

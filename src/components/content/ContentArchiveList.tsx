@@ -217,10 +217,10 @@ export function ContentArchiveList({
 											</span>
 										</button>
 									)}
-									{contentPiece.derivedCount && contentPiece.derivedCount > 0 && (
+									{(contentPiece.derivedCount ?? 0) > 0 && (
 										<span
 											className="inline-flex items-center gap-1 text-xs text-cyan-700 bg-cyan-50 dark:text-cyan-400 dark:bg-cyan-900/20 px-2 py-0.5 rounded-full"
-											title={`Repurposed ${contentPiece.derivedCount} time${contentPiece.derivedCount > 1 ? "s" : ""}`}
+											title={`Repurposed ${contentPiece.derivedCount} time${(contentPiece.derivedCount ?? 0) > 1 ? "s" : ""}`}
 										>
 											<ArrowRight className="h-3 w-3" />
 											<span>{contentPiece.derivedCount} repurposed</span>
