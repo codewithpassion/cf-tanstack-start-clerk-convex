@@ -53,15 +53,15 @@ export function ContentSubNav({
 					</div>
 				</div>
 
-				{/* Bottom Row (Mobile): Badges + Actions */}
-				{/* Right Side (Desktop): Save + Actions */}
-				<div className="flex items-center justify-between lg:justify-end gap-3 w-full lg:w-auto">
-					{/* Mobile Badges (Hidden on Desktop) */}
-					<div className="flex lg:hidden items-center gap-1.5 flex-1 min-w-0 overflow-x-auto no-scrollbar mask-linear-fade">
+				{/* Bottom Section (Mobile: Badges -> Buttons) / Right Side (Desktop: Save -> Actions) */}
+				<div className="flex flex-col lg:flex-row items-start lg:items-center gap-3 w-full lg:w-auto mt-2 lg:mt-0">
+					{/* Row 2 (Mobile): Badges */}
+					<div className="flex lg:hidden items-center gap-1.5 w-full overflow-x-auto no-scrollbar mask-linear-fade">
 						<BadgeList persona={persona} brandVoice={brandVoice} />
 					</div>
 
-					<div className="flex items-center gap-3 flex-shrink-0 ml-auto lg:ml-0">
+					{/* Row 3 (Mobile): Actions / Save Indicator */}
+					<div className="flex items-center justify-between lg:justify-end gap-3 w-full lg:w-auto">
 						<div className="hidden sm:block text-xs text-slate-400">
 							{isSaving && (
 								<span className="flex items-center gap-2">
@@ -78,7 +78,7 @@ export function ContentSubNav({
 						</div>
 
 						{/* Mobile Actions */}
-						<div className="flex items-center gap-2 lg:hidden">
+						<div className="flex items-center gap-2 lg:hidden ml-auto">
 							<button
 								onClick={onOpenMobileImages}
 								className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-md text-slate-300 text-xs font-medium transition-colors border border-slate-700"
