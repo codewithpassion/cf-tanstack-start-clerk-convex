@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
+import { Download } from "lucide-react";
 
 export interface ImageGalleryProps {
 	contentPieceId: Id<"contentPieces">;
@@ -130,6 +131,25 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 
 	const closePreview = () => {
 		setPreviewImage(null);
+	};
+
+	// Handle image download
+	const handleDownloadImage = async (fileId: Id<"files">, filename: string, e: React.MouseEvent) => {
+		e.stopPropagation(); // Prevent opening preview
+		try {
+			const response = await fetch(`/api/files/${fileId}/preview`);
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			window.URL.revokeObjectURL(url);
+			document.body.removeChild(a);
+		} catch (error) {
+			console.error("Failed to download image:", error);
+		}
 	};
 
 	// Handle PDF download
@@ -259,7 +279,7 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 					>
 						{/* Image Thumbnail */}
 						<div
-							className="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer"
+							className="aspect-square bg-slate-100 flex items-center justify-center overflow-hidden cursor-pointer relative"
 							onClick={() => openPreview(image)}
 						>
 							{image.file ? (
@@ -273,6 +293,19 @@ export function ImageGallery({ contentPieceId }: ImageGalleryProps) {
 								/>
 							) : (
 								<div className="text-slate-400 text-sm">No preview</div>
+							)}
+
+							{/* Download Button - Visible on mobile, hover on desktop */}
+							{image.file && (
+								<button
+									type="button"
+									onClick={(e) => handleDownloadImage(image.fileId, image.file!.filename, e)}
+									className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-full shadow-lg hover:bg-white dark:hover:bg-slate-800 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+									aria-label="Download image"
+									title="Download image"
+								>
+									<Download className="w-3.5 h-3.5 text-slate-700 dark:text-slate-200" />
+								</button>
 							)}
 						</div>
 
