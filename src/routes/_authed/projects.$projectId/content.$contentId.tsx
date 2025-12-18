@@ -18,6 +18,7 @@ import { refineSelection } from "@/server/ai";
 import { useStreamingResponse } from "@/hooks/useStreamingResponse";
 import type { Editor } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
+import { X } from "lucide-react";
 
 /**
  * Convert TipTap slice to markdown
@@ -144,6 +145,7 @@ function ContentEditorPage() {
 	const [showRepurposeDialog, setShowRepurposeDialog] = useState(false);
 	const [showImagesModal, setShowImagesModal] = useState(false);
 	const [imagesModalInitialView, setImagesModalInitialView] = useState<"gallery" | "generate">("gallery");
+	const [showMobileTools, setShowMobileTools] = useState(false);
 
 	// State for inline refine
 	const [inlineRefineSelection, setInlineRefineSelection] = useState<{
@@ -413,6 +415,7 @@ function ContentEditorPage() {
 				brandVoice={contentPiece.brandVoice}
 				isSaving={isSaving}
 				lastSaved={lastSaved}
+				onOpenMobileTools={() => setShowMobileTools(true)}
 			/>
 
 			{/* Main Content Area - Full Width Split Pane Layout */}
@@ -575,6 +578,89 @@ function ContentEditorPage() {
 					initialView={imagesModalInitialView}
 				/>
 			)}
+
+			{/* Mobile Tools Drawer */}
+			<div
+				className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${showMobileTools ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+					}`}
+			>
+				{/* Backdrop */}
+				<div
+					className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+					onClick={() => setShowMobileTools(false)}
+				/>
+
+				{/* Drawer */}
+				<div
+					className={`absolute top-0 right-0 h-full w-80 bg-slate-900 border-l border-slate-800 shadow-2xl transform transition-transform duration-300 ${showMobileTools ? "translate-x-0" : "translate-x-full"
+						}`}
+				>
+					<div className="flex items-center justify-between p-4 border-b border-slate-800">
+						<h3 className="font-semibold text-slate-200">Tools</h3>
+						<button
+							onClick={() => setShowMobileTools(false)}
+							className="p-1 hover:bg-slate-800 rounded-lg transition-colors text-slate-400 hover:text-white"
+						>
+							<X size={20} />
+						</button>
+					</div>
+					<div className="overflow-y-auto h-[calc(100%-60px)] p-4">
+						<ToolsPanel
+							contentPieceId={contentId as Id<"contentPieces">}
+							projectId={projectId as Id<"projects">}
+							currentContent={contentPiece.content}
+							isFinalized={isFinalized}
+							parentContent={
+								contentPiece.parentContent
+									? {
+										_id: contentPiece.parentContent._id,
+										title: contentPiece.parentContent.title,
+									}
+									: null
+							}
+							derivedContent={derivedContent?.map((child) => ({
+								_id: child._id,
+								title: child.title,
+								category: child.category ? { name: child.category.name } : null,
+							}))}
+							onRefine={() => {
+								setShowMobileTools(false);
+								setShowRefineDialog(true);
+							}}
+							onRepurpose={() => {
+								setShowMobileTools(false);
+								setShowRepurposeDialog(true);
+							}}
+							onShowVersions={() => {
+								setShowMobileTools(false);
+								setShowVersionSidebar(true);
+							}}
+							onOpenImagesModal={() => {
+								setImagesModalInitialView("gallery");
+								setShowMobileTools(false);
+								setShowImagesModal(true);
+							}}
+							onOpenImagesGenerate={() => {
+								setImagesModalInitialView("generate");
+								setShowMobileTools(false);
+								setShowImagesModal(true);
+							}}
+							onFinalize={() => {
+								setShowMobileTools(false);
+								if (isFinalized) {
+									setShowUnfinalizeDialog(true);
+								} else {
+									setShowFinalizeDialog(true);
+								}
+							}}
+							onDelete={() => {
+								setShowMobileTools(false);
+								setShowDeleteDialog(true);
+							}}
+						/>
+					</div>
+				</div>
+			</div>
 		</>
 	);
 }
