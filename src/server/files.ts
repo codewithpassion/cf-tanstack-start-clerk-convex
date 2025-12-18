@@ -149,10 +149,11 @@ export const uploadFileFn = createServerFn({ method: "POST" })
 				const fileBuffer = await fetchFileContent(bucket, r2Key);
 
 				if (fileBuffer) {
-					// Extract and truncate text
+					// Extract and truncate text using Cloudflare AI toMarkdown
 					const extractionResult = await extractAndTruncateText(
 						fileBuffer,
 						mimeType,
+						sanitizedFilename,
 					);
 
 					if (extractionResult) {

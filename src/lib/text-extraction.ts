@@ -1,24 +1,40 @@
 /**
- * Document text extraction utilities.
- * Provides functions to extract text from various document formats including
- * plain text, PDF, and Word documents (doc/docx).
+ * Document text extraction utilities using Cloudflare Workers AI.
+ * Uses env.AI.toMarkdown() to convert documents to markdown format.
+ * Supports PDF, Office documents, HTML, XML, CSV, and images.
  */
-// Note: pdf-parse is dynamically imported to avoid loading DOMMatrix in Cloudflare Workers
-// when not needed (e.g., when uploading images)
-import mammoth from "mammoth";
+import { env } from "cloudflare:workers";
 
 // Maximum length for extracted text (50,000 characters as per spec)
 export const MAX_EXTRACTED_TEXT_LENGTH = 50000;
 
-// MIME types that support text extraction
+// MIME types that support text extraction via Cloudflare AI toMarkdown
 export const TEXT_EXTRACTABLE_MIME_TYPES = [
+	// Documents
 	"text/plain",
 	"application/pdf",
 	"application/msword",
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+	// Spreadsheets
+	"application/vnd.ms-excel",
+	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+	"application/vnd.oasis.opendocument.spreadsheet",
+	"text/csv",
+	"application/vnd.apple.numbers",
+	// Other formats
+	"text/html",
+	"application/xml",
+	"text/xml",
+	"application/vnd.oasis.opendocument.text",
+	// Images (AI can extract text/describe)
+	"image/jpeg",
+	"image/png",
+	"image/webp",
+	"image/svg+xml",
 ] as const;
 
-export type TextExtractableMimeType = (typeof TEXT_EXTRACTABLE_MIME_TYPES)[number];
+export type TextExtractableMimeType =
+	(typeof TEXT_EXTRACTABLE_MIME_TYPES)[number];
 
 export type TruncateResult = {
 	text: string;
@@ -31,84 +47,68 @@ export type TruncateResult = {
  * @returns True if text can be extracted from this file type
  */
 export function isTextExtractable(mimeType: string): boolean {
-	return TEXT_EXTRACTABLE_MIME_TYPES.includes(mimeType as TextExtractableMimeType);
+	return TEXT_EXTRACTABLE_MIME_TYPES.includes(
+		mimeType as TextExtractableMimeType,
+	);
 }
 
 /**
- * Extracts text from a plain text file buffer.
- * @param buffer - The file buffer
- * @returns Extracted text content
- */
-export async function extractTextFromPlainText(buffer: Buffer): Promise<string> {
-	return buffer.toString("utf-8");
-}
-
-/**
- * Extracts text from a PDF file buffer using pdf-parse library.
- * Dynamically imports pdf-parse to avoid loading it when not needed.
- * @param buffer - The PDF file buffer
- * @returns Extracted text content or null if extraction fails
- */
-export async function extractTextFromPdf(buffer: Buffer): Promise<string | null> {
-	try {
-		// Dynamic import to avoid loading pdf-parse (and DOMMatrix) for non-PDF uploads
-		const { PDFParse } = await import("pdf-parse");
-		const parser = new PDFParse({ data: buffer });
-		const result = await parser.getText();
-		return result.text;
-	} catch (error) {
-		console.error("PDF text extraction failed:", error);
-		return null;
-	}
-}
-
-/**
- * Extracts text from a Word document buffer using mammoth library.
- * Supports both .doc and .docx formats.
- * @param buffer - The Word document buffer
- * @returns Extracted text content or null if extraction fails
- */
-export async function extractTextFromWord(buffer: Buffer): Promise<string | null> {
-	try {
-		const result = await mammoth.extractRawText({ buffer });
-		return result.value;
-	} catch (error) {
-		console.error("Word document text extraction failed:", error);
-		return null;
-	}
-}
-
-/**
- * Routes to the appropriate text extractor based on MIME type.
- * @param buffer - The file buffer
+ * Extracts text/markdown from a file using Cloudflare Workers AI.
+ * Uses env.AI.toMarkdown() which supports PDF, Office docs, HTML, XML, CSV, and images.
+ *
+ * @param buffer - The file buffer (ArrayBuffer or Buffer)
  * @param mimeType - The MIME type of the file
- * @returns Extracted text content or null if extraction fails or is not supported
+ * @param filename - The filename (used for identification in the API)
+ * @returns Extracted markdown content or null if extraction fails
  */
 export async function extractText(
-	buffer: Buffer,
+	buffer: ArrayBuffer | Buffer,
 	mimeType: string,
+	filename = "document",
 ): Promise<string | null> {
-	switch (mimeType) {
-		case "text/plain":
-			return await extractTextFromPlainText(buffer);
+	// Plain text doesn't need AI conversion
+	if (mimeType === "text/plain") {
+		const textBuffer =
+			buffer instanceof Buffer ? buffer : Buffer.from(new Uint8Array(buffer));
+		return textBuffer.toString("utf-8");
+	}
 
-		case "application/pdf":
-			return await extractTextFromPdf(buffer);
+	// Check if type is supported
+	if (!isTextExtractable(mimeType)) {
+		console.warn(`Text extraction not supported for MIME type: ${mimeType}`);
+		return null;
+	}
 
-		case "application/msword":
-		case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-			return await extractTextFromWord(buffer);
+	try {
+		// Convert Buffer/ArrayBuffer to Uint8Array for Blob compatibility
+		const uint8Array =
+			buffer instanceof Buffer
+				? new Uint8Array(buffer)
+				: new Uint8Array(buffer);
+		const blob = new Blob([uint8Array], { type: mimeType });
 
-		// Image types - no text extraction supported
-		case "image/jpeg":
-		case "image/png":
-		case "image/gif":
-		case "image/webp":
-			return null;
+		// Use Cloudflare AI toMarkdown
+		const results = await env.AI.toMarkdown([{ name: filename, blob }]);
 
-		default:
-			console.warn(`Text extraction not supported for MIME type: ${mimeType}`);
-			return null;
+		if (results && results.length > 0) {
+			const result = results[0];
+			// Check format to determine if it's a success or error response
+			if (result.format === "markdown" && "data" in result) {
+				return result.data;
+			}
+			if (result.format === "error" && "error" in result) {
+				console.error(
+					`Cloudflare AI toMarkdown error for ${filename}:`,
+					result.error,
+				);
+				return null;
+			}
+		}
+
+		return null;
+	} catch (error) {
+		console.error("Cloudflare AI toMarkdown extraction failed:", error);
+		return null;
 	}
 }
 
@@ -138,15 +138,18 @@ export function truncateText(
 /**
  * Extracts and truncates text from a file buffer.
  * This is the main entry point for text extraction in the upload flow.
- * @param buffer - The file buffer
+ * @param buffer - The file buffer (ArrayBuffer or Buffer)
  * @param mimeType - The MIME type of the file
+ * @param filename - The filename (optional, used for API identification)
  * @returns Object with extracted text (truncated if necessary) and metadata, or null if extraction fails
  */
 export async function extractAndTruncateText(
-	buffer: Buffer,
+	buffer: ArrayBuffer | Buffer,
 	mimeType: string,
+	filename?: string,
 ): Promise<{ text: string; wasTruncated: boolean } | null> {
-	const extractedText = await extractText(buffer, mimeType);
+	const extractedText = await extractText(buffer, mimeType, filename);
+	console.debug("[Text extraction] Extracted text:", extractedText);
 
 	if (extractedText === null) {
 		return null;
