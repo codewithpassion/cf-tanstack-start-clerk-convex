@@ -85,10 +85,15 @@ export class PromptBuilder {
 	addKnowledgeBase(items: KnowledgeItem[]): this {
 		if (items.length > 0) {
 			const itemsXml = items
-				.map(
-					(item) =>
-						`  <item title="${this.escapeXml(item.title)}">\n${item.content}\n  </item>`,
-				)
+				.map((item) => {
+					let content = item.content;
+					if (item.fileContent) {
+						content += content
+							? `\n\n[Attached File: ${item.fileName || "document"}]\n${item.fileContent}`
+							: `[Attached File: ${item.fileName || "document"}]\n${item.fileContent}`;
+					}
+					return `  <item title="${this.escapeXml(item.title)}">\n${content}\n  </item>`;
+				})
 				.join("\n");
 			this.parts.push(`<knowledge_base>\n${itemsXml}\n</knowledge_base>`);
 		}
@@ -106,10 +111,15 @@ export class PromptBuilder {
 	addExamples(examples: ExampleItem[]): this {
 		if (examples.length > 0) {
 			const examplesXml = examples
-				.map(
-					(ex) =>
-						`  <example title="${this.escapeXml(ex.title)}">\n${ex.content}\n  </example>`,
-				)
+				.map((ex) => {
+					let content = ex.content;
+					if (ex.fileContent) {
+						content += content
+							? `\n\n[Attached File: ${ex.fileName || "document"}]\n${ex.fileContent}`
+							: `[Attached File: ${ex.fileName || "document"}]\n${ex.fileContent}`;
+					}
+					return `  <example title="${this.escapeXml(ex.title)}">\n${content}\n  </example>`;
+				})
 				.join("\n");
 			this.parts.push(`<examples>\n${examplesXml}\n</examples>`);
 		}

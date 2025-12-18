@@ -94,6 +94,7 @@ export class DraftGenerationService extends BaseAIService<
 			brandVoiceId: input.brandVoiceId,
 			projectId: data.projectId,
 			selectedKnowledgeBaseIds: input.selectedKnowledgeBaseIds,
+			uploadedFileIds: input.uploadedFileIds,
 		});
 	}
 

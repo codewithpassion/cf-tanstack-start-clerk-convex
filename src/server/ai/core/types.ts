@@ -48,6 +48,8 @@ export interface WorkspaceData {
 export interface KnowledgeItem {
 	title: string;
 	content: string;
+	fileContent?: string;
+	fileName?: string;
 }
 
 /**
@@ -56,6 +58,8 @@ export interface KnowledgeItem {
 export interface ExampleItem {
 	title: string;
 	content: string;
+	fileContent?: string;
+	fileName?: string;
 }
 
 /**
@@ -65,6 +69,9 @@ export interface GenerationContext {
 	formatGuidelines?: string;
 	personaDescription?: string;
 	brandVoiceDescription?: string;
+	personaFileContent?: string;
+	brandVoiceFileContent?: string;
+	uploadedFileContent?: string;
 	knowledgeBase: KnowledgeItem[];
 	examples: ExampleItem[];
 }
@@ -78,6 +85,7 @@ export interface AssembleContextParams {
 	brandVoiceId?: Id<"brandVoices">;
 	projectId: Id<"projects">;
 	selectedKnowledgeBaseIds?: Id<"knowledgeBaseItems">[];
+	uploadedFileIds?: Id<"files">[];
 }
 
 // =============================================================================

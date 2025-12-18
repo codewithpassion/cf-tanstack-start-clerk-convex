@@ -30,8 +30,14 @@ Create compelling content based on the provided context. Your content should:
 - Engage the target audience effectively
 			`.trim())
 			.addContext("brand_voice", context.brandVoiceDescription)
+			.addContext(
+				"brand_voice_reference_materials",
+				context.brandVoiceFileContent,
+			)
 			.addContext("persona", context.personaDescription)
+			.addContext("persona_reference_materials", context.personaFileContent)
 			.addContext("format_guidelines", context.formatGuidelines)
+			.addContext("source_materials", context.uploadedFileContent)
 			.addKnowledgeBase(context.knowledgeBase)
 			.addExamples(context.examples)
 			.addConstraints([

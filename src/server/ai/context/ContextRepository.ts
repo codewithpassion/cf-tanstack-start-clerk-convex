@@ -24,6 +24,36 @@ export class ContextRepository {
 	constructor(private readonly convex: ConvexHttpClient) {}
 
 	/**
+	 * Get a single file by ID
+	 */
+	async getFile(fileId: Id<"files">) {
+		return this.convex.query(api.files.getFile, { fileId });
+	}
+
+	/**
+	 * Get multiple files by IDs
+	 */
+	async getFiles(fileIds: Id<"files">[]) {
+		return Promise.all(fileIds.map((fileId) => this.getFile(fileId)));
+	}
+
+	/**
+	 * Get files attached to a persona
+	 */
+	async getPersonaFiles(personaId: Id<"personas">) {
+		return this.convex.query(api.personas.getPersonaFiles, { personaId });
+	}
+
+	/**
+	 * Get files attached to a brand voice
+	 */
+	async getBrandVoiceFiles(brandVoiceId: Id<"brandVoices">) {
+		return this.convex.query(api.brandVoices.getBrandVoiceFiles, {
+			brandVoiceId,
+		});
+	}
+
+	/**
 	 * Get category with format guidelines
 	 */
 	async getCategory(categoryId: Id<"categories">) {
@@ -86,10 +116,30 @@ export class ContextRepository {
 			filtered = items.filter((item) => selectedIds.includes(item._id));
 		}
 
-		return filtered.slice(0, limit).map((item) => ({
-			title: item.title,
-			content: item.content || "",
-		}));
+		const limitedItems = filtered.slice(0, limit);
+
+		// Fetch file content for items with attached files
+		const itemsWithFiles = await Promise.all(
+			limitedItems.map(async (item) => {
+				let fileContent: string | undefined;
+				let fileName: string | undefined;
+				if (item.fileId) {
+					const file = await this.getFile(item.fileId);
+					if (file?.extractedText) {
+						fileContent = file.extractedText;
+						fileName = file.filename;
+					}
+				}
+				return {
+					title: item.title,
+					content: item.content || "",
+					fileContent,
+					fileName,
+				};
+			}),
+		);
+
+		return itemsWithFiles;
 	}
 
 	/**
@@ -103,10 +153,30 @@ export class ContextRepository {
 			categoryId,
 		});
 
-		return examples.slice(0, limit).map((example) => ({
-			title: example.title,
-			content: example.content || "",
-		}));
+		const limitedExamples = examples.slice(0, limit);
+
+		// Fetch file content for examples with attached files
+		const examplesWithFiles = await Promise.all(
+			limitedExamples.map(async (example) => {
+				let fileContent: string | undefined;
+				let fileName: string | undefined;
+				if (example.fileId) {
+					const file = await this.getFile(example.fileId);
+					if (file?.extractedText) {
+						fileContent = file.extractedText;
+						fileName = file.filename;
+					}
+				}
+				return {
+					title: example.title,
+					content: example.content || "",
+					fileContent,
+					fileName,
+				};
+			}),
+		);
+
+		return examplesWithFiles;
 	}
 
 	/**
@@ -204,22 +274,57 @@ export class ContextRepository {
 			personaId,
 			brandVoiceId,
 			selectedKnowledgeBaseIds,
+			uploadedFileIds,
 		} = params;
 
 		// Fetch all context in parallel
-		const [category, persona, brandVoice, knowledgeBase, examples] =
-			await Promise.all([
-				this.getCategory(categoryId),
-				personaId ? this.getPersona(personaId) : null,
-				brandVoiceId ? this.getBrandVoice(brandVoiceId) : null,
-				this.getKnowledgeBase(categoryId, selectedKnowledgeBaseIds),
-				this.getExamples(categoryId),
-			]);
+		const [
+			category,
+			persona,
+			brandVoice,
+			knowledgeBase,
+			examples,
+			personaFiles,
+			brandVoiceFiles,
+			uploadedFiles,
+		] = await Promise.all([
+			this.getCategory(categoryId),
+			personaId ? this.getPersona(personaId) : null,
+			brandVoiceId ? this.getBrandVoice(brandVoiceId) : null,
+			this.getKnowledgeBase(categoryId, selectedKnowledgeBaseIds),
+			this.getExamples(categoryId),
+			personaId ? this.getPersonaFiles(personaId) : [],
+			brandVoiceId ? this.getBrandVoiceFiles(brandVoiceId) : [],
+			uploadedFileIds && uploadedFileIds.length > 0
+				? this.getFiles(uploadedFileIds)
+				: [],
+		]);
+
+		// Concatenate persona file content
+		const personaFileContent = personaFiles
+			.filter((f) => f.extractedText)
+			.map((f) => `[${f.filename}]\n${f.extractedText}`)
+			.join("\n\n");
+
+		// Concatenate brand voice file content
+		const brandVoiceFileContent = brandVoiceFiles
+			.filter((f) => f.extractedText)
+			.map((f) => `[${f.filename}]\n${f.extractedText}`)
+			.join("\n\n");
+
+		// Concatenate uploaded file content
+		const uploadedFileContent = uploadedFiles
+			.filter((f) => f?.extractedText)
+			.map((f) => `[${f!.filename}]\n${f!.extractedText}`)
+			.join("\n\n");
 
 		return {
 			formatGuidelines: category?.formatGuidelines,
 			personaDescription: persona?.description,
 			brandVoiceDescription: brandVoice?.description,
+			personaFileContent: personaFileContent || undefined,
+			brandVoiceFileContent: brandVoiceFileContent || undefined,
+			uploadedFileContent: uploadedFileContent || undefined,
 			knowledgeBase,
 			examples,
 		};
