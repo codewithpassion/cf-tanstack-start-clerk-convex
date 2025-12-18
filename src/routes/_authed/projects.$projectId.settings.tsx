@@ -1,8 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/api";
 import type { Id, Doc } from "@/convex/dataModel";
-import { PageHeader } from "@/components/shared/PageHeader";
+
 import { LoadingState } from "@/components/shared/LoadingState";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { CategoryList } from "@/components/categories/CategoryList";
@@ -10,7 +10,7 @@ import { CategoryForm } from "@/components/categories/CategoryForm";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Modal } from "@/components/shared/Modal";
 import { useState } from "react";
-import { Save, Trash2, AlertTriangle } from "lucide-react";
+import { Save, Trash2, AlertTriangle, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authed/projects/$projectId/settings")({
 	component: SettingsPage,
@@ -167,10 +167,25 @@ function SettingsPage() {
 
 	return (
 		<div className="max-w-4xl p-6 mx-auto">
-			<PageHeader
-				title="Project Settings"
-				description="Manage your project details and settings."
-			/>
+			<div className="border-b border-slate-200 dark:border-slate-700 pb-5 mb-6">
+				<div className="flex items-start gap-3">
+					<Link
+						to="/projects/$projectId"
+						params={{ projectId }}
+						className="p-1.5 -ml-1.5 mt-0.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-amber-400 transition-colors"
+					>
+						<ArrowLeft className="w-6 h-6" />
+					</Link>
+					<div>
+						<h1 className="text-2xl font-bold leading-7 text-slate-900 dark:text-white sm:text-3xl sm:tracking-tight">
+							Project Settings
+						</h1>
+						<p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+							Manage your project details and settings.
+						</p>
+					</div>
+				</div>
+			</div>
 
 			<div className="space-y-8">
 				{/* General Settings Section */}

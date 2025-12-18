@@ -53,7 +53,7 @@ export function ProjectLayout({ projectId }: ProjectLayoutProps) {
 			onOpenKnowledgeBase={openKnowledgeBase}
 			onOpenExamples={openExamples}
 		>
-			<div className="min-h-screen flex flex-col bg-slate-950">
+			<div className="min-h-screen flex flex-col bg-slate-950 mx-6">
 				<main className="flex-1 flex flex-col overflow-hidden">
 					<Outlet />
 				</main>

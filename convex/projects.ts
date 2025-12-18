@@ -54,7 +54,22 @@ Include: Up to 30 hashtags (optimal 5-10), emoji usage encouraged, image directi
 Thread length: 5-15 posts optimal
 Structure: Hook tweet, numbered points, summary/CTA final tweet
 Tone: Concise, punchy, value-packed
-Include: Thread numbering (1/X), strategic line breaks, minimal hashtags`,
+Include: Thread numbering (1/X), strategic line breaks, minimal hashtags
+Formatting: Separate each tweet with a horizonal line marker \`---\`
+
+<ExampleFormatting>
+This is the first tweet
+Lorem Ipsum ....
+
+Dolum rata (1/10)
+---
+This is the next tweet
+Lorem Ipsum ....
+
+Dolum rata (2/10)
+</ExampleFormatting>
+`,
+
 		sortOrder: 5,
 	},
 	{

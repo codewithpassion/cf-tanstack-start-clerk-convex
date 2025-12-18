@@ -240,9 +240,6 @@ export function RepurposeDialog({
 					{/* Header */}
 					<div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800">
 						<div className="flex items-center gap-2">
-							{state === "streaming" && (
-								<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-cyan-600 dark:border-amber-500" />
-							)}
 							<GitFork className="w-5 h-5 text-cyan-600 dark:text-amber-400" />
 							<h2 className="text-xl font-semibold text-slate-900 dark:text-amber-50">
 								{state === "form" && "Repurpose Content"}

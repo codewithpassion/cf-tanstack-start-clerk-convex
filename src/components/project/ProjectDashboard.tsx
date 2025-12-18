@@ -7,7 +7,7 @@ import { api } from "@/convex/api";
 import type { Id } from "@/convex/dataModel";
 import type { ProjectId, ContentFilters } from "@/types/entities";
 import { LoadingState } from "@/components/shared/LoadingState";
-import { FileText, Layers, Plus, Settings, ArrowLeft } from "lucide-react";
+import { FileText, Layers, Plus, Settings, ArrowLeft, Mic, Users, BookOpen } from "lucide-react";
 import { ContentArchiveView } from "@/components/content/ContentArchiveView";
 import { RepurposeDialog } from "@/components/content/RepurposeDialog";
 import type { SearchResult } from "@/components/content/SearchResults";
@@ -285,18 +285,68 @@ export function ProjectDashboard({ projectId }: ProjectDashboardProps) {
 					{projectContext?.project?.name}
 				</h1>
 				{projectContext?.project && (
-					<ProjectDropdown
-						project={projectContext.project}
-						onOpenBrandVoices={projectContext.onOpenBrandVoices}
-						onOpenPersonas={projectContext.onOpenPersonas}
-						onOpenKnowledgeBase={projectContext.onOpenKnowledgeBase}
-						onOpenExamples={projectContext.onOpenExamples}
-						trigger={
-							<button className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-amber-400 transition-colors">
-								<Settings className="w-5 h-5" />
+					<>
+						{/* Desktop Actions */}
+						<div className="hidden lg:flex items-center gap-3 ml-auto">
+							<button
+								type="button"
+								onClick={projectContext.onOpenExamples}
+								className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+							>
+								<FileText className="w-3.5 h-3.5" />
+								Examples
 							</button>
-						}
-					/>
+							<button
+								type="button"
+								onClick={projectContext.onOpenKnowledgeBase}
+								className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+							>
+								<BookOpen className="w-3.5 h-3.5" />
+								Knowledge Base
+							</button>
+							<button
+								type="button"
+								onClick={projectContext.onOpenPersonas}
+								className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+							>
+								<Users className="w-3.5 h-3.5" />
+								Personas
+							</button>
+							<button
+								type="button"
+								onClick={projectContext.onOpenBrandVoices}
+								className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+							>
+								<Mic className="w-3.5 h-3.5" />
+								Brand Voice
+							</button>
+							<div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1" />
+							<Link
+								to="/projects/$projectId/settings"
+								params={{ projectId }}
+								className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+							>
+								<Settings className="w-3.5 h-3.5" />
+								Settings
+							</Link>
+						</div>
+
+						{/* Mobile Menu */}
+						<div className="lg:hidden ml-auto">
+							<ProjectDropdown
+								project={projectContext.project}
+								onOpenBrandVoices={projectContext.onOpenBrandVoices}
+								onOpenPersonas={projectContext.onOpenPersonas}
+								onOpenKnowledgeBase={projectContext.onOpenKnowledgeBase}
+								onOpenExamples={projectContext.onOpenExamples}
+								trigger={
+									<button className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-amber-400 transition-colors">
+										<Settings className="w-5 h-5" />
+									</button>
+								}
+							/>
+						</div>
+					</>
 				)}
 			</div>
 

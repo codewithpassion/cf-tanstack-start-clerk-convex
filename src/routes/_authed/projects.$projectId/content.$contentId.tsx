@@ -15,6 +15,7 @@ import { RepurposeDialog } from "@/components/content/RepurposeDialog";
 import { ImagesModal } from "@/components/images/ImagesModal";
 import { ContentSubNav } from "@/components/navigation/ContentSubNav";
 import { refineSelection } from "@/server/ai";
+import { nodeToMarkdown } from "@/lib/markdown";
 import { useStreamingResponse } from "@/hooks/useStreamingResponse";
 import type { Editor } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
@@ -27,7 +28,7 @@ function convertSliceToMarkdown(slice: any): string {
 	let markdown = "";
 
 	slice.content.forEach((node: ProseMirrorNode, index: number) => {
-		const nodeMarkdown = nodeToMarkdown(node);
+		const nodeMarkdown = nodeToMarkdown(node.toJSON() as any);
 		markdown += nodeMarkdown;
 
 		// Add spacing between nodes
@@ -39,86 +40,7 @@ function convertSliceToMarkdown(slice: any): string {
 	return markdown.trim();
 }
 
-/**
- * Convert individual node to markdown
- */
-function nodeToMarkdown(node: ProseMirrorNode): string {
-	const { type, attrs, content } = node;
 
-	// Handle different node types
-	if (type.name === "heading") {
-		const level = "#".repeat(attrs.level || 1);
-		return `${level} ${node.textContent}`;
-	}
-
-	if (type.name === "paragraph") {
-		let text = "";
-		if (content) {
-			content.forEach((child: ProseMirrorNode) => {
-				text += applyMarks(child.text || "", Array.from(child.marks || []));
-			});
-		}
-		return text;
-	}
-
-	if (type.name === "bulletList") {
-		let listMarkdown = "";
-		if (content) {
-			content.forEach((listItem: ProseMirrorNode) => {
-				listMarkdown += `- ${listItem.textContent}\n`;
-			});
-		}
-		return listMarkdown.trim();
-	}
-
-	if (type.name === "orderedList") {
-		let listMarkdown = "";
-		let index = 1;
-		if (content) {
-			content.forEach((listItem: ProseMirrorNode) => {
-				listMarkdown += `${index}. ${listItem.textContent}\n`;
-				index++;
-			});
-		}
-		return listMarkdown.trim();
-	}
-
-	if (type.name === "blockquote") {
-		return `> ${node.textContent}`;
-	}
-
-	if (type.name === "codeBlock") {
-		const lang = attrs.language || "";
-		return `\`\`\`${lang}\n${node.textContent}\n\`\`\``;
-	}
-
-	// Default: return text content
-	return node.textContent || "";
-}
-
-/**
- * Apply markdown marks (bold, italic, code, etc.) to text
- */
-function applyMarks(text: string, marks: any[]): string {
-	let result = text;
-
-	for (const mark of marks) {
-		if (mark.type.name === "bold") {
-			result = `**${result}**`;
-		} else if (mark.type.name === "italic") {
-			result = `*${result}*`;
-		} else if (mark.type.name === "code") {
-			result = `\`${result}\``;
-		} else if (mark.type.name === "strike") {
-			result = `~~${result}~~`;
-		} else if (mark.type.name === "link") {
-			const href = mark.attrs.href || "";
-			result = `[${result}](${href})`;
-		}
-	}
-
-	return result;
-}
 
 /**
  * Route for editing a content piece with AI chat assistance.

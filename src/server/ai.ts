@@ -18,6 +18,7 @@ import {
 } from "@/lib/ai/providers";
 import { estimateTokenCount, TOKEN_LIMITS } from "@/lib/ai/models";
 import { calculateLLMBillableTokens } from "@/lib/billing/pricing";
+import { convertTiptapToMarkdown } from "@/lib/markdown";
 
 /**
  * Context assembled from various sources for AI generation
@@ -1590,7 +1591,7 @@ export const repurposeContent = createServerFn({ method: "POST" })
 				targetCategory.name
 			);
 			const userPrompt = constructRepurposeUserPrompt(
-				sourceContentPiece.content,
+				convertTiptapToMarkdown(sourceContentPiece.content),
 				title,
 				additionalInstructions
 			);
@@ -1598,6 +1599,7 @@ export const repurposeContent = createServerFn({ method: "POST" })
 			// Estimate token count for logging
 			const estimatedPromptTokens = countPromptTokens(systemPrompt, userPrompt);
 			console.log("Repurpose estimated prompt tokens:", estimatedPromptTokens);
+			console.debug("Repurpose prompts: ", systemPrompt, userPrompt);
 
 			// Save the full prompt to the content piece
 			// Note: repurposeContent creates a NEW content piece, but we don't have its ID yet?

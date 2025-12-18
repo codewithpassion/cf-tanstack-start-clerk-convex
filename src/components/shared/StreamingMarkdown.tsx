@@ -76,10 +76,10 @@ export function StreamingMarkdown({
 
 	return (
 		<div className={className}>
-			<div className="prose prose-sm max-w-none prose-headings:text-slate-900 prose-p:text-slate-700 prose-strong:text-slate-900 prose-li:text-slate-700">
+			<div className="prose prose-sm max-w-none prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-li:text-slate-700 dark:prose-li:text-slate-300 dark:prose-invert">
 				<Markdown>{content}</Markdown>
 				{isStreaming && (
-					<span className="inline-block w-2 h-4 bg-cyan-600 animate-pulse ml-1" />
+					<span className="inline-block w-2 h-4 bg-cyan-600 dark:bg-amber-500 animate-pulse ml-1" />
 				)}
 				<div ref={contentEndRef} />
 			</div>
