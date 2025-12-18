@@ -98,6 +98,11 @@ export interface ToolsPanelProps {
 	 * Whether content is finalized
 	 */
 	isFinalized?: boolean;
+
+	/**
+	 * Whether to hide the images section (e.g. for mobile drawer)
+	 */
+	hideImagesSection?: boolean;
 }
 
 /**
@@ -116,6 +121,7 @@ export function ToolsPanel({
 	onFinalize,
 	onDelete,
 	isFinalized = false,
+	hideImagesSection = false,
 }: ToolsPanelProps) {
 	const hasRelationships =
 		parentContent || (derivedContent && derivedContent.length > 0);
@@ -337,132 +343,134 @@ export function ToolsPanel({
 			)}
 
 			{/* Images Gallery */}
-			<div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">
-				<div className="mb-3">
-					<h4 className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wide">
-						Images
-					</h4>
-				</div>
+			{!hideImagesSection && (
+				<div className="flex-1 overflow-y-auto px-4 py-4 min-h-0">
+					<div className="mb-3">
+						<h4 className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wide">
+							Images
+						</h4>
+					</div>
 
-				{contentImages === undefined ? (
-					<div className="flex items-center justify-center py-8">
-						<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-500" />
-					</div>
-				) : contentImages.length === 0 ? (
-					<div className="text-center text-slate-500 dark:text-slate-400 text-sm py-8">
-						<svg
-							className="mx-auto h-10 w-10 text-slate-400 dark:text-slate-500 mb-2"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							aria-hidden="true"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-							/>
-						</svg>
-						<p>No images attached</p>
-						<p className="mt-1 text-xs">
-							Click Manage to create images
-						</p>
-					</div>
-				) : (
-					<div className="grid grid-cols-2 gap-2 mb-3">
-						{contentImages.map((image) => (
-							<div
-								key={image._id}
-								onClick={() => {
-									if (image.file) {
-										setPreviewImage({
-											fileId: image.fileId,
-											filename: image.file.filename,
-											caption: image.caption,
-										});
-									}
-								}}
-								className="relative group border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md dark:hover:shadow-[0_4px_15px_rgba(0,0,0,0.3),0_0_15px_rgba(251,191,36,0.1)] hover:border-amber-400/50 dark:hover:border-amber-400/50 transition-all duration-300"
+					{contentImages === undefined ? (
+						<div className="flex items-center justify-center py-8">
+							<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-500" />
+						</div>
+					) : contentImages.length === 0 ? (
+						<div className="text-center text-slate-500 dark:text-slate-400 text-sm py-8">
+							<svg
+								className="mx-auto h-10 w-10 text-slate-400 dark:text-slate-500 mb-2"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								aria-hidden="true"
 							>
-								<div className="aspect-square bg-slate-100 dark:bg-slate-950 flex items-center justify-center overflow-hidden">
-									{image.file ? (
-										<img
-											src={`/api/files/${image.fileId}/preview?variant=thumbnail`}
-											alt={image.caption || image.file.filename}
-											className="w-full h-full object-cover"
-										/>
-									) : (
-										<div className="text-slate-400 text-xs">No preview</div>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+							<p>No images attached</p>
+							<p className="mt-1 text-xs">
+								Click Manage to create images
+							</p>
+						</div>
+					) : (
+						<div className="grid grid-cols-2 gap-2 mb-3">
+							{contentImages.map((image) => (
+								<div
+									key={image._id}
+									onClick={() => {
+										if (image.file) {
+											setPreviewImage({
+												fileId: image.fileId,
+												filename: image.file.filename,
+												caption: image.caption,
+											});
+										}
+									}}
+									className="relative group border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md dark:hover:shadow-[0_4px_15px_rgba(0,0,0,0.3),0_0_15px_rgba(251,191,36,0.1)] hover:border-amber-400/50 dark:hover:border-amber-400/50 transition-all duration-300"
+								>
+									<div className="aspect-square bg-slate-100 dark:bg-slate-950 flex items-center justify-center overflow-hidden">
+										{image.file ? (
+											<img
+												src={`/api/files/${image.fileId}/preview?variant=thumbnail`}
+												alt={image.caption || image.file.filename}
+												className="w-full h-full object-cover"
+											/>
+										) : (
+											<div className="text-slate-400 text-xs">No preview</div>
+										)}
+									</div>
+
+									{/* Download Button - Visible on mobile, hover on desktop */}
+									{image.file && (
+										<button
+											type="button"
+											onClick={(e) => {
+												e.stopPropagation();
+												handleDownload(image.fileId, image.file!.filename);
+											}}
+											className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-full shadow-lg hover:bg-white dark:hover:bg-slate-800 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+											aria-label="Download image"
+											title="Download image"
+										>
+											<Download className="w-3.5 h-3.5 text-slate-700 dark:text-slate-200" />
+										</button>
+									)}
+
+									{image.caption && (
+										<div className="px-2 py-1.5">
+											<p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1">
+												{image.caption}
+											</p>
+										</div>
 									)}
 								</div>
+							))}
+						</div>
+					)}
 
-								{/* Download Button - Visible on mobile, hover on desktop */}
-								{image.file && (
-									<button
-										type="button"
-										onClick={(e) => {
-											e.stopPropagation();
-											handleDownload(image.fileId, image.file!.filename);
-										}}
-										className="absolute top-2 right-2 p-1.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 rounded-full shadow-lg hover:bg-white dark:hover:bg-slate-800 transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
-										aria-label="Download image"
-										title="Download image"
-									>
-										<Download className="w-3.5 h-3.5 text-slate-700 dark:text-slate-200" />
-									</button>
-								)}
-
-								{image.caption && (
-									<div className="px-2 py-1.5">
-										<p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1">
-											{image.caption}
-										</p>
-									</div>
-								)}
-							</div>
-						))}
+					{/* Image Action Buttons - Below Gallery */}
+					<div className="space-y-2">
+						<button
+							type="button"
+							onClick={onOpenImagesGenerate}
+							className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500 transition-all duration-300 hover:shadow-md"
+						>
+							<Sparkles className="w-4 h-4" />
+							Generate
+						</button>
+						<button
+							type="button"
+							onClick={onOpenImagesModal}
+							className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500 transition-all duration-300 hover:shadow-md"
+						>
+							<Image className="w-4 h-4" />
+							Manage
+						</button>
+						<button
+							type="button"
+							onClick={handleDownloadPdf}
+							disabled={isDownloadingPdf || !contentImages || contentImages.length === 0}
+							className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 rounded-lg hover:bg-cyan-100 dark:hover:bg-cyan-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 transition-all duration-300 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-cyan-50 dark:disabled:hover:bg-cyan-900/30"
+						>
+							{isDownloadingPdf ? (
+								<>
+									<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-700 dark:border-cyan-300" />
+									<span>Generating...</span>
+								</>
+							) : (
+								<>
+									<FileDown className="w-4 h-4" />
+									<span>Download PDF</span>
+								</>
+							)}
+						</button>
 					</div>
-				)}
-
-				{/* Image Action Buttons - Below Gallery */}
-				<div className="space-y-2">
-					<button
-						type="button"
-						onClick={onOpenImagesGenerate}
-						className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500 transition-all duration-300 hover:shadow-md"
-					>
-						<Sparkles className="w-4 h-4" />
-						Generate
-					</button>
-					<button
-						type="button"
-						onClick={onOpenImagesModal}
-						className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500 transition-all duration-300 hover:shadow-md"
-					>
-						<Image className="w-4 h-4" />
-						Manage
-					</button>
-					<button
-						type="button"
-						onClick={handleDownloadPdf}
-						disabled={isDownloadingPdf || !contentImages || contentImages.length === 0}
-						className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 rounded-lg hover:bg-cyan-100 dark:hover:bg-cyan-900/50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-cyan-500 transition-all duration-300 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-cyan-50 dark:disabled:hover:bg-cyan-900/30"
-					>
-						{isDownloadingPdf ? (
-							<>
-								<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-700 dark:border-cyan-300" />
-								<span>Generating...</span>
-							</>
-						) : (
-							<>
-								<FileDown className="w-4 h-4" />
-								<span>Download PDF</span>
-							</>
-						)}
-					</button>
 				</div>
-			</div>
+			)}
 
 			{/* Preview Modal */}
 			{previewImage && (

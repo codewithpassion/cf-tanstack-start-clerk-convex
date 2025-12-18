@@ -416,6 +416,10 @@ function ContentEditorPage() {
 				isSaving={isSaving}
 				lastSaved={lastSaved}
 				onOpenMobileTools={() => setShowMobileTools(true)}
+				onOpenMobileImages={() => {
+					setImagesModalInitialView("gallery");
+					setShowImagesModal(true);
+				}}
 			/>
 
 			{/* Main Content Area - Full Width Split Pane Layout */}
@@ -608,6 +612,7 @@ function ContentEditorPage() {
 						<ToolsPanel
 							contentPieceId={contentId as Id<"contentPieces">}
 							projectId={projectId as Id<"projects">}
+							hideImagesSection={true}
 							currentContent={contentPiece.content}
 							isFinalized={isFinalized}
 							parentContent={
