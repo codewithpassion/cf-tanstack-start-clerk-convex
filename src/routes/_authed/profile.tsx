@@ -2,8 +2,18 @@ import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { auth } from '@clerk/tanstack-react-start/server'
 import { useUser } from '@clerk/tanstack-react-start'
+import { Server } from 'lucide-react'
 
-// Server function to fetch user data
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Separator } from '@/components/ui/separator'
+
 const getUserData = createServerFn({ method: 'GET' }).handler(async () => {
   const { userId } = await auth()
 
@@ -27,46 +37,64 @@ function ProfilePage() {
 
   if (!isLoaded) {
     return (
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Loading...</h1>
+      <div className="max-w-2xl mx-auto p-6">
+        <Skeleton className="h-10 w-48 mb-6" />
+        <Skeleton className="h-48 mb-6" />
+        <Skeleton className="h-32" />
       </div>
     )
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">User Profile</h1>
 
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Client-Side User Data</h2>
-        <div className="space-y-2">
-          <p>
-            <span className="font-medium">Name:</span>{' '}
-            {user?.fullName || 'Not provided'}
-          </p>
-          <p>
-            <span className="font-medium">Email:</span>{' '}
-            {user?.primaryEmailAddress?.emailAddress || 'Not provided'}
-          </p>
-          <p>
-            <span className="font-medium">User ID:</span> {user?.id}
-          </p>
-        </div>
-      </div>
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Client-Side User Data</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Name</span>
+            <span className="font-medium">
+              {user?.fullName || 'Not provided'}
+            </span>
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">Email</span>
+            <span className="font-medium">
+              {user?.primaryEmailAddress?.emailAddress || 'Not provided'}
+            </span>
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground">User ID</span>
+            <code className="text-xs bg-muted px-2 py-1 rounded">
+              {user?.id}
+            </code>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Server-Side Data</h2>
-        <div className="space-y-2">
-          <p>
-            <span className="font-medium">User ID from server:</span>{' '}
-            {loaderData.userId}
-          </p>
-          <p>
-            <span className="font-medium">Message:</span>{' '}
-            {loaderData.serverMessage}
-          </p>
-        </div>
-      </div>
+      <Alert>
+        <Server className="h-4 w-4" />
+        <AlertTitle>Server-Side Data</AlertTitle>
+        <AlertDescription>
+          <div className="space-y-2 mt-2">
+            <div className="flex items-center justify-between">
+              <span>User ID from server:</span>
+              <code className="text-xs bg-muted px-2 py-1 rounded">
+                {loaderData.userId}
+              </code>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Message:</span>
+              <span>{loaderData.serverMessage}</span>
+            </div>
+          </div>
+        </AlertDescription>
+      </Alert>
     </div>
   )
 }

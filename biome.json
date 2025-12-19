@@ -8,6 +8,7 @@
 	"files": {
 		"ignoreUnknown": false,
 		"ignore": [
+			"node_modules/**/*",
 			"build/**/*",
 			"app/components/ui/**/*",
 			"workers/worker-configuration.d.ts",

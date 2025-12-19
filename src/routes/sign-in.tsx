@@ -2,6 +2,13 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { SignIn, useAuth } from '@clerk/tanstack-react-start'
 import { useEffect } from 'react'
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+
 export const Route = createFileRoute('/sign-in')({
   component: SignInPage,
   validateSearch: (search: Record<string, unknown>) => {
@@ -17,23 +24,26 @@ function SignInPage() {
   const { redirect } = Route.useSearch()
 
   useEffect(() => {
-    // If user is already signed in, redirect them
     if (isSignedIn) {
       navigate({ to: redirect as string })
     }
   }, [isSignedIn, navigate, redirect])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Sign In</h1>
-        <SignIn
-          routing="path"
-          path="/sign-in"
-          signUpUrl="/sign-up"
-          afterSignInUrl={redirect as string}
-        />
-      </div>
+    <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Sign In</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center">
+          <SignIn
+            routing="path"
+            path="/sign-in"
+            signUpUrl="/sign-up"
+            afterSignInUrl={redirect as string}
+          />
+        </CardContent>
+      </Card>
     </div>
   )
 }

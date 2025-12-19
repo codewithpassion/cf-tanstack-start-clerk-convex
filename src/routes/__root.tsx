@@ -4,6 +4,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { ClerkProvider } from '@clerk/tanstack-react-start'
 
 import Header from '../components/Header'
+import { ThemeProvider } from '../components/theme-provider'
 
 import appCss from '../styles.css?url'
 import { ConvexClientProvider } from '@/lib/convex'
@@ -41,24 +42,26 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <ClerkProvider>
       <ConvexClientProvider convexUrl={import.meta.env.VITE_CONVEX_URL}>
         <AuthProvider>
-          <html lang="en">
+          <html lang="en" suppressHydrationWarning>
             <head>
               <HeadContent />
             </head>
-            <body>
-              <Header />
-              {children}
-              <TanStackDevtools
-                config={{
-                  position: 'bottom-right',
-                }}
-                plugins={[
-                  {
-                    name: 'Tanstack Router',
-                    render: <TanStackRouterDevtoolsPanel />,
-                  },
-                ]}
-              />
+            <body className="min-h-screen bg-background text-foreground">
+              <ThemeProvider>
+                <Header />
+                {children}
+                <TanStackDevtools
+                  config={{
+                    position: 'bottom-right',
+                  }}
+                  plugins={[
+                    {
+                      name: 'Tanstack Router',
+                      render: <TanStackRouterDevtoolsPanel />,
+                    },
+                  ]}
+                />
+              </ThemeProvider>
               <Scripts />
             </body>
           </html>

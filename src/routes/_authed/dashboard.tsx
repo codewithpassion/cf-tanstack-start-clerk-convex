@@ -2,12 +2,21 @@ import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { auth } from '@clerk/tanstack-react-start/server'
 import { useAuth } from '@clerk/tanstack-react-start'
+import { Info } from 'lucide-react'
 
-// Server function to check API health with auth
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Skeleton } from '@/components/ui/skeleton'
+
 const checkApiHealth = createServerFn({ method: 'GET' }).handler(async () => {
   const { userId } = await auth()
 
-  // You could make an authenticated API call here
   return {
     status: 'ok',
     userId,
@@ -29,59 +38,77 @@ function DashboardPage() {
 
   if (!isLoaded) {
     return (
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Loading...</h1>
+      <div className="max-w-4xl mx-auto p-6">
+        <Skeleton className="h-10 w-48 mb-6" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <Skeleton className="h-40" />
+          <Skeleton className="h-40" />
+        </div>
+        <Skeleton className="h-32" />
       </div>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Authentication Status</h2>
-          <div className="space-y-2">
-            <p>
-              <span className="font-medium">Authenticated:</span>{' '}
-              <span className="text-green-600">Yes</span>
-            </p>
-            <p>
-              <span className="font-medium">User ID:</span>{' '}
-              <code className="bg-gray-100 px-2 py-1 rounded text-sm">
+        <Card>
+          <CardHeader>
+            <CardTitle>Authentication Status</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Authenticated</span>
+              <Badge variant="default" className="bg-green-600 hover:bg-green-600">
+                Yes
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">User ID</span>
+              <code className="text-xs bg-muted px-2 py-1 rounded">
                 {userId}
               </code>
-            </p>
-          </div>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Server Health</h2>
-          <div className="space-y-2">
-            <p>
-              <span className="font-medium">Status:</span>{' '}
-              <span className="text-green-600">{loaderData.status}</span>
-            </p>
-            <p>
-              <span className="font-medium">Last Check:</span>{' '}
-              {new Date(loaderData.timestamp).toLocaleString()}
-            </p>
-          </div>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Server Health</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Status</span>
+              <Badge variant="default" className="bg-green-600 hover:bg-green-600">
+                {loaderData.status}
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Last Check</span>
+              <span className="text-sm">
+                {new Date(loaderData.timestamp).toLocaleString()}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Protected Content</h2>
-        <p className="text-gray-700 mb-4">
-          This is a protected dashboard page. Only authenticated users can view
-          this content.
-        </p>
-        <p className="text-gray-600">
-          The authentication check happens on the server before this page loads,
-          ensuring secure access control.
-        </p>
-      </div>
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertTitle>Protected Content</AlertTitle>
+        <AlertDescription>
+          <p>
+            This is a protected dashboard page. Only authenticated users can view
+            this content.
+          </p>
+          <p className="mt-2">
+            The authentication check happens on the server before this page loads,
+            ensuring secure access control.
+          </p>
+        </AlertDescription>
+      </Alert>
     </div>
   )
 }
