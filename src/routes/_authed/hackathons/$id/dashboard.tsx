@@ -76,17 +76,17 @@ function OrganiserDashboard({ hackathonId }: { hackathonId: string }) {
 				</CardHeader>
 				<CardContent className="flex flex-wrap gap-3">
 					<Button variant="outline" asChild>
-						<Link to={`/hackathons/${hackathonId}/team`}>
+						<Link to="/hackathons/$id/team" params={{ id: hackathonId }}>
 							Manage Team
 						</Link>
 					</Button>
 					<Button variant="outline" asChild>
-						<Link to={`/hackathons/${hackathonId}/settings`}>
+						<Link to="/hackathons/$id/settings" params={{ id: hackathonId }}>
 							Settings
 						</Link>
 					</Button>
 					<Button variant="outline" asChild>
-						<Link to={`/hackathons/${hackathonId}/categories`}>
+						<Link to="/hackathons/$id/categories" params={{ id: hackathonId }}>
 							Categories
 						</Link>
 					</Button>
@@ -121,7 +121,7 @@ function JudgeDashboard({ hackathonId }: { hackathonId: string }) {
 				</CardHeader>
 				<CardContent>
 					<Button variant="outline" asChild>
-						<Link to={`/hackathons/${hackathonId}/judging`}>
+						<Link to="/hackathons/$id/judging" params={{ id: hackathonId }}>
 							Go to Judging
 						</Link>
 					</Button>
@@ -144,7 +144,7 @@ function ParticipantDashboard({ hackathonId }: { hackathonId: string }) {
 							You're not on a team yet.
 						</p>
 						<Button variant="outline" className="mt-3" asChild>
-							<Link to={`/hackathons/${hackathonId}/teams`}>
+							<Link to="/hackathons/$id/teams" params={{ id: hackathonId }}>
 								Join or Create a Team
 							</Link>
 						</Button>

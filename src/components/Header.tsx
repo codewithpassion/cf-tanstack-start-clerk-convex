@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { NotificationBell } from '@/components/NotificationBell'
 
 export default function Header() {
   return (
@@ -92,6 +93,9 @@ export default function Header() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <SignedIn>
+            <NotificationBell />
+          </SignedIn>
           <SignedOut>
             <SignInButton mode="modal">
               <Button size="sm">Sign In</Button>

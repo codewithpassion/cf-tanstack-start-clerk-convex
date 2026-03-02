@@ -13,20 +13,46 @@ import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HIndexRouteImport } from './routes/h/index'
 import { Route as InviteTokenRouteImport } from './routes/invite/$token'
 import { Route as AuthedProfileRouteImport } from './routes/_authed/profile'
+import { Route as AuthedNotificationsRouteImport } from './routes/_authed/notifications'
 import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
+import { Route as HSlugIndexRouteImport } from './routes/h/$slug/index'
 import { Route as AuthedHackathonsIndexRouteImport } from './routes/_authed/hackathons/index'
+import { Route as HackathonsSlugResultsRouteImport } from './routes/hackathons/$slug/results'
+import { Route as HSlugAboutRouteImport } from './routes/h/$slug/about'
+import { Route as AuthedProfilePreferencesRouteImport } from './routes/_authed/profile/preferences'
 import { Route as AuthedHackathonsNewRouteImport } from './routes/_authed/hackathons/new'
+import { Route as HackathonsSlugSolutionsIndexRouteImport } from './routes/hackathons/$slug/solutions/index'
+import { Route as HSlugProblemsIndexRouteImport } from './routes/h/$slug/problems/index'
 import { Route as AuthedHackathonsIdIndexRouteImport } from './routes/_authed/hackathons/$id/index'
 import { Route as AuthedHackathonsIdTeamRouteImport } from './routes/_authed/hackathons/$id/team'
 import { Route as AuthedHackathonsIdSettingsRouteImport } from './routes/_authed/hackathons/$id/settings'
 import { Route as AuthedHackathonsIdDashboardRouteImport } from './routes/_authed/hackathons/$id/dashboard'
 import { Route as AuthedHackathonsIdContentRouteImport } from './routes/_authed/hackathons/$id/content'
 import { Route as AuthedHackathonsIdCategoriesRouteImport } from './routes/_authed/hackathons/$id/categories'
+import { Route as AuthedHackathonsIdAnalyticsRouteImport } from './routes/_authed/hackathons/$id/analytics'
+import { Route as HackathonsSlugSolutionsSubmissionIdIndexRouteImport } from './routes/hackathons/$slug/solutions/$submissionId/index'
+import { Route as HSlugProblemsProblemIdIndexRouteImport } from './routes/h/$slug/problems/$problemId/index'
+import { Route as AuthedHackathonsIdTeamsIndexRouteImport } from './routes/_authed/hackathons/$id/teams/index'
+import { Route as AuthedHackathonsIdResultsIndexRouteImport } from './routes/_authed/hackathons/$id/results/index'
 import { Route as AuthedHackathonsIdProblemsIndexRouteImport } from './routes/_authed/hackathons/$id/problems/index'
+import { Route as AuthedHackathonsIdJudgingIndexRouteImport } from './routes/_authed/hackathons/$id/judging/index'
+import { Route as AuthedHackathonsIdTeamsNewRouteImport } from './routes/_authed/hackathons/$id/teams/new'
+import { Route as AuthedHackathonsIdTeamsJoinRouteImport } from './routes/_authed/hackathons/$id/teams/join'
+import { Route as AuthedHackathonsIdSubmissionsNewRouteImport } from './routes/_authed/hackathons/$id/submissions/new'
 import { Route as AuthedHackathonsIdProblemsNewRouteImport } from './routes/_authed/hackathons/$id/problems/new'
+import { Route as AuthedHackathonsIdJudgingAssignRouteImport } from './routes/_authed/hackathons/$id/judging/assign'
+import { Route as AuthedHackathonsIdJudgingCategoryIdRouteImport } from './routes/_authed/hackathons/$id/judging/$categoryId'
+import { Route as AuthedHackathonsIdCurateSolutionsRouteImport } from './routes/_authed/hackathons/$id/curate/solutions'
+import { Route as AuthedHackathonsIdCurateQaRouteImport } from './routes/_authed/hackathons/$id/curate/qa'
+import { Route as AuthedHackathonsIdCurateProblemsRouteImport } from './routes/_authed/hackathons/$id/curate/problems'
+import { Route as AuthedHackathonsIdTeamsTeamIdIndexRouteImport } from './routes/_authed/hackathons/$id/teams/$teamId/index'
+import { Route as AuthedHackathonsIdSubmissionsSubmissionIdIndexRouteImport } from './routes/_authed/hackathons/$id/submissions/$submissionId/index'
 import { Route as AuthedHackathonsIdProblemsProblemIdIndexRouteImport } from './routes/_authed/hackathons/$id/problems/$problemId/index'
+import { Route as AuthedHackathonsIdTeamsTeamIdManageRouteImport } from './routes/_authed/hackathons/$id/teams/$teamId/manage'
+import { Route as AuthedHackathonsIdSubmissionsSubmissionIdEditRouteImport } from './routes/_authed/hackathons/$id/submissions/$submissionId/edit'
 import { Route as AuthedHackathonsIdProblemsProblemIdEditRouteImport } from './routes/_authed/hackathons/$id/problems/$problemId/edit'
 
 const SignUpRoute = SignUpRouteImport.update({
@@ -48,6 +74,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HIndexRoute = HIndexRouteImport.update({
+  id: '/h/',
+  path: '/h/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InviteTokenRoute = InviteTokenRouteImport.update({
   id: '/invite/$token',
   path: '/invite/$token',
@@ -58,20 +89,57 @@ const AuthedProfileRoute = AuthedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedNotificationsRoute = AuthedNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AuthedRoute,
+} as any)
 const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthedRoute,
+} as any)
+const HSlugIndexRoute = HSlugIndexRouteImport.update({
+  id: '/h/$slug/',
+  path: '/h/$slug/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthedHackathonsIndexRoute = AuthedHackathonsIndexRouteImport.update({
   id: '/hackathons/',
   path: '/hackathons/',
   getParentRoute: () => AuthedRoute,
 } as any)
+const HackathonsSlugResultsRoute = HackathonsSlugResultsRouteImport.update({
+  id: '/hackathons/$slug/results',
+  path: '/hackathons/$slug/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HSlugAboutRoute = HSlugAboutRouteImport.update({
+  id: '/h/$slug/about',
+  path: '/h/$slug/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedProfilePreferencesRoute =
+  AuthedProfilePreferencesRouteImport.update({
+    id: '/preferences',
+    path: '/preferences',
+    getParentRoute: () => AuthedProfileRoute,
+  } as any)
 const AuthedHackathonsNewRoute = AuthedHackathonsNewRouteImport.update({
   id: '/hackathons/new',
   path: '/hackathons/new',
   getParentRoute: () => AuthedRoute,
+} as any)
+const HackathonsSlugSolutionsIndexRoute =
+  HackathonsSlugSolutionsIndexRouteImport.update({
+    id: '/hackathons/$slug/solutions/',
+    path: '/hackathons/$slug/solutions/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const HSlugProblemsIndexRoute = HSlugProblemsIndexRouteImport.update({
+  id: '/h/$slug/problems/',
+  path: '/h/$slug/problems/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthedHackathonsIdIndexRoute = AuthedHackathonsIdIndexRouteImport.update({
   id: '/hackathons/$id/',
@@ -107,10 +175,64 @@ const AuthedHackathonsIdCategoriesRoute =
     path: '/hackathons/$id/categories',
     getParentRoute: () => AuthedRoute,
   } as any)
+const AuthedHackathonsIdAnalyticsRoute =
+  AuthedHackathonsIdAnalyticsRouteImport.update({
+    id: '/hackathons/$id/analytics',
+    path: '/hackathons/$id/analytics',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const HackathonsSlugSolutionsSubmissionIdIndexRoute =
+  HackathonsSlugSolutionsSubmissionIdIndexRouteImport.update({
+    id: '/hackathons/$slug/solutions/$submissionId/',
+    path: '/hackathons/$slug/solutions/$submissionId/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const HSlugProblemsProblemIdIndexRoute =
+  HSlugProblemsProblemIdIndexRouteImport.update({
+    id: '/h/$slug/problems/$problemId/',
+    path: '/h/$slug/problems/$problemId/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthedHackathonsIdTeamsIndexRoute =
+  AuthedHackathonsIdTeamsIndexRouteImport.update({
+    id: '/hackathons/$id/teams/',
+    path: '/hackathons/$id/teams/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdResultsIndexRoute =
+  AuthedHackathonsIdResultsIndexRouteImport.update({
+    id: '/hackathons/$id/results/',
+    path: '/hackathons/$id/results/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
 const AuthedHackathonsIdProblemsIndexRoute =
   AuthedHackathonsIdProblemsIndexRouteImport.update({
     id: '/hackathons/$id/problems/',
     path: '/hackathons/$id/problems/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdJudgingIndexRoute =
+  AuthedHackathonsIdJudgingIndexRouteImport.update({
+    id: '/hackathons/$id/judging/',
+    path: '/hackathons/$id/judging/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdTeamsNewRoute =
+  AuthedHackathonsIdTeamsNewRouteImport.update({
+    id: '/hackathons/$id/teams/new',
+    path: '/hackathons/$id/teams/new',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdTeamsJoinRoute =
+  AuthedHackathonsIdTeamsJoinRouteImport.update({
+    id: '/hackathons/$id/teams/join',
+    path: '/hackathons/$id/teams/join',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdSubmissionsNewRoute =
+  AuthedHackathonsIdSubmissionsNewRouteImport.update({
+    id: '/hackathons/$id/submissions/new',
+    path: '/hackathons/$id/submissions/new',
     getParentRoute: () => AuthedRoute,
   } as any)
 const AuthedHackathonsIdProblemsNewRoute =
@@ -119,10 +241,64 @@ const AuthedHackathonsIdProblemsNewRoute =
     path: '/hackathons/$id/problems/new',
     getParentRoute: () => AuthedRoute,
   } as any)
+const AuthedHackathonsIdJudgingAssignRoute =
+  AuthedHackathonsIdJudgingAssignRouteImport.update({
+    id: '/hackathons/$id/judging/assign',
+    path: '/hackathons/$id/judging/assign',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdJudgingCategoryIdRoute =
+  AuthedHackathonsIdJudgingCategoryIdRouteImport.update({
+    id: '/hackathons/$id/judging/$categoryId',
+    path: '/hackathons/$id/judging/$categoryId',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdCurateSolutionsRoute =
+  AuthedHackathonsIdCurateSolutionsRouteImport.update({
+    id: '/hackathons/$id/curate/solutions',
+    path: '/hackathons/$id/curate/solutions',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdCurateQaRoute =
+  AuthedHackathonsIdCurateQaRouteImport.update({
+    id: '/hackathons/$id/curate/qa',
+    path: '/hackathons/$id/curate/qa',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdCurateProblemsRoute =
+  AuthedHackathonsIdCurateProblemsRouteImport.update({
+    id: '/hackathons/$id/curate/problems',
+    path: '/hackathons/$id/curate/problems',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdTeamsTeamIdIndexRoute =
+  AuthedHackathonsIdTeamsTeamIdIndexRouteImport.update({
+    id: '/hackathons/$id/teams/$teamId/',
+    path: '/hackathons/$id/teams/$teamId/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute =
+  AuthedHackathonsIdSubmissionsSubmissionIdIndexRouteImport.update({
+    id: '/hackathons/$id/submissions/$submissionId/',
+    path: '/hackathons/$id/submissions/$submissionId/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
 const AuthedHackathonsIdProblemsProblemIdIndexRoute =
   AuthedHackathonsIdProblemsProblemIdIndexRouteImport.update({
     id: '/hackathons/$id/problems/$problemId/',
     path: '/hackathons/$id/problems/$problemId/',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdTeamsTeamIdManageRoute =
+  AuthedHackathonsIdTeamsTeamIdManageRouteImport.update({
+    id: '/hackathons/$id/teams/$teamId/manage',
+    path: '/hackathons/$id/teams/$teamId/manage',
+    getParentRoute: () => AuthedRoute,
+  } as any)
+const AuthedHackathonsIdSubmissionsSubmissionIdEditRoute =
+  AuthedHackathonsIdSubmissionsSubmissionIdEditRouteImport.update({
+    id: '/hackathons/$id/submissions/$submissionId/edit',
+    path: '/hackathons/$id/submissions/$submissionId/edit',
     getParentRoute: () => AuthedRoute,
   } as any)
 const AuthedHackathonsIdProblemsProblemIdEditRoute =
@@ -137,40 +313,92 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/dashboard': typeof AuthedDashboardRoute
-  '/profile': typeof AuthedProfileRoute
+  '/notifications': typeof AuthedNotificationsRoute
+  '/profile': typeof AuthedProfileRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
+  '/h': typeof HIndexRoute
   '/hackathons/new': typeof AuthedHackathonsNewRoute
-  '/hackathons/': typeof AuthedHackathonsIndexRoute
-  '/hackathons/$id/categories': typeof AuthedHackathonsIdCategoriesRoute
-  '/hackathons/$id/content': typeof AuthedHackathonsIdContentRoute
-  '/hackathons/$id/dashboard': typeof AuthedHackathonsIdDashboardRoute
-  '/hackathons/$id/settings': typeof AuthedHackathonsIdSettingsRoute
-  '/hackathons/$id/team': typeof AuthedHackathonsIdTeamRoute
-  '/hackathons/$id/': typeof AuthedHackathonsIdIndexRoute
-  '/hackathons/$id/problems/new': typeof AuthedHackathonsIdProblemsNewRoute
-  '/hackathons/$id/problems/': typeof AuthedHackathonsIdProblemsIndexRoute
-  '/hackathons/$id/problems/$problemId/edit': typeof AuthedHackathonsIdProblemsProblemIdEditRoute
-  '/hackathons/$id/problems/$problemId/': typeof AuthedHackathonsIdProblemsProblemIdIndexRoute
-}
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/sign-in': typeof SignInRoute
-  '/sign-up': typeof SignUpRoute
-  '/dashboard': typeof AuthedDashboardRoute
-  '/profile': typeof AuthedProfileRoute
-  '/invite/$token': typeof InviteTokenRoute
-  '/hackathons/new': typeof AuthedHackathonsNewRoute
+  '/profile/preferences': typeof AuthedProfilePreferencesRoute
+  '/h/$slug/about': typeof HSlugAboutRoute
+  '/hackathons/$slug/results': typeof HackathonsSlugResultsRoute
   '/hackathons': typeof AuthedHackathonsIndexRoute
+  '/h/$slug': typeof HSlugIndexRoute
+  '/hackathons/$id/analytics': typeof AuthedHackathonsIdAnalyticsRoute
   '/hackathons/$id/categories': typeof AuthedHackathonsIdCategoriesRoute
   '/hackathons/$id/content': typeof AuthedHackathonsIdContentRoute
   '/hackathons/$id/dashboard': typeof AuthedHackathonsIdDashboardRoute
   '/hackathons/$id/settings': typeof AuthedHackathonsIdSettingsRoute
   '/hackathons/$id/team': typeof AuthedHackathonsIdTeamRoute
   '/hackathons/$id': typeof AuthedHackathonsIdIndexRoute
+  '/h/$slug/problems': typeof HSlugProblemsIndexRoute
+  '/hackathons/$slug/solutions': typeof HackathonsSlugSolutionsIndexRoute
+  '/hackathons/$id/curate/problems': typeof AuthedHackathonsIdCurateProblemsRoute
+  '/hackathons/$id/curate/qa': typeof AuthedHackathonsIdCurateQaRoute
+  '/hackathons/$id/curate/solutions': typeof AuthedHackathonsIdCurateSolutionsRoute
+  '/hackathons/$id/judging/$categoryId': typeof AuthedHackathonsIdJudgingCategoryIdRoute
+  '/hackathons/$id/judging/assign': typeof AuthedHackathonsIdJudgingAssignRoute
   '/hackathons/$id/problems/new': typeof AuthedHackathonsIdProblemsNewRoute
+  '/hackathons/$id/submissions/new': typeof AuthedHackathonsIdSubmissionsNewRoute
+  '/hackathons/$id/teams/join': typeof AuthedHackathonsIdTeamsJoinRoute
+  '/hackathons/$id/teams/new': typeof AuthedHackathonsIdTeamsNewRoute
+  '/hackathons/$id/judging': typeof AuthedHackathonsIdJudgingIndexRoute
   '/hackathons/$id/problems': typeof AuthedHackathonsIdProblemsIndexRoute
+  '/hackathons/$id/results': typeof AuthedHackathonsIdResultsIndexRoute
+  '/hackathons/$id/teams': typeof AuthedHackathonsIdTeamsIndexRoute
+  '/h/$slug/problems/$problemId': typeof HSlugProblemsProblemIdIndexRoute
+  '/hackathons/$slug/solutions/$submissionId': typeof HackathonsSlugSolutionsSubmissionIdIndexRoute
   '/hackathons/$id/problems/$problemId/edit': typeof AuthedHackathonsIdProblemsProblemIdEditRoute
+  '/hackathons/$id/submissions/$submissionId/edit': typeof AuthedHackathonsIdSubmissionsSubmissionIdEditRoute
+  '/hackathons/$id/teams/$teamId/manage': typeof AuthedHackathonsIdTeamsTeamIdManageRoute
   '/hackathons/$id/problems/$problemId': typeof AuthedHackathonsIdProblemsProblemIdIndexRoute
+  '/hackathons/$id/submissions/$submissionId': typeof AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute
+  '/hackathons/$id/teams/$teamId': typeof AuthedHackathonsIdTeamsTeamIdIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
+  '/dashboard': typeof AuthedDashboardRoute
+  '/notifications': typeof AuthedNotificationsRoute
+  '/profile': typeof AuthedProfileRouteWithChildren
+  '/invite/$token': typeof InviteTokenRoute
+  '/h': typeof HIndexRoute
+  '/hackathons/new': typeof AuthedHackathonsNewRoute
+  '/profile/preferences': typeof AuthedProfilePreferencesRoute
+  '/h/$slug/about': typeof HSlugAboutRoute
+  '/hackathons/$slug/results': typeof HackathonsSlugResultsRoute
+  '/hackathons': typeof AuthedHackathonsIndexRoute
+  '/h/$slug': typeof HSlugIndexRoute
+  '/hackathons/$id/analytics': typeof AuthedHackathonsIdAnalyticsRoute
+  '/hackathons/$id/categories': typeof AuthedHackathonsIdCategoriesRoute
+  '/hackathons/$id/content': typeof AuthedHackathonsIdContentRoute
+  '/hackathons/$id/dashboard': typeof AuthedHackathonsIdDashboardRoute
+  '/hackathons/$id/settings': typeof AuthedHackathonsIdSettingsRoute
+  '/hackathons/$id/team': typeof AuthedHackathonsIdTeamRoute
+  '/hackathons/$id': typeof AuthedHackathonsIdIndexRoute
+  '/h/$slug/problems': typeof HSlugProblemsIndexRoute
+  '/hackathons/$slug/solutions': typeof HackathonsSlugSolutionsIndexRoute
+  '/hackathons/$id/curate/problems': typeof AuthedHackathonsIdCurateProblemsRoute
+  '/hackathons/$id/curate/qa': typeof AuthedHackathonsIdCurateQaRoute
+  '/hackathons/$id/curate/solutions': typeof AuthedHackathonsIdCurateSolutionsRoute
+  '/hackathons/$id/judging/$categoryId': typeof AuthedHackathonsIdJudgingCategoryIdRoute
+  '/hackathons/$id/judging/assign': typeof AuthedHackathonsIdJudgingAssignRoute
+  '/hackathons/$id/problems/new': typeof AuthedHackathonsIdProblemsNewRoute
+  '/hackathons/$id/submissions/new': typeof AuthedHackathonsIdSubmissionsNewRoute
+  '/hackathons/$id/teams/join': typeof AuthedHackathonsIdTeamsJoinRoute
+  '/hackathons/$id/teams/new': typeof AuthedHackathonsIdTeamsNewRoute
+  '/hackathons/$id/judging': typeof AuthedHackathonsIdJudgingIndexRoute
+  '/hackathons/$id/problems': typeof AuthedHackathonsIdProblemsIndexRoute
+  '/hackathons/$id/results': typeof AuthedHackathonsIdResultsIndexRoute
+  '/hackathons/$id/teams': typeof AuthedHackathonsIdTeamsIndexRoute
+  '/h/$slug/problems/$problemId': typeof HSlugProblemsProblemIdIndexRoute
+  '/hackathons/$slug/solutions/$submissionId': typeof HackathonsSlugSolutionsSubmissionIdIndexRoute
+  '/hackathons/$id/problems/$problemId/edit': typeof AuthedHackathonsIdProblemsProblemIdEditRoute
+  '/hackathons/$id/submissions/$submissionId/edit': typeof AuthedHackathonsIdSubmissionsSubmissionIdEditRoute
+  '/hackathons/$id/teams/$teamId/manage': typeof AuthedHackathonsIdTeamsTeamIdManageRoute
+  '/hackathons/$id/problems/$problemId': typeof AuthedHackathonsIdProblemsProblemIdIndexRoute
+  '/hackathons/$id/submissions/$submissionId': typeof AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute
+  '/hackathons/$id/teams/$teamId': typeof AuthedHackathonsIdTeamsTeamIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -179,20 +407,46 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/_authed/dashboard': typeof AuthedDashboardRoute
-  '/_authed/profile': typeof AuthedProfileRoute
+  '/_authed/notifications': typeof AuthedNotificationsRoute
+  '/_authed/profile': typeof AuthedProfileRouteWithChildren
   '/invite/$token': typeof InviteTokenRoute
+  '/h/': typeof HIndexRoute
   '/_authed/hackathons/new': typeof AuthedHackathonsNewRoute
+  '/_authed/profile/preferences': typeof AuthedProfilePreferencesRoute
+  '/h/$slug/about': typeof HSlugAboutRoute
+  '/hackathons/$slug/results': typeof HackathonsSlugResultsRoute
   '/_authed/hackathons/': typeof AuthedHackathonsIndexRoute
+  '/h/$slug/': typeof HSlugIndexRoute
+  '/_authed/hackathons/$id/analytics': typeof AuthedHackathonsIdAnalyticsRoute
   '/_authed/hackathons/$id/categories': typeof AuthedHackathonsIdCategoriesRoute
   '/_authed/hackathons/$id/content': typeof AuthedHackathonsIdContentRoute
   '/_authed/hackathons/$id/dashboard': typeof AuthedHackathonsIdDashboardRoute
   '/_authed/hackathons/$id/settings': typeof AuthedHackathonsIdSettingsRoute
   '/_authed/hackathons/$id/team': typeof AuthedHackathonsIdTeamRoute
   '/_authed/hackathons/$id/': typeof AuthedHackathonsIdIndexRoute
+  '/h/$slug/problems/': typeof HSlugProblemsIndexRoute
+  '/hackathons/$slug/solutions/': typeof HackathonsSlugSolutionsIndexRoute
+  '/_authed/hackathons/$id/curate/problems': typeof AuthedHackathonsIdCurateProblemsRoute
+  '/_authed/hackathons/$id/curate/qa': typeof AuthedHackathonsIdCurateQaRoute
+  '/_authed/hackathons/$id/curate/solutions': typeof AuthedHackathonsIdCurateSolutionsRoute
+  '/_authed/hackathons/$id/judging/$categoryId': typeof AuthedHackathonsIdJudgingCategoryIdRoute
+  '/_authed/hackathons/$id/judging/assign': typeof AuthedHackathonsIdJudgingAssignRoute
   '/_authed/hackathons/$id/problems/new': typeof AuthedHackathonsIdProblemsNewRoute
+  '/_authed/hackathons/$id/submissions/new': typeof AuthedHackathonsIdSubmissionsNewRoute
+  '/_authed/hackathons/$id/teams/join': typeof AuthedHackathonsIdTeamsJoinRoute
+  '/_authed/hackathons/$id/teams/new': typeof AuthedHackathonsIdTeamsNewRoute
+  '/_authed/hackathons/$id/judging/': typeof AuthedHackathonsIdJudgingIndexRoute
   '/_authed/hackathons/$id/problems/': typeof AuthedHackathonsIdProblemsIndexRoute
+  '/_authed/hackathons/$id/results/': typeof AuthedHackathonsIdResultsIndexRoute
+  '/_authed/hackathons/$id/teams/': typeof AuthedHackathonsIdTeamsIndexRoute
+  '/h/$slug/problems/$problemId/': typeof HSlugProblemsProblemIdIndexRoute
+  '/hackathons/$slug/solutions/$submissionId/': typeof HackathonsSlugSolutionsSubmissionIdIndexRoute
   '/_authed/hackathons/$id/problems/$problemId/edit': typeof AuthedHackathonsIdProblemsProblemIdEditRoute
+  '/_authed/hackathons/$id/submissions/$submissionId/edit': typeof AuthedHackathonsIdSubmissionsSubmissionIdEditRoute
+  '/_authed/hackathons/$id/teams/$teamId/manage': typeof AuthedHackathonsIdTeamsTeamIdManageRoute
   '/_authed/hackathons/$id/problems/$problemId/': typeof AuthedHackathonsIdProblemsProblemIdIndexRoute
+  '/_authed/hackathons/$id/submissions/$submissionId/': typeof AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute
+  '/_authed/hackathons/$id/teams/$teamId/': typeof AuthedHackathonsIdTeamsTeamIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -201,40 +455,92 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/dashboard'
+    | '/notifications'
     | '/profile'
     | '/invite/$token'
+    | '/h'
     | '/hackathons/new'
-    | '/hackathons/'
-    | '/hackathons/$id/categories'
-    | '/hackathons/$id/content'
-    | '/hackathons/$id/dashboard'
-    | '/hackathons/$id/settings'
-    | '/hackathons/$id/team'
-    | '/hackathons/$id/'
-    | '/hackathons/$id/problems/new'
-    | '/hackathons/$id/problems/'
-    | '/hackathons/$id/problems/$problemId/edit'
-    | '/hackathons/$id/problems/$problemId/'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/sign-in'
-    | '/sign-up'
-    | '/dashboard'
-    | '/profile'
-    | '/invite/$token'
-    | '/hackathons/new'
+    | '/profile/preferences'
+    | '/h/$slug/about'
+    | '/hackathons/$slug/results'
     | '/hackathons'
+    | '/h/$slug'
+    | '/hackathons/$id/analytics'
     | '/hackathons/$id/categories'
     | '/hackathons/$id/content'
     | '/hackathons/$id/dashboard'
     | '/hackathons/$id/settings'
     | '/hackathons/$id/team'
     | '/hackathons/$id'
+    | '/h/$slug/problems'
+    | '/hackathons/$slug/solutions'
+    | '/hackathons/$id/curate/problems'
+    | '/hackathons/$id/curate/qa'
+    | '/hackathons/$id/curate/solutions'
+    | '/hackathons/$id/judging/$categoryId'
+    | '/hackathons/$id/judging/assign'
     | '/hackathons/$id/problems/new'
+    | '/hackathons/$id/submissions/new'
+    | '/hackathons/$id/teams/join'
+    | '/hackathons/$id/teams/new'
+    | '/hackathons/$id/judging'
     | '/hackathons/$id/problems'
+    | '/hackathons/$id/results'
+    | '/hackathons/$id/teams'
+    | '/h/$slug/problems/$problemId'
+    | '/hackathons/$slug/solutions/$submissionId'
     | '/hackathons/$id/problems/$problemId/edit'
+    | '/hackathons/$id/submissions/$submissionId/edit'
+    | '/hackathons/$id/teams/$teamId/manage'
     | '/hackathons/$id/problems/$problemId'
+    | '/hackathons/$id/submissions/$submissionId'
+    | '/hackathons/$id/teams/$teamId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/sign-in'
+    | '/sign-up'
+    | '/dashboard'
+    | '/notifications'
+    | '/profile'
+    | '/invite/$token'
+    | '/h'
+    | '/hackathons/new'
+    | '/profile/preferences'
+    | '/h/$slug/about'
+    | '/hackathons/$slug/results'
+    | '/hackathons'
+    | '/h/$slug'
+    | '/hackathons/$id/analytics'
+    | '/hackathons/$id/categories'
+    | '/hackathons/$id/content'
+    | '/hackathons/$id/dashboard'
+    | '/hackathons/$id/settings'
+    | '/hackathons/$id/team'
+    | '/hackathons/$id'
+    | '/h/$slug/problems'
+    | '/hackathons/$slug/solutions'
+    | '/hackathons/$id/curate/problems'
+    | '/hackathons/$id/curate/qa'
+    | '/hackathons/$id/curate/solutions'
+    | '/hackathons/$id/judging/$categoryId'
+    | '/hackathons/$id/judging/assign'
+    | '/hackathons/$id/problems/new'
+    | '/hackathons/$id/submissions/new'
+    | '/hackathons/$id/teams/join'
+    | '/hackathons/$id/teams/new'
+    | '/hackathons/$id/judging'
+    | '/hackathons/$id/problems'
+    | '/hackathons/$id/results'
+    | '/hackathons/$id/teams'
+    | '/h/$slug/problems/$problemId'
+    | '/hackathons/$slug/solutions/$submissionId'
+    | '/hackathons/$id/problems/$problemId/edit'
+    | '/hackathons/$id/submissions/$submissionId/edit'
+    | '/hackathons/$id/teams/$teamId/manage'
+    | '/hackathons/$id/problems/$problemId'
+    | '/hackathons/$id/submissions/$submissionId'
+    | '/hackathons/$id/teams/$teamId'
   id:
     | '__root__'
     | '/'
@@ -242,20 +548,46 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/_authed/dashboard'
+    | '/_authed/notifications'
     | '/_authed/profile'
     | '/invite/$token'
+    | '/h/'
     | '/_authed/hackathons/new'
+    | '/_authed/profile/preferences'
+    | '/h/$slug/about'
+    | '/hackathons/$slug/results'
     | '/_authed/hackathons/'
+    | '/h/$slug/'
+    | '/_authed/hackathons/$id/analytics'
     | '/_authed/hackathons/$id/categories'
     | '/_authed/hackathons/$id/content'
     | '/_authed/hackathons/$id/dashboard'
     | '/_authed/hackathons/$id/settings'
     | '/_authed/hackathons/$id/team'
     | '/_authed/hackathons/$id/'
+    | '/h/$slug/problems/'
+    | '/hackathons/$slug/solutions/'
+    | '/_authed/hackathons/$id/curate/problems'
+    | '/_authed/hackathons/$id/curate/qa'
+    | '/_authed/hackathons/$id/curate/solutions'
+    | '/_authed/hackathons/$id/judging/$categoryId'
+    | '/_authed/hackathons/$id/judging/assign'
     | '/_authed/hackathons/$id/problems/new'
+    | '/_authed/hackathons/$id/submissions/new'
+    | '/_authed/hackathons/$id/teams/join'
+    | '/_authed/hackathons/$id/teams/new'
+    | '/_authed/hackathons/$id/judging/'
     | '/_authed/hackathons/$id/problems/'
+    | '/_authed/hackathons/$id/results/'
+    | '/_authed/hackathons/$id/teams/'
+    | '/h/$slug/problems/$problemId/'
+    | '/hackathons/$slug/solutions/$submissionId/'
     | '/_authed/hackathons/$id/problems/$problemId/edit'
+    | '/_authed/hackathons/$id/submissions/$submissionId/edit'
+    | '/_authed/hackathons/$id/teams/$teamId/manage'
     | '/_authed/hackathons/$id/problems/$problemId/'
+    | '/_authed/hackathons/$id/submissions/$submissionId/'
+    | '/_authed/hackathons/$id/teams/$teamId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -264,6 +596,14 @@ export interface RootRouteChildren {
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   InviteTokenRoute: typeof InviteTokenRoute
+  HIndexRoute: typeof HIndexRoute
+  HSlugAboutRoute: typeof HSlugAboutRoute
+  HackathonsSlugResultsRoute: typeof HackathonsSlugResultsRoute
+  HSlugIndexRoute: typeof HSlugIndexRoute
+  HSlugProblemsIndexRoute: typeof HSlugProblemsIndexRoute
+  HackathonsSlugSolutionsIndexRoute: typeof HackathonsSlugSolutionsIndexRoute
+  HSlugProblemsProblemIdIndexRoute: typeof HSlugProblemsProblemIdIndexRoute
+  HackathonsSlugSolutionsSubmissionIdIndexRoute: typeof HackathonsSlugSolutionsSubmissionIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -285,7 +625,7 @@ declare module '@tanstack/react-router' {
     '/_authed': {
       id: '/_authed'
       path: ''
-      fullPath: '/'
+      fullPath: ''
       preLoaderRoute: typeof AuthedRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -294,6 +634,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h/': {
+      id: '/h/'
+      path: '/h'
+      fullPath: '/h'
+      preLoaderRoute: typeof HIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/invite/$token': {
@@ -310,6 +657,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedProfileRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/notifications': {
+      id: '/_authed/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthedNotificationsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/dashboard': {
       id: '/_authed/dashboard'
       path: '/dashboard'
@@ -317,12 +671,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedDashboardRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/h/$slug/': {
+      id: '/h/$slug/'
+      path: '/h/$slug'
+      fullPath: '/h/$slug'
+      preLoaderRoute: typeof HSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authed/hackathons/': {
       id: '/_authed/hackathons/'
       path: '/hackathons'
-      fullPath: '/hackathons/'
+      fullPath: '/hackathons'
       preLoaderRoute: typeof AuthedHackathonsIndexRouteImport
       parentRoute: typeof AuthedRoute
+    }
+    '/hackathons/$slug/results': {
+      id: '/hackathons/$slug/results'
+      path: '/hackathons/$slug/results'
+      fullPath: '/hackathons/$slug/results'
+      preLoaderRoute: typeof HackathonsSlugResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h/$slug/about': {
+      id: '/h/$slug/about'
+      path: '/h/$slug/about'
+      fullPath: '/h/$slug/about'
+      preLoaderRoute: typeof HSlugAboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authed/profile/preferences': {
+      id: '/_authed/profile/preferences'
+      path: '/preferences'
+      fullPath: '/profile/preferences'
+      preLoaderRoute: typeof AuthedProfilePreferencesRouteImport
+      parentRoute: typeof AuthedProfileRoute
     }
     '/_authed/hackathons/new': {
       id: '/_authed/hackathons/new'
@@ -331,10 +713,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedHackathonsNewRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/hackathons/$slug/solutions/': {
+      id: '/hackathons/$slug/solutions/'
+      path: '/hackathons/$slug/solutions'
+      fullPath: '/hackathons/$slug/solutions'
+      preLoaderRoute: typeof HackathonsSlugSolutionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h/$slug/problems/': {
+      id: '/h/$slug/problems/'
+      path: '/h/$slug/problems'
+      fullPath: '/h/$slug/problems'
+      preLoaderRoute: typeof HSlugProblemsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authed/hackathons/$id/': {
       id: '/_authed/hackathons/$id/'
       path: '/hackathons/$id'
-      fullPath: '/hackathons/$id/'
+      fullPath: '/hackathons/$id'
       preLoaderRoute: typeof AuthedHackathonsIdIndexRouteImport
       parentRoute: typeof AuthedRoute
     }
@@ -373,11 +769,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedHackathonsIdCategoriesRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/hackathons/$id/analytics': {
+      id: '/_authed/hackathons/$id/analytics'
+      path: '/hackathons/$id/analytics'
+      fullPath: '/hackathons/$id/analytics'
+      preLoaderRoute: typeof AuthedHackathonsIdAnalyticsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/hackathons/$slug/solutions/$submissionId/': {
+      id: '/hackathons/$slug/solutions/$submissionId/'
+      path: '/hackathons/$slug/solutions/$submissionId'
+      fullPath: '/hackathons/$slug/solutions/$submissionId'
+      preLoaderRoute: typeof HackathonsSlugSolutionsSubmissionIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/h/$slug/problems/$problemId/': {
+      id: '/h/$slug/problems/$problemId/'
+      path: '/h/$slug/problems/$problemId'
+      fullPath: '/h/$slug/problems/$problemId'
+      preLoaderRoute: typeof HSlugProblemsProblemIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authed/hackathons/$id/teams/': {
+      id: '/_authed/hackathons/$id/teams/'
+      path: '/hackathons/$id/teams'
+      fullPath: '/hackathons/$id/teams'
+      preLoaderRoute: typeof AuthedHackathonsIdTeamsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/results/': {
+      id: '/_authed/hackathons/$id/results/'
+      path: '/hackathons/$id/results'
+      fullPath: '/hackathons/$id/results'
+      preLoaderRoute: typeof AuthedHackathonsIdResultsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/hackathons/$id/problems/': {
       id: '/_authed/hackathons/$id/problems/'
       path: '/hackathons/$id/problems'
-      fullPath: '/hackathons/$id/problems/'
+      fullPath: '/hackathons/$id/problems'
       preLoaderRoute: typeof AuthedHackathonsIdProblemsIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/judging/': {
+      id: '/_authed/hackathons/$id/judging/'
+      path: '/hackathons/$id/judging'
+      fullPath: '/hackathons/$id/judging'
+      preLoaderRoute: typeof AuthedHackathonsIdJudgingIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/teams/new': {
+      id: '/_authed/hackathons/$id/teams/new'
+      path: '/hackathons/$id/teams/new'
+      fullPath: '/hackathons/$id/teams/new'
+      preLoaderRoute: typeof AuthedHackathonsIdTeamsNewRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/teams/join': {
+      id: '/_authed/hackathons/$id/teams/join'
+      path: '/hackathons/$id/teams/join'
+      fullPath: '/hackathons/$id/teams/join'
+      preLoaderRoute: typeof AuthedHackathonsIdTeamsJoinRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/submissions/new': {
+      id: '/_authed/hackathons/$id/submissions/new'
+      path: '/hackathons/$id/submissions/new'
+      fullPath: '/hackathons/$id/submissions/new'
+      preLoaderRoute: typeof AuthedHackathonsIdSubmissionsNewRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/hackathons/$id/problems/new': {
@@ -387,11 +846,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedHackathonsIdProblemsNewRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/hackathons/$id/judging/assign': {
+      id: '/_authed/hackathons/$id/judging/assign'
+      path: '/hackathons/$id/judging/assign'
+      fullPath: '/hackathons/$id/judging/assign'
+      preLoaderRoute: typeof AuthedHackathonsIdJudgingAssignRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/judging/$categoryId': {
+      id: '/_authed/hackathons/$id/judging/$categoryId'
+      path: '/hackathons/$id/judging/$categoryId'
+      fullPath: '/hackathons/$id/judging/$categoryId'
+      preLoaderRoute: typeof AuthedHackathonsIdJudgingCategoryIdRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/curate/solutions': {
+      id: '/_authed/hackathons/$id/curate/solutions'
+      path: '/hackathons/$id/curate/solutions'
+      fullPath: '/hackathons/$id/curate/solutions'
+      preLoaderRoute: typeof AuthedHackathonsIdCurateSolutionsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/curate/qa': {
+      id: '/_authed/hackathons/$id/curate/qa'
+      path: '/hackathons/$id/curate/qa'
+      fullPath: '/hackathons/$id/curate/qa'
+      preLoaderRoute: typeof AuthedHackathonsIdCurateQaRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/curate/problems': {
+      id: '/_authed/hackathons/$id/curate/problems'
+      path: '/hackathons/$id/curate/problems'
+      fullPath: '/hackathons/$id/curate/problems'
+      preLoaderRoute: typeof AuthedHackathonsIdCurateProblemsRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/teams/$teamId/': {
+      id: '/_authed/hackathons/$id/teams/$teamId/'
+      path: '/hackathons/$id/teams/$teamId'
+      fullPath: '/hackathons/$id/teams/$teamId'
+      preLoaderRoute: typeof AuthedHackathonsIdTeamsTeamIdIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/submissions/$submissionId/': {
+      id: '/_authed/hackathons/$id/submissions/$submissionId/'
+      path: '/hackathons/$id/submissions/$submissionId'
+      fullPath: '/hackathons/$id/submissions/$submissionId'
+      preLoaderRoute: typeof AuthedHackathonsIdSubmissionsSubmissionIdIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
     '/_authed/hackathons/$id/problems/$problemId/': {
       id: '/_authed/hackathons/$id/problems/$problemId/'
       path: '/hackathons/$id/problems/$problemId'
-      fullPath: '/hackathons/$id/problems/$problemId/'
+      fullPath: '/hackathons/$id/problems/$problemId'
       preLoaderRoute: typeof AuthedHackathonsIdProblemsProblemIdIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/teams/$teamId/manage': {
+      id: '/_authed/hackathons/$id/teams/$teamId/manage'
+      path: '/hackathons/$id/teams/$teamId/manage'
+      fullPath: '/hackathons/$id/teams/$teamId/manage'
+      preLoaderRoute: typeof AuthedHackathonsIdTeamsTeamIdManageRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/hackathons/$id/submissions/$submissionId/edit': {
+      id: '/_authed/hackathons/$id/submissions/$submissionId/edit'
+      path: '/hackathons/$id/submissions/$submissionId/edit'
+      fullPath: '/hackathons/$id/submissions/$submissionId/edit'
+      preLoaderRoute: typeof AuthedHackathonsIdSubmissionsSubmissionIdEditRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/hackathons/$id/problems/$problemId/edit': {
@@ -404,40 +926,92 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthedProfileRouteChildren {
+  AuthedProfilePreferencesRoute: typeof AuthedProfilePreferencesRoute
+}
+
+const AuthedProfileRouteChildren: AuthedProfileRouteChildren = {
+  AuthedProfilePreferencesRoute: AuthedProfilePreferencesRoute,
+}
+
+const AuthedProfileRouteWithChildren = AuthedProfileRoute._addFileChildren(
+  AuthedProfileRouteChildren,
+)
+
 interface AuthedRouteChildren {
   AuthedDashboardRoute: typeof AuthedDashboardRoute
-  AuthedProfileRoute: typeof AuthedProfileRoute
+  AuthedNotificationsRoute: typeof AuthedNotificationsRoute
+  AuthedProfileRoute: typeof AuthedProfileRouteWithChildren
   AuthedHackathonsNewRoute: typeof AuthedHackathonsNewRoute
   AuthedHackathonsIndexRoute: typeof AuthedHackathonsIndexRoute
+  AuthedHackathonsIdAnalyticsRoute: typeof AuthedHackathonsIdAnalyticsRoute
   AuthedHackathonsIdCategoriesRoute: typeof AuthedHackathonsIdCategoriesRoute
   AuthedHackathonsIdContentRoute: typeof AuthedHackathonsIdContentRoute
   AuthedHackathonsIdDashboardRoute: typeof AuthedHackathonsIdDashboardRoute
   AuthedHackathonsIdSettingsRoute: typeof AuthedHackathonsIdSettingsRoute
   AuthedHackathonsIdTeamRoute: typeof AuthedHackathonsIdTeamRoute
   AuthedHackathonsIdIndexRoute: typeof AuthedHackathonsIdIndexRoute
+  AuthedHackathonsIdCurateProblemsRoute: typeof AuthedHackathonsIdCurateProblemsRoute
+  AuthedHackathonsIdCurateQaRoute: typeof AuthedHackathonsIdCurateQaRoute
+  AuthedHackathonsIdCurateSolutionsRoute: typeof AuthedHackathonsIdCurateSolutionsRoute
+  AuthedHackathonsIdJudgingCategoryIdRoute: typeof AuthedHackathonsIdJudgingCategoryIdRoute
+  AuthedHackathonsIdJudgingAssignRoute: typeof AuthedHackathonsIdJudgingAssignRoute
   AuthedHackathonsIdProblemsNewRoute: typeof AuthedHackathonsIdProblemsNewRoute
+  AuthedHackathonsIdSubmissionsNewRoute: typeof AuthedHackathonsIdSubmissionsNewRoute
+  AuthedHackathonsIdTeamsJoinRoute: typeof AuthedHackathonsIdTeamsJoinRoute
+  AuthedHackathonsIdTeamsNewRoute: typeof AuthedHackathonsIdTeamsNewRoute
+  AuthedHackathonsIdJudgingIndexRoute: typeof AuthedHackathonsIdJudgingIndexRoute
   AuthedHackathonsIdProblemsIndexRoute: typeof AuthedHackathonsIdProblemsIndexRoute
+  AuthedHackathonsIdResultsIndexRoute: typeof AuthedHackathonsIdResultsIndexRoute
+  AuthedHackathonsIdTeamsIndexRoute: typeof AuthedHackathonsIdTeamsIndexRoute
   AuthedHackathonsIdProblemsProblemIdEditRoute: typeof AuthedHackathonsIdProblemsProblemIdEditRoute
+  AuthedHackathonsIdSubmissionsSubmissionIdEditRoute: typeof AuthedHackathonsIdSubmissionsSubmissionIdEditRoute
+  AuthedHackathonsIdTeamsTeamIdManageRoute: typeof AuthedHackathonsIdTeamsTeamIdManageRoute
   AuthedHackathonsIdProblemsProblemIdIndexRoute: typeof AuthedHackathonsIdProblemsProblemIdIndexRoute
+  AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute: typeof AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute
+  AuthedHackathonsIdTeamsTeamIdIndexRoute: typeof AuthedHackathonsIdTeamsTeamIdIndexRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedDashboardRoute: AuthedDashboardRoute,
-  AuthedProfileRoute: AuthedProfileRoute,
+  AuthedNotificationsRoute: AuthedNotificationsRoute,
+  AuthedProfileRoute: AuthedProfileRouteWithChildren,
   AuthedHackathonsNewRoute: AuthedHackathonsNewRoute,
   AuthedHackathonsIndexRoute: AuthedHackathonsIndexRoute,
+  AuthedHackathonsIdAnalyticsRoute: AuthedHackathonsIdAnalyticsRoute,
   AuthedHackathonsIdCategoriesRoute: AuthedHackathonsIdCategoriesRoute,
   AuthedHackathonsIdContentRoute: AuthedHackathonsIdContentRoute,
   AuthedHackathonsIdDashboardRoute: AuthedHackathonsIdDashboardRoute,
   AuthedHackathonsIdSettingsRoute: AuthedHackathonsIdSettingsRoute,
   AuthedHackathonsIdTeamRoute: AuthedHackathonsIdTeamRoute,
   AuthedHackathonsIdIndexRoute: AuthedHackathonsIdIndexRoute,
+  AuthedHackathonsIdCurateProblemsRoute: AuthedHackathonsIdCurateProblemsRoute,
+  AuthedHackathonsIdCurateQaRoute: AuthedHackathonsIdCurateQaRoute,
+  AuthedHackathonsIdCurateSolutionsRoute:
+    AuthedHackathonsIdCurateSolutionsRoute,
+  AuthedHackathonsIdJudgingCategoryIdRoute:
+    AuthedHackathonsIdJudgingCategoryIdRoute,
+  AuthedHackathonsIdJudgingAssignRoute: AuthedHackathonsIdJudgingAssignRoute,
   AuthedHackathonsIdProblemsNewRoute: AuthedHackathonsIdProblemsNewRoute,
+  AuthedHackathonsIdSubmissionsNewRoute: AuthedHackathonsIdSubmissionsNewRoute,
+  AuthedHackathonsIdTeamsJoinRoute: AuthedHackathonsIdTeamsJoinRoute,
+  AuthedHackathonsIdTeamsNewRoute: AuthedHackathonsIdTeamsNewRoute,
+  AuthedHackathonsIdJudgingIndexRoute: AuthedHackathonsIdJudgingIndexRoute,
   AuthedHackathonsIdProblemsIndexRoute: AuthedHackathonsIdProblemsIndexRoute,
+  AuthedHackathonsIdResultsIndexRoute: AuthedHackathonsIdResultsIndexRoute,
+  AuthedHackathonsIdTeamsIndexRoute: AuthedHackathonsIdTeamsIndexRoute,
   AuthedHackathonsIdProblemsProblemIdEditRoute:
     AuthedHackathonsIdProblemsProblemIdEditRoute,
+  AuthedHackathonsIdSubmissionsSubmissionIdEditRoute:
+    AuthedHackathonsIdSubmissionsSubmissionIdEditRoute,
+  AuthedHackathonsIdTeamsTeamIdManageRoute:
+    AuthedHackathonsIdTeamsTeamIdManageRoute,
   AuthedHackathonsIdProblemsProblemIdIndexRoute:
     AuthedHackathonsIdProblemsProblemIdIndexRoute,
+  AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute:
+    AuthedHackathonsIdSubmissionsSubmissionIdIndexRoute,
+  AuthedHackathonsIdTeamsTeamIdIndexRoute:
+    AuthedHackathonsIdTeamsTeamIdIndexRoute,
 }
 
 const AuthedRouteWithChildren =
@@ -449,7 +1023,26 @@ const rootRouteChildren: RootRouteChildren = {
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   InviteTokenRoute: InviteTokenRoute,
+  HIndexRoute: HIndexRoute,
+  HSlugAboutRoute: HSlugAboutRoute,
+  HackathonsSlugResultsRoute: HackathonsSlugResultsRoute,
+  HSlugIndexRoute: HSlugIndexRoute,
+  HSlugProblemsIndexRoute: HSlugProblemsIndexRoute,
+  HackathonsSlugSolutionsIndexRoute: HackathonsSlugSolutionsIndexRoute,
+  HSlugProblemsProblemIdIndexRoute: HSlugProblemsProblemIdIndexRoute,
+  HackathonsSlugSolutionsSubmissionIdIndexRoute:
+    HackathonsSlugSolutionsSubmissionIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
