@@ -76,17 +76,17 @@ function OrganiserDashboard({ hackathonId }: { hackathonId: string }) {
 				</CardHeader>
 				<CardContent className="flex flex-wrap gap-3">
 					<Button variant="outline" asChild>
-						<Link to="/hackathons/$id/team" params={{ id: hackathonId }}>
+						<Link to="/hackathons/$id/team" params={{ id: hackathonId } as never}>
 							Manage Team
 						</Link>
 					</Button>
 					<Button variant="outline" asChild>
-						<Link to="/hackathons/$id/settings" params={{ id: hackathonId }}>
+						<Link to="/hackathons/$id/settings" params={{ id: hackathonId } as never}>
 							Settings
 						</Link>
 					</Button>
 					<Button variant="outline" asChild>
-						<Link to="/hackathons/$id/categories" params={{ id: hackathonId }}>
+						<Link to="/hackathons/$id/categories" params={{ id: hackathonId } as never}>
 							Categories
 						</Link>
 					</Button>
@@ -160,7 +160,7 @@ function ParticipantDashboard({ hackathonId }: { hackathonId: string }) {
 							No submission yet.
 						</p>
 						<Button variant="outline" className="mt-3" asChild>
-							<Link to={`/hackathons/${hackathonId}/my-submission`}>
+							<Link to="/hackathons/$id/submissions/new" params={{ id: hackathonId }}>
 								View Submission
 							</Link>
 						</Button>
@@ -196,7 +196,7 @@ function CuratorDashboard({ hackathonId }: { hackathonId: string }) {
 				</CardHeader>
 				<CardContent>
 					<Button variant="outline" asChild>
-						<Link to={`/hackathons/${hackathonId}/curate-problems`}>
+						<Link to="/hackathons/$id/curate/problems" params={{ id: hackathonId }}>
 							Curate Problems
 						</Link>
 					</Button>

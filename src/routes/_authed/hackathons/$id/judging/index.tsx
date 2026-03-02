@@ -96,13 +96,17 @@ function JudgingDashboardPage() {
 						<div className="flex gap-2">
 							<Button variant="outline" asChild>
 								<Link
-									to={`/hackathons/${id}/judging/assign`}
+									to="/hackathons/$id/judging/assign"
+									params={{ id }}
 								>
 									Manage Assignments
 								</Link>
 							</Button>
 							<Button variant="outline" asChild>
-								<Link to={`/hackathons/${id}/results`}>
+								<Link
+									to="/hackathons/$id/results"
+									params={{ id }}
+								>
 									View Results
 								</Link>
 							</Button>
@@ -147,7 +151,8 @@ function JudgingDashboardPage() {
 										<CardContent>
 											<Button variant="outline" size="sm" asChild>
 												<Link
-													to={`/hackathons/${id}/judging/${cat.id}`}
+													to="/hackathons/$id/judging/$categoryId"
+													params={{ id, categoryId: cat.id }}
 												>
 													{catRankingCount > 0
 														? "Edit Rankings"

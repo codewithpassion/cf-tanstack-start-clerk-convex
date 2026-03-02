@@ -216,7 +216,7 @@ function CategoryJudgingPage() {
 					</div>
 					<Button variant="outline" asChild>
 						<Link
-							to="/_authed/hackathons/$id/judging/"
+							to="/hackathons/$id/judging"
 							params={{ id }}
 						>
 							Back to Judging
