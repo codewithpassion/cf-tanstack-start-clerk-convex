@@ -76,17 +76,17 @@ function OrganiserDashboard({ hackathonId }: { hackathonId: string }) {
 				</CardHeader>
 				<CardContent className="flex flex-wrap gap-3">
 					<Button variant="outline" asChild>
-						<Link to="/hackathons/$id/team" params={{ id: hackathonId } as never}>
+						<Link to="/hackathons/$id/team" params={{ id: hackathonId }}>
 							Manage Team
 						</Link>
 					</Button>
 					<Button variant="outline" asChild>
-						<Link to="/hackathons/$id/settings" params={{ id: hackathonId } as never}>
+						<Link to="/hackathons/$id/settings" params={{ id: hackathonId }}>
 							Settings
 						</Link>
 					</Button>
 					<Button variant="outline" asChild>
-						<Link to="/hackathons/$id/categories" params={{ id: hackathonId } as never}>
+						<Link to="/hackathons/$id/categories" params={{ id: hackathonId }}>
 							Categories
 						</Link>
 					</Button>
