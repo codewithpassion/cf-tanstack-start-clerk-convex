@@ -16,6 +16,7 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import { AiSearchBar } from "@/components/ai-search-bar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { OrgSwitcher } from "@/components/org-switcher";
 
@@ -61,6 +62,9 @@ export default function Header() {
 				</div>
 
 				<div className="flex items-center gap-2">
+					<SignedIn>
+						<AiSearchBar />
+					</SignedIn>
 					<ThemeToggle />
 					<SignedOut>
 						<SignInButton mode="modal">

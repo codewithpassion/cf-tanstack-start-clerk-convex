@@ -22,8 +22,10 @@ import { Route as AuthedOrgSlugSettingsIndexRouteImport } from './routes/_authed
 import { Route as AuthedOrgSlugInboxIndexRouteImport } from './routes/_authed/org/$slug/inbox/index'
 import { Route as AuthedOrgSlugSourcesSourceIdRouteImport } from './routes/_authed/org/$slug/sources/$sourceId'
 import { Route as AuthedOrgSlugSettingsMembersRouteImport } from './routes/_authed/org/$slug/settings/members'
+import { Route as AuthedOrgSlugSettingsGhostWriterRouteImport } from './routes/_authed/org/$slug/settings/ghost-writer'
 import { Route as AuthedOrgSlugInboxAddUrlRouteImport } from './routes/_authed/org/$slug/inbox/add-url'
 import { Route as AuthedOrgSlugInboxEntryIdRouteImport } from './routes/_authed/org/$slug/inbox/$entryId'
+import { Route as AuthedOrgSlugDraftsDraftIdRouteImport } from './routes/_authed/org/$slug/drafts/$draftId'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -92,6 +94,12 @@ const AuthedOrgSlugSettingsMembersRoute =
     path: '/settings/members',
     getParentRoute: () => AuthedOrgSlugRoute,
   } as any)
+const AuthedOrgSlugSettingsGhostWriterRoute =
+  AuthedOrgSlugSettingsGhostWriterRouteImport.update({
+    id: '/settings/ghost-writer',
+    path: '/settings/ghost-writer',
+    getParentRoute: () => AuthedOrgSlugRoute,
+  } as any)
 const AuthedOrgSlugInboxAddUrlRoute =
   AuthedOrgSlugInboxAddUrlRouteImport.update({
     id: '/inbox/add-url',
@@ -104,6 +112,12 @@ const AuthedOrgSlugInboxEntryIdRoute =
     path: '/inbox/$entryId',
     getParentRoute: () => AuthedOrgSlugRoute,
   } as any)
+const AuthedOrgSlugDraftsDraftIdRoute =
+  AuthedOrgSlugDraftsDraftIdRouteImport.update({
+    id: '/drafts/$draftId',
+    path: '/drafts/$draftId',
+    getParentRoute: () => AuthedOrgSlugRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -114,8 +128,10 @@ export interface FileRoutesByFullPath {
   '/org/$slug': typeof AuthedOrgSlugRouteWithChildren
   '/org/$slug/dashboard': typeof AuthedOrgSlugDashboardRoute
   '/org/$slug/sources': typeof AuthedOrgSlugSourcesRouteWithChildren
+  '/org/$slug/drafts/$draftId': typeof AuthedOrgSlugDraftsDraftIdRoute
   '/org/$slug/inbox/$entryId': typeof AuthedOrgSlugInboxEntryIdRoute
   '/org/$slug/inbox/add-url': typeof AuthedOrgSlugInboxAddUrlRoute
+  '/org/$slug/settings/ghost-writer': typeof AuthedOrgSlugSettingsGhostWriterRoute
   '/org/$slug/settings/members': typeof AuthedOrgSlugSettingsMembersRoute
   '/org/$slug/sources/$sourceId': typeof AuthedOrgSlugSourcesSourceIdRoute
   '/org/$slug/inbox': typeof AuthedOrgSlugInboxIndexRoute
@@ -130,8 +146,10 @@ export interface FileRoutesByTo {
   '/org/$slug': typeof AuthedOrgSlugRouteWithChildren
   '/org/$slug/dashboard': typeof AuthedOrgSlugDashboardRoute
   '/org/$slug/sources': typeof AuthedOrgSlugSourcesRouteWithChildren
+  '/org/$slug/drafts/$draftId': typeof AuthedOrgSlugDraftsDraftIdRoute
   '/org/$slug/inbox/$entryId': typeof AuthedOrgSlugInboxEntryIdRoute
   '/org/$slug/inbox/add-url': typeof AuthedOrgSlugInboxAddUrlRoute
+  '/org/$slug/settings/ghost-writer': typeof AuthedOrgSlugSettingsGhostWriterRoute
   '/org/$slug/settings/members': typeof AuthedOrgSlugSettingsMembersRoute
   '/org/$slug/sources/$sourceId': typeof AuthedOrgSlugSourcesSourceIdRoute
   '/org/$slug/inbox': typeof AuthedOrgSlugInboxIndexRoute
@@ -148,8 +166,10 @@ export interface FileRoutesById {
   '/_authed/org/$slug': typeof AuthedOrgSlugRouteWithChildren
   '/_authed/org/$slug/dashboard': typeof AuthedOrgSlugDashboardRoute
   '/_authed/org/$slug/sources': typeof AuthedOrgSlugSourcesRouteWithChildren
+  '/_authed/org/$slug/drafts/$draftId': typeof AuthedOrgSlugDraftsDraftIdRoute
   '/_authed/org/$slug/inbox/$entryId': typeof AuthedOrgSlugInboxEntryIdRoute
   '/_authed/org/$slug/inbox/add-url': typeof AuthedOrgSlugInboxAddUrlRoute
+  '/_authed/org/$slug/settings/ghost-writer': typeof AuthedOrgSlugSettingsGhostWriterRoute
   '/_authed/org/$slug/settings/members': typeof AuthedOrgSlugSettingsMembersRoute
   '/_authed/org/$slug/sources/$sourceId': typeof AuthedOrgSlugSourcesSourceIdRoute
   '/_authed/org/$slug/inbox/': typeof AuthedOrgSlugInboxIndexRoute
@@ -166,8 +186,10 @@ export interface FileRouteTypes {
     | '/org/$slug'
     | '/org/$slug/dashboard'
     | '/org/$slug/sources'
+    | '/org/$slug/drafts/$draftId'
     | '/org/$slug/inbox/$entryId'
     | '/org/$slug/inbox/add-url'
+    | '/org/$slug/settings/ghost-writer'
     | '/org/$slug/settings/members'
     | '/org/$slug/sources/$sourceId'
     | '/org/$slug/inbox'
@@ -182,8 +204,10 @@ export interface FileRouteTypes {
     | '/org/$slug'
     | '/org/$slug/dashboard'
     | '/org/$slug/sources'
+    | '/org/$slug/drafts/$draftId'
     | '/org/$slug/inbox/$entryId'
     | '/org/$slug/inbox/add-url'
+    | '/org/$slug/settings/ghost-writer'
     | '/org/$slug/settings/members'
     | '/org/$slug/sources/$sourceId'
     | '/org/$slug/inbox'
@@ -199,8 +223,10 @@ export interface FileRouteTypes {
     | '/_authed/org/$slug'
     | '/_authed/org/$slug/dashboard'
     | '/_authed/org/$slug/sources'
+    | '/_authed/org/$slug/drafts/$draftId'
     | '/_authed/org/$slug/inbox/$entryId'
     | '/_authed/org/$slug/inbox/add-url'
+    | '/_authed/org/$slug/settings/ghost-writer'
     | '/_authed/org/$slug/settings/members'
     | '/_authed/org/$slug/sources/$sourceId'
     | '/_authed/org/$slug/inbox/'
@@ -308,6 +334,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedOrgSlugSettingsMembersRouteImport
       parentRoute: typeof AuthedOrgSlugRoute
     }
+    '/_authed/org/$slug/settings/ghost-writer': {
+      id: '/_authed/org/$slug/settings/ghost-writer'
+      path: '/settings/ghost-writer'
+      fullPath: '/org/$slug/settings/ghost-writer'
+      preLoaderRoute: typeof AuthedOrgSlugSettingsGhostWriterRouteImport
+      parentRoute: typeof AuthedOrgSlugRoute
+    }
     '/_authed/org/$slug/inbox/add-url': {
       id: '/_authed/org/$slug/inbox/add-url'
       path: '/inbox/add-url'
@@ -320,6 +353,13 @@ declare module '@tanstack/react-router' {
       path: '/inbox/$entryId'
       fullPath: '/org/$slug/inbox/$entryId'
       preLoaderRoute: typeof AuthedOrgSlugInboxEntryIdRouteImport
+      parentRoute: typeof AuthedOrgSlugRoute
+    }
+    '/_authed/org/$slug/drafts/$draftId': {
+      id: '/_authed/org/$slug/drafts/$draftId'
+      path: '/drafts/$draftId'
+      fullPath: '/org/$slug/drafts/$draftId'
+      preLoaderRoute: typeof AuthedOrgSlugDraftsDraftIdRouteImport
       parentRoute: typeof AuthedOrgSlugRoute
     }
   }
@@ -339,8 +379,10 @@ const AuthedOrgSlugSourcesRouteWithChildren =
 interface AuthedOrgSlugRouteChildren {
   AuthedOrgSlugDashboardRoute: typeof AuthedOrgSlugDashboardRoute
   AuthedOrgSlugSourcesRoute: typeof AuthedOrgSlugSourcesRouteWithChildren
+  AuthedOrgSlugDraftsDraftIdRoute: typeof AuthedOrgSlugDraftsDraftIdRoute
   AuthedOrgSlugInboxEntryIdRoute: typeof AuthedOrgSlugInboxEntryIdRoute
   AuthedOrgSlugInboxAddUrlRoute: typeof AuthedOrgSlugInboxAddUrlRoute
+  AuthedOrgSlugSettingsGhostWriterRoute: typeof AuthedOrgSlugSettingsGhostWriterRoute
   AuthedOrgSlugSettingsMembersRoute: typeof AuthedOrgSlugSettingsMembersRoute
   AuthedOrgSlugInboxIndexRoute: typeof AuthedOrgSlugInboxIndexRoute
   AuthedOrgSlugSettingsIndexRoute: typeof AuthedOrgSlugSettingsIndexRoute
@@ -349,8 +391,10 @@ interface AuthedOrgSlugRouteChildren {
 const AuthedOrgSlugRouteChildren: AuthedOrgSlugRouteChildren = {
   AuthedOrgSlugDashboardRoute: AuthedOrgSlugDashboardRoute,
   AuthedOrgSlugSourcesRoute: AuthedOrgSlugSourcesRouteWithChildren,
+  AuthedOrgSlugDraftsDraftIdRoute: AuthedOrgSlugDraftsDraftIdRoute,
   AuthedOrgSlugInboxEntryIdRoute: AuthedOrgSlugInboxEntryIdRoute,
   AuthedOrgSlugInboxAddUrlRoute: AuthedOrgSlugInboxAddUrlRoute,
+  AuthedOrgSlugSettingsGhostWriterRoute: AuthedOrgSlugSettingsGhostWriterRoute,
   AuthedOrgSlugSettingsMembersRoute: AuthedOrgSlugSettingsMembersRoute,
   AuthedOrgSlugInboxIndexRoute: AuthedOrgSlugInboxIndexRoute,
   AuthedOrgSlugSettingsIndexRoute: AuthedOrgSlugSettingsIndexRoute,

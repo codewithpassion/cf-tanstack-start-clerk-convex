@@ -1,3 +1,4 @@
+import { type FunctionReference, makeFunctionReference } from "convex/server";
 import type { Id } from "./_generated/dataModel";
 import type { MutationCtx } from "./_generated/server";
 
@@ -106,6 +107,16 @@ export async function findOrCreateEntry(
 		originalUrl: args.originalUrl,
 		foundAt: now,
 	});
+
+	const embedRef = makeFunctionReference<"action">(
+		"ai/embeddings:embedEntry",
+	) as unknown as FunctionReference<
+		"action",
+		"internal",
+		{ entryId: Id<"entries"> },
+		void
+	>;
+	await ctx.scheduler.runAfter(0, embedRef, { entryId });
 
 	return { entryId, created: true };
 }

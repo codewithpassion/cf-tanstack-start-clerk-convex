@@ -1,7 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMutation, useQuery } from "convex/react";
+import { useConvex, useMutation, useQuery } from "convex/react";
+import {
+	makeFunctionReference,
+	type FunctionReference,
+} from "convex/server";
 import { ConvexError } from "convex/values";
-import { Plus, X } from "lucide-react";
+import { Plus, Sparkles, X } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 import { api } from "../../../../../../convex/_generated/api";
@@ -25,12 +29,20 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Spinner } from "@/components/ui/spinner";
+
+const generateDraftRef = makeFunctionReference<"action">(
+	"ai/draft:generateDraft",
+) as unknown as FunctionReference<
+	"action",
+	"public",
+	{
+		orgId: Id<"organizations">;
+		entryIds: Id<"entries">[];
+		title?: string;
+	},
+	{ draftId: Id<"drafts"> }
+>;
 
 const filtersSchema = z.object({
 	source: z.string().optional(),
@@ -100,9 +112,41 @@ function InboxPage() {
 	const data = useQuery(api.entries.list, queryArgs);
 	const markUsed = useMutation(api.entries.markUsed);
 	const setArchived = useMutation(api.entries.setArchived);
+	const convex = useConvex();
 
 	const [selected, setSelected] = useState<Set<string>>(new Set());
 	const [rowError, setRowError] = useState<string | null>(null);
+	const [drafting, setDrafting] = useState(false);
+	const [draftError, setDraftError] = useState<string | null>(null);
+
+	const onDraftNewsletter = async () => {
+		if (selected.size === 0 || drafting) return;
+		setDraftError(null);
+		setDrafting(true);
+		try {
+			const entryIds = Array.from(selected) as Id<"entries">[];
+			const { draftId } = await convex.action(generateDraftRef, {
+				orgId: org.orgId,
+				entryIds,
+			});
+			navigate({
+				to: "/org/$slug/drafts/$draftId",
+				params: { slug: org.slug, draftId },
+			});
+		} catch (err) {
+			const message =
+				err instanceof ConvexError
+					? typeof err.data === "string"
+						? err.data
+						: "Failed to draft"
+					: err instanceof Error
+						? err.message
+						: "Failed to draft";
+			setDraftError(message);
+		} finally {
+			setDrafting(false);
+		}
+	};
 
 	const update = useCallback(
 		(next: Partial<Filters>) => {
@@ -173,19 +217,15 @@ function InboxPage() {
 					</p>
 				</div>
 				<div className="flex items-center gap-2">
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<span>
-									<Button variant="outline" disabled>
-										Draft newsletter
-										{selected.size > 0 && ` (${selected.size})`}
-									</Button>
-								</span>
-							</TooltipTrigger>
-							<TooltipContent>Coming in Phase 3</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+					<Button
+						variant="outline"
+						onClick={onDraftNewsletter}
+						disabled={selected.size === 0 || drafting}
+					>
+						{drafting ? <Spinner /> : <Sparkles className="size-4" />}
+						Draft newsletter
+						{selected.size > 0 && ` (${selected.size})`}
+					</Button>
 					<Button asChild>
 						<Link to="/org/$slug/inbox/add-url" params={{ slug: org.slug }}>
 							<Plus className="size-4" />
@@ -292,6 +332,9 @@ function InboxPage() {
 
 			{rowError && (
 				<p className="text-sm text-destructive">{rowError}</p>
+			)}
+			{draftError && (
+				<p className="text-sm text-destructive">{draftError}</p>
 			)}
 
 			{data === undefined ? (

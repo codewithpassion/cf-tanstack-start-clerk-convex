@@ -87,7 +87,12 @@ export default defineSchema({
 		.index("by_org_fetchedAt", ["orgId", "fetchedAt"])
 		.index("by_org_canonicalUrl", ["orgId", "canonicalUrl"])
 		.index("by_org_used", ["orgId", "used"])
-		.index("by_org_archived", ["orgId", "archived"]),
+		.index("by_org_archived", ["orgId", "archived"])
+		.vectorIndex("by_embedding", {
+			vectorField: "embedding",
+			dimensions: 1024,
+			filterFields: ["orgId", "used", "archived"],
+		}),
 
 	entrySources: defineTable({
 		entryId: v.id("entries"),
@@ -128,6 +133,9 @@ export default defineSchema({
 	ghostWriterProfiles: defineTable({
 		orgId: v.id("organizations"),
 		summary: v.string(),
+		voiceAttributes: v.array(v.string()),
+		doExamples: v.array(v.string()),
+		dontExamples: v.array(v.string()),
 		generatedAt: v.number(),
 		model: v.string(),
 	}).index("by_org", ["orgId"]),

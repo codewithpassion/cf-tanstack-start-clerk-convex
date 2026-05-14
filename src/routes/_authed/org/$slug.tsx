@@ -1,6 +1,13 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { Inbox, LayoutDashboard, Rss, Settings, Users } from "lucide-react";
+import {
+	Inbox,
+	LayoutDashboard,
+	Rss,
+	Settings,
+	Sparkles,
+	Users,
+} from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { OrgProvider } from "@/contexts/org-context";
@@ -78,6 +85,13 @@ function OrgLayout() {
 						>
 							Members
 						</OrgNavLink>
+						<OrgNavLink
+							to="/org/$slug/settings/ghost-writer"
+							params={{ slug }}
+							icon={<Sparkles className="h-4 w-4" />}
+						>
+							Ghost writer
+						</OrgNavLink>
 					</nav>
 				</aside>
 				<main className="flex-1 min-w-0">
@@ -99,7 +113,8 @@ function OrgNavLink({
 		| "/org/$slug/inbox"
 		| "/org/$slug/sources"
 		| "/org/$slug/settings"
-		| "/org/$slug/settings/members";
+		| "/org/$slug/settings/members"
+		| "/org/$slug/settings/ghost-writer";
 	params: { slug: string };
 	icon: React.ReactNode;
 	children: React.ReactNode;
