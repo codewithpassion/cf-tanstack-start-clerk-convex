@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { LayoutDashboard, Settings, Users } from "lucide-react";
+import { Inbox, LayoutDashboard, Rss, Settings, Users } from "lucide-react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { OrgProvider } from "@/contexts/org-context";
@@ -51,6 +51,20 @@ function OrgLayout() {
 							Dashboard
 						</OrgNavLink>
 						<OrgNavLink
+							to="/org/$slug/inbox"
+							params={{ slug }}
+							icon={<Inbox className="h-4 w-4" />}
+						>
+							Inbox
+						</OrgNavLink>
+						<OrgNavLink
+							to="/org/$slug/sources"
+							params={{ slug }}
+							icon={<Rss className="h-4 w-4" />}
+						>
+							Sources
+						</OrgNavLink>
+						<OrgNavLink
 							to="/org/$slug/settings"
 							params={{ slug }}
 							icon={<Settings className="h-4 w-4" />}
@@ -80,7 +94,12 @@ function OrgNavLink({
 	icon,
 	children,
 }: {
-	to: "/org/$slug/dashboard" | "/org/$slug/settings" | "/org/$slug/settings/members";
+	to:
+		| "/org/$slug/dashboard"
+		| "/org/$slug/inbox"
+		| "/org/$slug/sources"
+		| "/org/$slug/settings"
+		| "/org/$slug/settings/members";
 	params: { slug: string };
 	icon: React.ReactNode;
 	children: React.ReactNode;

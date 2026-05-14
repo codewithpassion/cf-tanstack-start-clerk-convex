@@ -16,9 +16,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingCreateOrgRouteImport } from './routes/onboarding/create-org'
 import { Route as AuthedOrgsRouteImport } from './routes/_authed/orgs'
 import { Route as AuthedOrgSlugRouteImport } from './routes/_authed/org/$slug'
+import { Route as AuthedOrgSlugSourcesRouteImport } from './routes/_authed/org/$slug/sources'
 import { Route as AuthedOrgSlugDashboardRouteImport } from './routes/_authed/org/$slug/dashboard'
 import { Route as AuthedOrgSlugSettingsIndexRouteImport } from './routes/_authed/org/$slug/settings/index'
+import { Route as AuthedOrgSlugInboxIndexRouteImport } from './routes/_authed/org/$slug/inbox/index'
+import { Route as AuthedOrgSlugSourcesSourceIdRouteImport } from './routes/_authed/org/$slug/sources/$sourceId'
 import { Route as AuthedOrgSlugSettingsMembersRouteImport } from './routes/_authed/org/$slug/settings/members'
+import { Route as AuthedOrgSlugInboxAddUrlRouteImport } from './routes/_authed/org/$slug/inbox/add-url'
+import { Route as AuthedOrgSlugInboxEntryIdRouteImport } from './routes/_authed/org/$slug/inbox/$entryId'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -54,6 +59,11 @@ const AuthedOrgSlugRoute = AuthedOrgSlugRouteImport.update({
   path: '/org/$slug',
   getParentRoute: () => AuthedRoute,
 } as any)
+const AuthedOrgSlugSourcesRoute = AuthedOrgSlugSourcesRouteImport.update({
+  id: '/sources',
+  path: '/sources',
+  getParentRoute: () => AuthedOrgSlugRoute,
+} as any)
 const AuthedOrgSlugDashboardRoute = AuthedOrgSlugDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -65,10 +75,33 @@ const AuthedOrgSlugSettingsIndexRoute =
     path: '/settings/',
     getParentRoute: () => AuthedOrgSlugRoute,
   } as any)
+const AuthedOrgSlugInboxIndexRoute = AuthedOrgSlugInboxIndexRouteImport.update({
+  id: '/inbox/',
+  path: '/inbox/',
+  getParentRoute: () => AuthedOrgSlugRoute,
+} as any)
+const AuthedOrgSlugSourcesSourceIdRoute =
+  AuthedOrgSlugSourcesSourceIdRouteImport.update({
+    id: '/$sourceId',
+    path: '/$sourceId',
+    getParentRoute: () => AuthedOrgSlugSourcesRoute,
+  } as any)
 const AuthedOrgSlugSettingsMembersRoute =
   AuthedOrgSlugSettingsMembersRouteImport.update({
     id: '/settings/members',
     path: '/settings/members',
+    getParentRoute: () => AuthedOrgSlugRoute,
+  } as any)
+const AuthedOrgSlugInboxAddUrlRoute =
+  AuthedOrgSlugInboxAddUrlRouteImport.update({
+    id: '/inbox/add-url',
+    path: '/inbox/add-url',
+    getParentRoute: () => AuthedOrgSlugRoute,
+  } as any)
+const AuthedOrgSlugInboxEntryIdRoute =
+  AuthedOrgSlugInboxEntryIdRouteImport.update({
+    id: '/inbox/$entryId',
+    path: '/inbox/$entryId',
     getParentRoute: () => AuthedOrgSlugRoute,
   } as any)
 
@@ -80,7 +113,12 @@ export interface FileRoutesByFullPath {
   '/onboarding/create-org': typeof OnboardingCreateOrgRoute
   '/org/$slug': typeof AuthedOrgSlugRouteWithChildren
   '/org/$slug/dashboard': typeof AuthedOrgSlugDashboardRoute
+  '/org/$slug/sources': typeof AuthedOrgSlugSourcesRouteWithChildren
+  '/org/$slug/inbox/$entryId': typeof AuthedOrgSlugInboxEntryIdRoute
+  '/org/$slug/inbox/add-url': typeof AuthedOrgSlugInboxAddUrlRoute
   '/org/$slug/settings/members': typeof AuthedOrgSlugSettingsMembersRoute
+  '/org/$slug/sources/$sourceId': typeof AuthedOrgSlugSourcesSourceIdRoute
+  '/org/$slug/inbox': typeof AuthedOrgSlugInboxIndexRoute
   '/org/$slug/settings': typeof AuthedOrgSlugSettingsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -91,7 +129,12 @@ export interface FileRoutesByTo {
   '/onboarding/create-org': typeof OnboardingCreateOrgRoute
   '/org/$slug': typeof AuthedOrgSlugRouteWithChildren
   '/org/$slug/dashboard': typeof AuthedOrgSlugDashboardRoute
+  '/org/$slug/sources': typeof AuthedOrgSlugSourcesRouteWithChildren
+  '/org/$slug/inbox/$entryId': typeof AuthedOrgSlugInboxEntryIdRoute
+  '/org/$slug/inbox/add-url': typeof AuthedOrgSlugInboxAddUrlRoute
   '/org/$slug/settings/members': typeof AuthedOrgSlugSettingsMembersRoute
+  '/org/$slug/sources/$sourceId': typeof AuthedOrgSlugSourcesSourceIdRoute
+  '/org/$slug/inbox': typeof AuthedOrgSlugInboxIndexRoute
   '/org/$slug/settings': typeof AuthedOrgSlugSettingsIndexRoute
 }
 export interface FileRoutesById {
@@ -104,7 +147,12 @@ export interface FileRoutesById {
   '/onboarding/create-org': typeof OnboardingCreateOrgRoute
   '/_authed/org/$slug': typeof AuthedOrgSlugRouteWithChildren
   '/_authed/org/$slug/dashboard': typeof AuthedOrgSlugDashboardRoute
+  '/_authed/org/$slug/sources': typeof AuthedOrgSlugSourcesRouteWithChildren
+  '/_authed/org/$slug/inbox/$entryId': typeof AuthedOrgSlugInboxEntryIdRoute
+  '/_authed/org/$slug/inbox/add-url': typeof AuthedOrgSlugInboxAddUrlRoute
   '/_authed/org/$slug/settings/members': typeof AuthedOrgSlugSettingsMembersRoute
+  '/_authed/org/$slug/sources/$sourceId': typeof AuthedOrgSlugSourcesSourceIdRoute
+  '/_authed/org/$slug/inbox/': typeof AuthedOrgSlugInboxIndexRoute
   '/_authed/org/$slug/settings/': typeof AuthedOrgSlugSettingsIndexRoute
 }
 export interface FileRouteTypes {
@@ -117,7 +165,12 @@ export interface FileRouteTypes {
     | '/onboarding/create-org'
     | '/org/$slug'
     | '/org/$slug/dashboard'
+    | '/org/$slug/sources'
+    | '/org/$slug/inbox/$entryId'
+    | '/org/$slug/inbox/add-url'
     | '/org/$slug/settings/members'
+    | '/org/$slug/sources/$sourceId'
+    | '/org/$slug/inbox'
     | '/org/$slug/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,7 +181,12 @@ export interface FileRouteTypes {
     | '/onboarding/create-org'
     | '/org/$slug'
     | '/org/$slug/dashboard'
+    | '/org/$slug/sources'
+    | '/org/$slug/inbox/$entryId'
+    | '/org/$slug/inbox/add-url'
     | '/org/$slug/settings/members'
+    | '/org/$slug/sources/$sourceId'
+    | '/org/$slug/inbox'
     | '/org/$slug/settings'
   id:
     | '__root__'
@@ -140,7 +198,12 @@ export interface FileRouteTypes {
     | '/onboarding/create-org'
     | '/_authed/org/$slug'
     | '/_authed/org/$slug/dashboard'
+    | '/_authed/org/$slug/sources'
+    | '/_authed/org/$slug/inbox/$entryId'
+    | '/_authed/org/$slug/inbox/add-url'
     | '/_authed/org/$slug/settings/members'
+    | '/_authed/org/$slug/sources/$sourceId'
+    | '/_authed/org/$slug/inbox/'
     | '/_authed/org/$slug/settings/'
   fileRoutesById: FileRoutesById
 }
@@ -203,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedOrgSlugRouteImport
       parentRoute: typeof AuthedRoute
     }
+    '/_authed/org/$slug/sources': {
+      id: '/_authed/org/$slug/sources'
+      path: '/sources'
+      fullPath: '/org/$slug/sources'
+      preLoaderRoute: typeof AuthedOrgSlugSourcesRouteImport
+      parentRoute: typeof AuthedOrgSlugRoute
+    }
     '/_authed/org/$slug/dashboard': {
       id: '/_authed/org/$slug/dashboard'
       path: '/dashboard'
@@ -217,6 +287,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedOrgSlugSettingsIndexRouteImport
       parentRoute: typeof AuthedOrgSlugRoute
     }
+    '/_authed/org/$slug/inbox/': {
+      id: '/_authed/org/$slug/inbox/'
+      path: '/inbox'
+      fullPath: '/org/$slug/inbox'
+      preLoaderRoute: typeof AuthedOrgSlugInboxIndexRouteImport
+      parentRoute: typeof AuthedOrgSlugRoute
+    }
+    '/_authed/org/$slug/sources/$sourceId': {
+      id: '/_authed/org/$slug/sources/$sourceId'
+      path: '/$sourceId'
+      fullPath: '/org/$slug/sources/$sourceId'
+      preLoaderRoute: typeof AuthedOrgSlugSourcesSourceIdRouteImport
+      parentRoute: typeof AuthedOrgSlugSourcesRoute
+    }
     '/_authed/org/$slug/settings/members': {
       id: '/_authed/org/$slug/settings/members'
       path: '/settings/members'
@@ -224,18 +308,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthedOrgSlugSettingsMembersRouteImport
       parentRoute: typeof AuthedOrgSlugRoute
     }
+    '/_authed/org/$slug/inbox/add-url': {
+      id: '/_authed/org/$slug/inbox/add-url'
+      path: '/inbox/add-url'
+      fullPath: '/org/$slug/inbox/add-url'
+      preLoaderRoute: typeof AuthedOrgSlugInboxAddUrlRouteImport
+      parentRoute: typeof AuthedOrgSlugRoute
+    }
+    '/_authed/org/$slug/inbox/$entryId': {
+      id: '/_authed/org/$slug/inbox/$entryId'
+      path: '/inbox/$entryId'
+      fullPath: '/org/$slug/inbox/$entryId'
+      preLoaderRoute: typeof AuthedOrgSlugInboxEntryIdRouteImport
+      parentRoute: typeof AuthedOrgSlugRoute
+    }
   }
 }
 
+interface AuthedOrgSlugSourcesRouteChildren {
+  AuthedOrgSlugSourcesSourceIdRoute: typeof AuthedOrgSlugSourcesSourceIdRoute
+}
+
+const AuthedOrgSlugSourcesRouteChildren: AuthedOrgSlugSourcesRouteChildren = {
+  AuthedOrgSlugSourcesSourceIdRoute: AuthedOrgSlugSourcesSourceIdRoute,
+}
+
+const AuthedOrgSlugSourcesRouteWithChildren =
+  AuthedOrgSlugSourcesRoute._addFileChildren(AuthedOrgSlugSourcesRouteChildren)
+
 interface AuthedOrgSlugRouteChildren {
   AuthedOrgSlugDashboardRoute: typeof AuthedOrgSlugDashboardRoute
+  AuthedOrgSlugSourcesRoute: typeof AuthedOrgSlugSourcesRouteWithChildren
+  AuthedOrgSlugInboxEntryIdRoute: typeof AuthedOrgSlugInboxEntryIdRoute
+  AuthedOrgSlugInboxAddUrlRoute: typeof AuthedOrgSlugInboxAddUrlRoute
   AuthedOrgSlugSettingsMembersRoute: typeof AuthedOrgSlugSettingsMembersRoute
+  AuthedOrgSlugInboxIndexRoute: typeof AuthedOrgSlugInboxIndexRoute
   AuthedOrgSlugSettingsIndexRoute: typeof AuthedOrgSlugSettingsIndexRoute
 }
 
 const AuthedOrgSlugRouteChildren: AuthedOrgSlugRouteChildren = {
   AuthedOrgSlugDashboardRoute: AuthedOrgSlugDashboardRoute,
+  AuthedOrgSlugSourcesRoute: AuthedOrgSlugSourcesRouteWithChildren,
+  AuthedOrgSlugInboxEntryIdRoute: AuthedOrgSlugInboxEntryIdRoute,
+  AuthedOrgSlugInboxAddUrlRoute: AuthedOrgSlugInboxAddUrlRoute,
   AuthedOrgSlugSettingsMembersRoute: AuthedOrgSlugSettingsMembersRoute,
+  AuthedOrgSlugInboxIndexRoute: AuthedOrgSlugInboxIndexRoute,
   AuthedOrgSlugSettingsIndexRoute: AuthedOrgSlugSettingsIndexRoute,
 }
 
