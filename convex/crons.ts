@@ -12,4 +12,11 @@ crons.cron(
 	{},
 );
 
+crons.cron(
+	"auto-draft-ticker",
+	"*/5 * * * *",
+	makeFunctionReference<"mutation">("autoDrafts:runDueAutoDrafts"),
+	{},
+);
+
 export default crons;

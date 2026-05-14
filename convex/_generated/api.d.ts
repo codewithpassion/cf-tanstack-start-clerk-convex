@@ -16,6 +16,7 @@ import type {
 } from "convex/server";
 
 import type * as auth from "../auth.js";
+import type * as autoDrafts from "../autoDrafts.js";
 import type * as drafts from "../drafts.js";
 import type * as entries from "../entries.js";
 import type * as ghostWriter from "../ghostWriter.js";
@@ -38,6 +39,7 @@ import type * as users from "../users.js";
 // map because the UI consumes them via `useQuery`/`useMutation`/`useAction`.
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  autoDrafts: typeof autoDrafts;
   drafts: typeof drafts;
   entries: typeof entries;
   ghostWriter: typeof ghostWriter;

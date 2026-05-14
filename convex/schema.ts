@@ -168,6 +168,7 @@ export default defineSchema({
 		orgId: v.id("organizations"),
 		enabled: v.boolean(),
 		cron: v.string(),
+		timezone: v.optional(v.string()),
 		lastRunAt: v.optional(v.number()),
 		createdByUserId: v.id("users"),
 	}).index("by_org", ["orgId"]),

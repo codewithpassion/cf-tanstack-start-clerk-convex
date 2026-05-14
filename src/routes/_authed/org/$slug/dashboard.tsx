@@ -39,6 +39,10 @@ function OrgDashboard() {
 		orgId: org.orgId,
 		sinceMs: 24 * 60 * 60 * 1000,
 	});
+	const draftsForReview = useQuery(api.drafts.recentForReview, {
+		orgId: org.orgId,
+		limit: 5,
+	});
 
 	const counts = {
 		healthy: sources?.filter((s) => s.health === "healthy").length ?? 0,
@@ -229,23 +233,97 @@ function OrgDashboard() {
 
 				<Card>
 					<CardHeader>
-						<div className="flex items-center justify-between">
-							<div className="flex items-center gap-2">
-								<FileText className="h-5 w-5" />
-								<CardTitle className="text-base">
-									Drafts & auto-drafts
-								</CardTitle>
-							</div>
-							<Badge variant="secondary">Phase 4</Badge>
+						<div className="flex items-center gap-2">
+							<FileText className="h-5 w-5" />
+							<CardTitle className="text-base">Drafts</CardTitle>
 						</div>
 					</CardHeader>
 					<CardContent>
 						<p className="text-sm text-muted-foreground">
-							Coming in Phase 4.
+							Manage and finalize newsletter drafts.
 						</p>
+						<Button variant="link" size="sm" className="px-0 mt-2" asChild>
+							<Link to="/org/$slug/drafts" params={{ slug: org.slug }}>
+								Open drafts →
+							</Link>
+						</Button>
+						{isAdmin && (
+							<div>
+								<Button
+									variant="link"
+									size="sm"
+									className="px-0 -mt-1"
+									asChild
+								>
+									<Link
+										to="/org/$slug/settings/auto-draft"
+										params={{ slug: org.slug }}
+									>
+										Auto-draft schedule →
+									</Link>
+								</Button>
+							</div>
+						)}
 					</CardContent>
 				</Card>
 			</div>
+
+			<Card>
+				<CardHeader>
+					<div className="flex items-center gap-2">
+						<FileText className="h-5 w-5" />
+						<CardTitle className="text-base">
+							Drafts waiting for review
+						</CardTitle>
+					</div>
+				</CardHeader>
+				<CardContent>
+					{draftsForReview === undefined ? (
+						<p className="text-sm text-muted-foreground">Loading…</p>
+					) : draftsForReview.length === 0 ? (
+						<p className="text-sm text-muted-foreground">
+							No drafts waiting — generate one from the inbox or wait for the
+							auto-draft schedule.
+						</p>
+					) : (
+						<ul className="divide-y">
+							{draftsForReview.map((d) => (
+								<li
+									key={d._id}
+									className="flex items-center justify-between gap-3 py-2"
+								>
+									<div className="min-w-0">
+										<Link
+											to="/org/$slug/drafts/$draftId"
+											params={{ slug: org.slug, draftId: d._id }}
+											className="font-medium hover:underline truncate block"
+										>
+											{d.title}
+										</Link>
+										<p className="text-xs text-muted-foreground">
+											{formatDistanceToNow(new Date(d.createdAt), {
+												addSuffix: true,
+											})}
+											{" · "}
+											<Badge variant="secondary" className="text-xs">
+												{d.status}
+											</Badge>
+										</p>
+									</div>
+									<Button asChild size="sm" variant="outline">
+										<Link
+											to="/org/$slug/drafts/$draftId"
+											params={{ slug: org.slug, draftId: d._id }}
+										>
+											Open
+										</Link>
+									</Button>
+								</li>
+							))}
+						</ul>
+					)}
+				</CardContent>
+			</Card>
 		</div>
 	);
 }

@@ -5,7 +5,7 @@ import {
 	SignInButton,
 	UserButton,
 } from "@clerk/tanstack-react-start";
-import { Home, Menu } from "lucide-react";
+import { FileText, Home, Menu } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,8 +19,10 @@ import { Separator } from "@/components/ui/separator";
 import { AiSearchBar } from "@/components/ai-search-bar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { OrgSwitcher } from "@/components/org-switcher";
+import { useMaybeOrg } from "@/contexts/org-context";
 
 export default function Header() {
+	const org = useMaybeOrg();
 	return (
 		<header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div className="flex h-14 items-center justify-between px-4">
@@ -45,6 +47,20 @@ export default function Header() {
 									<NavLink to="/orgs" icon={<Home className="h-4 w-4" />}>
 										My organizations
 									</NavLink>
+									{org && (
+										<Link
+											to="/org/$slug/drafts"
+											params={{ slug: org.slug }}
+											className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground hover:bg-accent"
+											activeProps={{
+												className:
+													"flex items-center gap-3 rounded-lg px-3 py-2 bg-accent text-accent-foreground",
+											}}
+										>
+											<FileText className="h-4 w-4" />
+											<span>Drafts</span>
+										</Link>
+									)}
 								</SignedIn>
 							</nav>
 						</SheetContent>
@@ -58,6 +74,20 @@ export default function Header() {
 						<div className="ml-4 hidden md:block">
 							<OrgSwitcher />
 						</div>
+						{org && (
+							<nav className="hidden md:flex items-center gap-1 ml-2">
+								<Button variant="ghost" size="sm" asChild>
+									<Link
+										to="/org/$slug/drafts"
+										params={{ slug: org.slug }}
+										activeProps={{ className: "bg-accent" }}
+									>
+										<FileText className="h-4 w-4 mr-1" />
+										Drafts
+									</Link>
+								</Button>
+							</nav>
+						)}
 					</SignedIn>
 				</div>
 
