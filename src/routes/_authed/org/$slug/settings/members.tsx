@@ -14,6 +14,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyTitle,
+} from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -159,10 +165,20 @@ function MembersPage() {
 					)}
 					{members === undefined ? (
 						<p className="text-sm text-muted-foreground">Loading...</p>
-					) : members.length === 0 ? (
-						<p className="text-sm text-muted-foreground">No members yet.</p>
 					) : (
-						<ul className="divide-y">
+						<>
+							{members.length <= 1 && (
+								<Empty className="mb-3">
+									<EmptyHeader>
+										<EmptyTitle>Just you so far</EmptyTitle>
+										<EmptyDescription>
+											It's just you in this organization. Invite a teammate to
+											collaborate.
+										</EmptyDescription>
+									</EmptyHeader>
+								</Empty>
+							)}
+							<ul className="divide-y">
 							{members.map((m) => (
 								<li
 									key={m._id}
@@ -208,6 +224,7 @@ function MembersPage() {
 								</li>
 							))}
 						</ul>
+						</>
 					)}
 				</CardContent>
 			</Card>

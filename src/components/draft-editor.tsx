@@ -8,6 +8,7 @@ import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
 import { useOrg } from "@/contexts/org-context";
 import { draftStatusLabel, draftStatusVariant } from "@/lib/draft-status";
+import { useKeyboardShortcuts } from "@/lib/keyboard-shortcuts";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
 	AlertDialog,
@@ -48,6 +49,7 @@ export function DraftEditor({ draft }: { draft: DraftWithEntries }) {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [finalizing, setFinalizing] = useState(false);
 	const [reopening, setReopening] = useState(false);
+	const [finalizeDialogOpen, setFinalizeDialogOpen] = useState(false);
 	const [mounted, setMounted] = useState(false);
 	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const lastSyncedBody = useRef(draft.body);
@@ -153,6 +155,40 @@ export function DraftEditor({ draft }: { draft: DraftWithEntries }) {
 		}
 	};
 
+	const forceSave = async () => {
+		if (!editable) return;
+		if (saveTimer.current) {
+			clearTimeout(saveTimer.current);
+			saveTimer.current = null;
+		}
+		setSaveState("saving");
+		try {
+			await update({ orgId: org.orgId, draftId, body, title });
+			lastSyncedBody.current = body;
+			lastSyncedTitle.current = title;
+			setSaveState("saved");
+			setErrorMessage(null);
+		} catch (err) {
+			setSaveState("error");
+			setErrorMessage(
+				err instanceof ConvexError
+					? typeof err.data === "string"
+						? err.data
+						: "Failed to save"
+					: err instanceof Error
+						? err.message
+						: "Failed to save",
+			);
+		}
+	};
+
+	useKeyboardShortcuts({
+		"mod+s": () => {
+			void forceSave();
+		},
+		"mod+enter": editable ? () => setFinalizeDialogOpen(true) : undefined,
+	});
+
 	const onReopen = async () => {
 		setReopening(true);
 		try {
@@ -191,7 +227,10 @@ export function DraftEditor({ draft }: { draft: DraftWithEntries }) {
 						{draftStatusLabel(draft.status)}
 					</Badge>
 					{editable && (
-						<AlertDialog>
+						<AlertDialog
+							open={finalizeDialogOpen}
+							onOpenChange={setFinalizeDialogOpen}
+						>
 							<AlertDialogTrigger asChild>
 								<Button size="sm" disabled={finalizing || saveState === "saving"}>
 									{finalizing ? (

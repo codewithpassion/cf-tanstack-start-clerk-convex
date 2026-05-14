@@ -49,7 +49,7 @@ function OrgsPage() {
 						</EmptyMedia>
 						<EmptyTitle>No organizations yet</EmptyTitle>
 						<EmptyDescription>
-							Create your first organization to start aggregating news and drafting newsletters.
+							You're not in any organization yet. Create one to get started.
 						</EmptyDescription>
 					</EmptyHeader>
 					<EmptyContent>

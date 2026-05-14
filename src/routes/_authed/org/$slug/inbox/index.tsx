@@ -6,11 +6,12 @@ import {
 } from "convex/server";
 import { ConvexError } from "convex/values";
 import { Plus, Sparkles, X } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { api } from "../../../../../../convex/_generated/api";
 import type { Id } from "../../../../../../convex/_generated/dataModel";
 import { useOrg } from "@/contexts/org-context";
+import { useKeyboardShortcuts } from "@/lib/keyboard-shortcuts";
 import { EntryRow } from "@/components/entry-row";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -115,6 +116,7 @@ function InboxPage() {
 	const convex = useConvex();
 
 	const [selected, setSelected] = useState<Set<string>>(new Set());
+	const [highlightIndex, setHighlightIndex] = useState(0);
 	const [rowError, setRowError] = useState<string | null>(null);
 	const [drafting, setDrafting] = useState(false);
 	const [draftError, setDraftError] = useState<string | null>(null);
@@ -206,6 +208,43 @@ function InboxPage() {
 		params.archived !== "hide" ||
 		!!params.from ||
 		!!params.to;
+
+	useEffect(() => {
+		if (entries.length === 0) {
+			setHighlightIndex(0);
+		} else if (highlightIndex >= entries.length) {
+			setHighlightIndex(entries.length - 1);
+		}
+	}, [entries.length, highlightIndex]);
+
+	const highlighted = entries[highlightIndex];
+
+	useKeyboardShortcuts(
+		{
+			j: () => {
+				setHighlightIndex((i) =>
+					Math.min(i + 1, Math.max(entries.length - 1, 0)),
+				);
+			},
+			k: () => {
+				setHighlightIndex((i) => Math.max(i - 1, 0));
+			},
+			u: highlighted
+				? () => onToggleUsed(highlighted._id, !highlighted.used)
+				: undefined,
+			e: highlighted
+				? () => onToggleArchived(highlighted._id, !highlighted.archived)
+				: undefined,
+			enter: highlighted
+				? () =>
+						navigate({
+							to: "/org/$slug/inbox/$entryId",
+							params: { slug: org.slug, entryId: highlighted._id },
+						})
+				: undefined,
+		},
+		{ enabled: entries.length > 0 },
+	);
 
 	return (
 		<div className="space-y-4">
@@ -346,11 +385,13 @@ function InboxPage() {
 			) : entries.length === 0 ? (
 				<Empty>
 					<EmptyHeader>
-						<EmptyTitle>No entries yet</EmptyTitle>
+						<EmptyTitle>
+							{filtersActive ? "No matching entries" : "No news yet"}
+						</EmptyTitle>
 						<EmptyDescription>
 							{filtersActive
 								? "Try clearing filters."
-								: "Add a source or paste a URL to get started."}
+								: "No news yet. Add a source or paste a URL."}
 						</EmptyDescription>
 					</EmptyHeader>
 				</Empty>
@@ -358,12 +399,13 @@ function InboxPage() {
 				<Card>
 					<CardContent className="p-0">
 						<ul>
-							{entries.map((e) => (
+							{entries.map((e, i) => (
 								<EntryRow
 									key={e._id}
 									entry={e}
 									orgSlug={org.slug}
 									selected={selected.has(e._id)}
+									highlighted={i === highlightIndex}
 									onSelectChange={(next) => onSelectChange(e._id, next)}
 									onToggleUsed={(next) => onToggleUsed(e._id, next)}
 									onToggleArchived={(next) =>

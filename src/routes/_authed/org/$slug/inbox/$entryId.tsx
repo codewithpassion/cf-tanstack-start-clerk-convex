@@ -7,6 +7,7 @@ import { useState } from "react";
 import { api } from "../../../../../../convex/_generated/api";
 import type { Id } from "../../../../../../convex/_generated/dataModel";
 import { useOrg } from "@/contexts/org-context";
+import { useKeyboardShortcuts } from "@/lib/keyboard-shortcuts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,6 +41,31 @@ function EntryDetailPage() {
 	const setArchived = useMutation(api.entries.setArchived);
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	useKeyboardShortcuts(
+		{
+			u: entry
+				? () => {
+						void markUsed({
+							orgId: org.orgId,
+							entryId: entry._id,
+							used: !entry.used,
+						});
+					}
+				: undefined,
+			e: entry
+				? () => {
+						void setArchived({
+							orgId: org.orgId,
+							entryId: entry._id,
+							archived: !entry.archived,
+						});
+					}
+				: undefined,
+			escape: () => navigate({ to: "/org/$slug/inbox", params: { slug } }),
+		},
+		{ enabled: !!entry },
+	);
 
 	if (entry === undefined) {
 		return <p className="text-muted-foreground">Loading…</p>;

@@ -189,8 +189,7 @@ function GhostWriterPage() {
 							<EmptyHeader>
 								<EmptyTitle>No examples yet</EmptyTitle>
 								<EmptyDescription>
-									Add at least one past newsletter above to unlock profile
-									generation.
+									Upload past newsletters to teach the assistant your voice.
 								</EmptyDescription>
 							</EmptyHeader>
 						</Empty>

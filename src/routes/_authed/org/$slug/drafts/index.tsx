@@ -61,8 +61,8 @@ function DraftsListPage() {
 					<EmptyHeader>
 						<EmptyTitle>No drafts yet</EmptyTitle>
 						<EmptyDescription>
-							Select stories from the inbox and click "Draft newsletter", or
-							configure an auto-draft schedule.
+							No drafts yet. Generate one from the inbox or wait for the
+							auto-draft schedule.
 						</EmptyDescription>
 					</EmptyHeader>
 					<div className="flex gap-2 justify-center">

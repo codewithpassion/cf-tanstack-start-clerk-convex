@@ -1,8 +1,12 @@
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
+import {
+	SHORTCUT_EVENTS,
+	subscribeShortcutEvent,
+} from "@/lib/shortcut-events";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +35,12 @@ export function OrgSwitcher() {
 	const navigate = useNavigate();
 	const router = useRouterState();
 	const orgs = useQuery(api.organizations.listMine);
+
+	useEffect(() => {
+		return subscribeShortcutEvent(SHORTCUT_EVENTS.openOrgSwitcher, () =>
+			setOpen((s) => !s),
+		);
+	}, []);
 
 	const pathname = router.location.pathname;
 	const currentSlug = pathname.match(/^\/org\/([^/]+)/)?.[1] ?? null;

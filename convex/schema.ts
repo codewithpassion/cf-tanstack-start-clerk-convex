@@ -160,9 +160,19 @@ export default defineSchema({
 		),
 		itemsAdded: v.optional(v.number()),
 		error: v.optional(v.string()),
+		acknowledged: v.optional(v.boolean()),
+		acknowledgedAt: v.optional(v.number()),
 	})
 		.index("by_source_startedAt", ["sourceId", "startedAt"])
 		.index("by_org_startedAt", ["orgId", "startedAt"]),
+
+	analyticsEvents: defineTable({
+		orgId: v.id("organizations"),
+		type: v.string(),
+		createdAt: v.number(),
+	})
+		.index("by_org_type_createdAt", ["orgId", "type", "createdAt"])
+		.index("by_org_createdAt", ["orgId", "createdAt"]),
 
 	autoDraftSchedules: defineTable({
 		orgId: v.id("organizations"),

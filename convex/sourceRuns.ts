@@ -1,5 +1,5 @@
-import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { ConvexError, v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { requireOrgMember } from "./orgAuth";
 
 export const listForSource = query({
@@ -24,8 +24,9 @@ export const recentFailures = query({
 	args: {
 		orgId: v.id("organizations"),
 		sinceMs: v.optional(v.number()),
+		includeAcknowledged: v.optional(v.boolean()),
 	},
-	handler: async (ctx, { orgId, sinceMs }) => {
+	handler: async (ctx, { orgId, sinceMs, includeAcknowledged }) => {
 		await requireOrgMember(ctx, orgId);
 		const since = Date.now() - (sinceMs ?? 24 * 60 * 60 * 1000);
 		const rows = await ctx.db
@@ -35,6 +36,25 @@ export const recentFailures = query({
 			)
 			.order("desc")
 			.take(50);
-		return rows.filter((r) => r.status === "error");
+		return rows.filter(
+			(r) =>
+				r.status === "error" &&
+				(includeAcknowledged === true || r.acknowledged !== true),
+		);
+	},
+});
+
+export const acknowledgeFailure = mutation({
+	args: {
+		runId: v.id("sourceRuns"),
+	},
+	handler: async (ctx, { runId }) => {
+		const run = await ctx.db.get(runId);
+		if (!run) throw new ConvexError("Run not found");
+		await requireOrgMember(ctx, run.orgId, "admin");
+		await ctx.db.patch(runId, {
+			acknowledged: true,
+			acknowledgedAt: Date.now(),
+		});
 	},
 });

@@ -5,6 +5,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 export interface EntryRowSource {
 	_id: Id<"sources">;
@@ -27,6 +28,7 @@ export function EntryRow({
 	entry,
 	orgSlug,
 	selected,
+	highlighted,
 	onSelectChange,
 	onToggleUsed,
 	onToggleArchived,
@@ -34,6 +36,7 @@ export function EntryRow({
 	entry: EntryRowData;
 	orgSlug: string;
 	selected: boolean;
+	highlighted?: boolean;
 	onSelectChange: (next: boolean) => void;
 	onToggleUsed: (next: boolean) => void;
 	onToggleArchived: (next: boolean) => void;
@@ -42,7 +45,14 @@ export function EntryRow({
 	const more = entry.sources.length - 1;
 
 	return (
-		<li className="group flex items-start gap-3 border-b last:border-b-0 px-4 py-3 hover:bg-accent/40 transition-colors">
+		<li
+			data-highlighted={highlighted ? "true" : undefined}
+			className={cn(
+				"group flex items-start gap-3 border-b last:border-b-0 px-4 py-3 hover:bg-accent/40 transition-colors",
+				highlighted &&
+					"bg-accent/60 ring-1 ring-inset ring-primary/40",
+			)}
+		>
 			<Checkbox
 				checked={selected}
 				onCheckedChange={(c) => onSelectChange(c === true)}

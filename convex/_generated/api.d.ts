@@ -15,6 +15,7 @@ import type {
   FilterApi,
 } from "convex/server";
 
+import type * as analytics from "../analytics.js";
 import type * as auth from "../auth.js";
 import type * as autoDrafts from "../autoDrafts.js";
 import type * as drafts from "../drafts.js";
@@ -38,6 +39,7 @@ import type * as users from "../users.js";
 // limit during compilation. `ghostWriter` and `drafts` are kept in the typed
 // map because the UI consumes them via `useQuery`/`useMutation`/`useAction`.
 declare const fullApi: ApiFromModules<{
+  analytics: typeof analytics;
   auth: typeof auth;
   autoDrafts: typeof autoDrafts;
   drafts: typeof drafts;

@@ -2,14 +2,20 @@ import {
 	makeFunctionReference,
 	type FunctionReference,
 } from "convex/server";
-import { useConvex } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
 import { Link } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
 import { Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useMaybeOrg } from "@/contexts/org-context";
+import {
+	emitShortcutEvent,
+	SHORTCUT_EVENTS,
+	subscribeShortcutEvent,
+} from "@/lib/shortcut-events";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -49,6 +55,7 @@ const searchEntriesRef = makeFunctionReference<"action">(
 export function AiSearchBar() {
 	const org = useMaybeOrg();
 	const convex = useConvex();
+	const logSearch = useMutation(api.analytics.logSearch);
 	const [open, setOpen] = useState(false);
 	const [q, setQ] = useState("");
 	const [includeUsed, setIncludeUsed] = useState(false);
@@ -59,14 +66,9 @@ export function AiSearchBar() {
 	const hasOrg = org !== null;
 	useEffect(() => {
 		if (!hasOrg) return;
-		function onKey(e: KeyboardEvent) {
-			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-				e.preventDefault();
-				setOpen((s) => !s);
-			}
-		}
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
+		return subscribeShortcutEvent(SHORTCUT_EVENTS.openAiSearch, () =>
+			setOpen((s) => !s),
+		);
 	}, [hasOrg]);
 
 	const onSubmit = useCallback(
@@ -85,6 +87,15 @@ export function AiSearchBar() {
 					limit: 20,
 				});
 				setResults(hits);
+				try {
+					await logSearch({ orgId: org.orgId });
+					if (typeof window !== "undefined") {
+						window.localStorage.setItem(`ng_tried_search_${org.orgId}`, "1");
+						emitShortcutEvent(SHORTCUT_EVENTS.searchPerformed);
+					}
+				} catch {
+					// non-blocking analytics
+				}
 			} catch (err) {
 				const message =
 					err instanceof ConvexError
@@ -100,7 +111,7 @@ export function AiSearchBar() {
 				setLoading(false);
 			}
 		},
-		[convex, includeUsed, org, q],
+		[convex, includeUsed, logSearch, org, q],
 	);
 
 	if (!org) return null;

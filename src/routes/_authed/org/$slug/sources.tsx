@@ -8,6 +8,7 @@ import { api } from "../../../../../convex/_generated/api";
 import type { Doc } from "../../../../../convex/_generated/dataModel";
 import { useOrg } from "@/contexts/org-context";
 import { SourceHealthBadge } from "@/components/source-health-badge";
+import { SourceHealthSparkline } from "@/components/source-health-sparkline";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -222,7 +223,15 @@ function SourceRow({
 						: relativeTime(source.nextRunAt)}
 			</TableCell>
 			<TableCell>
-				<SourceHealthBadge health={source.health} />
+				<div className="flex flex-col items-start gap-1">
+					<SourceHealthBadge health={source.health} />
+					{source.type !== "manual" && (
+						<SourceHealthSparkline
+							orgId={org.orgId}
+							sourceId={source._id}
+						/>
+					)}
+				</div>
 			</TableCell>
 			<TableCell className="text-right space-x-1">
 				<Button variant="ghost" size="sm" asChild>
