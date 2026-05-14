@@ -1,9 +1,15 @@
 import { useUser } from "@clerk/tanstack-react-start";
-import { useConvexAuth } from "convex/react";
-import { createContext, useCallback, useEffect, useState } from "react";
+import { useLocation } from "@tanstack/react-router";
+import { useConvexAuth, useQuery } from "convex/react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import { api } from "../../convex/_generated/api";
 import { useClerkConvexSync } from "../hooks/use-clerk-convex-sync";
-import { PermissionChecker, rolesHavePermission } from "../lib/permissions";
-import type { Permission } from "../lib/permissions";
+import {
+	orgRoleHasPermission,
+	PermissionChecker,
+	rolesHavePermission,
+} from "../lib/permissions";
+import type { OrgPermission, OrgRole, Permission } from "../lib/permissions";
 
 export type UserRole = "user" | "admin" | "superadmin";
 
@@ -25,71 +31,78 @@ export interface AuthContextValue {
 	isAdmin: () => boolean;
 	isSuperAdmin: () => boolean;
 	permissionChecker: PermissionChecker | null;
+	currentOrgSlug: string | null;
+	currentOrgRole: OrgRole | null;
+	hasOrgPermission: (perm: OrgPermission) => boolean;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
 
+function parseOrgSlugFromPath(pathname: string): string | null {
+	const match = pathname.match(/^\/org\/([^/]+)/);
+	return match ? match[1] : null;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const { user, isLoaded: isUserLoaded, isSignedIn } = useUser();
-	const { isAuthenticated: isConvexAuthtenticated, isLoading } =
-		useConvexAuth();
+	const { isAuthenticated: isConvexAuthenticated, isLoading } = useConvexAuth();
+	const location = useLocation();
 
-	// Sync Clerk user to Convex database
 	useClerkConvexSync();
 
-	// Track if initial auth load has ever completed
 	const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
 
-	// useEffect(() => {
-	// 	console.log({
-	// 		user,
-	// 		isUserLoaded,
-	// 		isSignedIn,
-	// 		isConvexAuthtenticated,
-	// 		isLoading,
-	// 	});
-	// }, [user, isUserLoaded, isSignedIn, isConvexAuthtenticated, isLoading]);
-
-	// Determine if we're still in the initial pending state
 	const isInitiallyPending =
-		!isUserLoaded || !isSignedIn || isLoading || !isConvexAuthtenticated;
+		!isUserLoaded || !isSignedIn || isLoading || !isConvexAuthenticated;
 
-	// Once auth has loaded successfully, mark it and never go back to pending
 	useEffect(() => {
 		if (!isInitiallyPending && !hasInitiallyLoaded) {
 			setHasInitiallyLoaded(true);
 		}
 	}, [isInitiallyPending, hasInitiallyLoaded]);
 
-	// isPending only reflects initial load, not subsequent reconnections
 	const isPending = !hasInitiallyLoaded;
-	const isAuthenticated = (isSignedIn && isConvexAuthtenticated) === true;
+	const isAuthenticated = (isSignedIn && isConvexAuthenticated) === true;
 
-	// Get roles from Clerk's publicMetadata
-	const userRoles = (user?.publicMetadata?.roles as UserRole[]) || ["user"];
+	const userRoles = useMemo<UserRole[]>(
+		() => (user?.publicMetadata?.roles as UserRole[]) || ["user"],
+		[user?.publicMetadata?.roles],
+	);
+
+	const currentOrgSlug = parseOrgSlugFromPath(location.pathname);
+
+	const orgs = useQuery(
+		api.organizations.listMine,
+		isAuthenticated ? {} : "skip",
+	);
+
+	const currentOrgRole: OrgRole | null = useMemo(() => {
+		if (!currentOrgSlug || !orgs) return null;
+		const match = orgs.find((o) => o.slug === currentOrgSlug);
+		return match ? match.role : null;
+	}, [currentOrgSlug, orgs]);
 
 	const hasRole = useCallback(
-		(role: UserRole) => {
-			return userRoles.includes(role);
-		},
+		(role: UserRole) => userRoles.includes(role),
 		[userRoles],
 	);
 
-	const hasPermission = (permission: Permission) => {
-		// Use the granular permission system
-		return rolesHavePermission(userRoles, permission);
-	};
+	const hasPermission = (permission: Permission) =>
+		rolesHavePermission(userRoles, permission);
 
-	const isAdmin = useCallback(() => {
-		return hasRole("admin") || hasRole("superadmin");
-	}, [hasRole]);
+	const isAdmin = useCallback(
+		() => hasRole("admin") || hasRole("superadmin"),
+		[hasRole],
+	);
 
 	const isSuperAdmin = () => hasRole("superadmin");
 
-	// Create a permission checker instance for advanced permission operations
 	const permissionChecker = isAuthenticated
 		? new PermissionChecker(userRoles)
 		: null;
+
+	const hasOrgPermission = (perm: OrgPermission) =>
+		orgRoleHasPermission(currentOrgRole, perm);
 
 	const value: AuthContextValue = {
 		user: user
@@ -111,6 +124,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		isAdmin,
 		isSuperAdmin,
 		permissionChecker,
+		currentOrgSlug,
+		currentOrgRole,
+		hasOrgPermission,
 	};
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
